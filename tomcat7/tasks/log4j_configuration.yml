@@ -1,0 +1,79 @@
+---
+- name: log4j · create target directory
+  file:
+    path: "{{ download_target_path }}/log4j"
+    state: directory
+    mode: u+rwx,g+rx,o+rx
+
+- name: log4j · download binary
+  get_url:
+    url: "{{ _log4j_download_url }}"
+    dest: "{{ _log4j_download_target }}"
+    checksum: "{{ log4j_checksum }}"
+    owner: root
+    group: root
+    mode: u=rx,g=r,o=r
+  become: yes
+  become_user: root
+
+- name: log4j · create dest directory
+  file:
+    path: "{{ log4j_dest }}"
+    state: directory
+    mode: u+rwx,g+rx,o+rx
+
+- name: log4j · install binary
+  unarchive:
+    remote_src: true
+    src: "{{ _log4j_download_target }}"
+    dest: "{{ log4j_dest }}"
+    # conf files are not world-readable by default
+    mode: o+r
+    extra_opts:
+      - --strip-components=1
+
+- name: log4j · configuration
+  template:
+    src: log4j.properties.j2
+    dest: "{{ _catalina_base_path }}/lib/log4j.properties"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: log4j · deploy tomcat-juli.jar
+  get_url:
+    url: "{{ _log4j_tomcat_juli_url }}"
+    dest: "{{ _catalina_base_path }}/bin/tomcat-juli.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: log4j · deploy tomcat-juli-adapters.jar
+  get_url:
+    url: "{{ _log4j_tomcat_juli_adapters_url }}"
+    dest: "{{ _catalina_base_path }}/bin/tomcat-juli-adapters.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: log4j · deploy log4j.jar
+  copy:
+    remote_src: true
+    src: "{{ log4j_dest }}/log4j-{{ log4j_version }}.jar"
+    dest: "{{ _catalina_base_path }}/lib/log4j-{{ log4j_version }}.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: edit /conf/catalina.policy
+  copy:
+    src: catalina.policy
+    dest: "{{ _catalina_base_path }}/conf/catalina.policy"
+    force: yes
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+#Deleting this file avoid the creation of standard log files
+- name: delete /conf/logging.properties
+  file:
+    path: "{{ _catalina_base_path }}/conf/logging.properties"
+    state: absent
+  notify: restart tomcat7 instances
+
+# TODO: find how to not rolled the log

@@ -1,0 +1,269 @@
+#!/bin/sh
+#
+# Startup script for Tomcat 6.0, the Apache Servlet Engine
+#
+# chkconfig: - 80 20
+# description: Tomcat 6.0 is the Apache Servlet Engine RI for Servlet 2.4/JSP 2.0
+# processname: tomcat
+# pidfile: /var/run/tomcat60.pid
+# config:  /etc/tomcat60/tomcat60.conf
+#
+# Gomez Henri <hgomez@users.sourceforge.net>
+# Keith Irwin <keith_irwin@non.hp.com>
+# Nicolas Mailhot <nicolas.mailhot@one2team.com>
+#
+# version 1.02 - Removed initlog support
+# version 1.03 - Removed config:
+# version 1.04 - tomcat will start before httpd and stop after httpd
+# version 1.05 - jdk hardcoded to link /usr/java/jdk and tomcat runs as "nobody"
+# version 1.06 - split up into script and config file
+# version 1.07 - Rework from Nicolas ideas
+# version 1.08 - Fix work dir permission at start time, switch to use tomcat4
+# version 1.09 - Fix pidfile and config tags
+# version 1.10 - Fallback to su direct use on systems without Redhat/Mandrake init.d functions
+# version 1.11 - Fix webapps dir permissions
+# version 1.12 - remove initial start/stop level for chkconfig (- 80 20)
+# version 1.13 - remove chown of logs/work/temp/webapps dir, owned by tomcat4 at install time
+# version 1.14 - correct the start/stop ugly hack by waiting all the threads stops
+# version 1.15 - ensure we're looking for TOMCAT_USER running catalina
+# version 1.16 - Add support for CATALINA_PID env var
+# version 1.17 - Remove run files only tomcat started correctl
+#                in start area, check that tomcat is not allready running
+# version 1.18 - Fix kill typo (thanks Kaj J. Niemi)
+# version 1.19 - Add jar relinking
+# version 1.20 - Check there is no stalling tomcat4.pid
+# version 1.20tc5 - Changed all instances of tomcat4 to tomcat5 except TOMCAT_USER
+# version 1.20tc5rh - Changed TOMCAT_USER from tomcat4 to tomcat
+#
+
+# Find the name of the script
+NAME=`basename $0` 
+if [ ${NAME:0:1} = "S" -o ${NAME:0:1} = "K" ]; then
+	NAME=${NAME:3}
+fi
+
+# Source function library.
+if [ -f /etc/rc.d/init.d/functions ]; then
+	. /etc/rc.d/init.d/functions
+fi
+
+# pre Centos 5.6 daemon function
+# A function to start a program.
+daemon_legacy() {
+	# Test syntax.
+	local gotbase= force= nicelevel corelimit
+	local pid base= user= nice= bg= pid_file=
+	nicelevel=0
+	while [ "$1" != "${1##[-+]}" ]; do
+	  case $1 in
+	    '')    echo $"$0: Usage: daemon_legacy [+/-nicelevel] {program}"
+	           return 1;;
+	    --check)
+		   base=$2
+		   gotbase="yes"
+		   shift 2
+		   ;;
+	    --check=?*)
+	    	   base=${1#--check=}
+		   gotbase="yes"
+		   shift
+		   ;;
+	    --user)
+		   user=$2
+		   shift 2
+		   ;;
+	    --user=?*)
+	           user=${1#--user=}
+		   shift
+		   ;;
+	    --pidfile)
+		   pid_file=$2
+		   shift 2
+		   ;;
+	    --pidfile=?*)
+		   pid_file=${1#--pidfile=}
+		   shift
+		   ;;
+	    --force)
+	    	   force="force"
+		   shift
+		   ;;
+	    [-+][0-9]*)
+	    	   nice="nice -n $1"
+	           shift
+		   ;;
+	    *)     echo $"$0: Usage: daemon_legacy [+/-nicelevel] {program}"
+	           return 1;;
+	  esac
+	done
+
+        # Save basename.
+        [ -z "$gotbase" ] && base=${1##*/}
+
+        # See if it's already running. Look *only* at the pid file.
+	__pids_var_run "$base" "$pid_file"
+
+	[ -n "$pid" -a -z "$force" ] && return
+
+	# make sure it doesn't core dump anywhere unless requested
+	corelimit="ulimit -S -c ${DAEMON_COREFILE_LIMIT:-0}"
+	
+	# if they set NICELEVEL in /etc/sysconfig/foo, honor it
+	[ -n "${NICELEVEL:-}" ] && nice="nice -n $NICELEVEL"
+	
+	# Echo daemon
+        [ "${BOOTUP:-}" = "verbose" -a -z "${LSB:-}" ] && echo -n " $base"
+
+	# And start it up.
+	if [ -z "$user" ]; then
+	   $nice /bin/bash -c "$corelimit >/dev/null 2>&1 ; $*"
+	else
+	   $nice runuser -s /bin/bash - $user -c "$corelimit >/dev/null 2>&1 ; $*"
+	fi
+	[ "$?" -eq 0 ] && success $"$base startup" || failure $"$base startup"
+}
+
+# For SELinux we need to use 'runuser' not 'su'
+if [ -x /sbin/runuser ]
+then
+	SU=runuser
+else
+	SU=su
+fi
+
+# Get Tomcat config
+
+TOMCAT_CFG="/etc/tomcat/${NAME}.conf"
+
+[ -r "$TOMCAT_CFG" ] && . "${TOMCAT_CFG}"
+
+# Path to the tomcat launch script (direct don't use wrapper)
+TOMCAT_SCRIPT=/data/services/web/${NAME}/bin/catalina.sh
+
+# Tomcat pid file
+TOMCAT_PID_FILE=/var/run/${NAME}.pid
+
+# TOMCAT lock file
+TOMCAT_LOCK_FILE=/var/lock/subsys/${NAME}
+
+# Tomcat name :)
+TOMCAT_PROG=${NAME}
+
+TOMCAT_SLEEP_BEFORE_KILL=30
+
+SHUTDOWN_WAIT=30
+        
+# if TOMCAT_USER is not set, use tomcat60 like Apache HTTP server
+if [ -z "$TOMCAT_USER" ]; then
+    TOMCAT_USER="tomcat"
+fi
+
+# Since the daemon function will sandbox $tomcat
+# no environment stuff should be defined here anymore.
+# Please use the /etc/tomcat.conf file instead ; it will
+# be read by the $tomcat script
+
+RETVAL=0
+
+# See how we were called.
+start() {
+    echo -n "Starting $TOMCAT_PROG: "
+
+	if [ -f ${TOMCAT_LOCK_FILE} ] ; then
+ 		if [ -f ${TOMCAT_PID_FILE} ]; then
+   	      		read kpid < ${TOMCAT_PID_FILE}
+         		if checkpid $kpid 2>&1; then
+             			echo "process allready running"
+             			return -1
+         		else
+             			echo "lock file found but no process running for pid $kpid, continuing"
+ 			fi
+ 		fi
+ 	fi
+ 
+ 	touch $TOMCAT_PID_FILE
+ 	chown $TOMCAT_USER:$TOMCAT_USER $TOMCAT_PID_FILE
+
+        if [ -f /etc/rc.d/init.d/functions ]; then
+        	daemon_legacy --user $TOMCAT_USER --pidfile ${TOMCAT_PID_FILE} CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start
+    	else
+        	$SU - $TOMCAT_USER -c "CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start"
+    	fi
+
+    	RETVAL=$?
+    	echo
+    	[ $RETVAL = 0 ] && touch ${TOMCAT_LOCK_FILE}
+    	return $RETVAL
+}
+
+stop() {
+    echo -n "Stopping $TOMCAT_PROG: "
+
+    if [ -f ${TOMCAT_LOCK_FILE} ] ; then
+      if [ -f /etc/rc.d/init.d/functions ]; then
+          daemon_legacy --user $TOMCAT_USER CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL
+          echo
+      else
+          $SU - $TOMCAT_USER -c "CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL"
+      fi
+      RETVAL=$?
+
+      if [ $RETVAL = 0 ]; then
+        count=0;
+
+        if [ -f ${TOMCAT_PID_FILE} ]; then
+
+            read kpid < ${TOMCAT_PID_FILE}
+            let kwait=$SHUTDOWN_WAIT
+
+            if [ "$kpid" != "" ]; then
+		    until [ `ps --pid $kpid | grep -c $kpid` = '0' ] || [ $count -gt $kwait ]
+		    do
+			echo -n -e "\nwaiting for processes to exit";
+			sleep 1
+			let count=$count+1;
+		    done
+
+		    if [ $count -gt $kwait ]; then
+			echo -n -e "\nkilling processes which didn't stop after $SHUTDOWN_WAIT seconds"
+			kill -9 $kpid
+		    fi
+
+		    if [ $count -gt 0 ]; then
+			echo -n -e "\n"
+		    fi
+             fi
+        fi
+    
+        rm -f ${TOMCAT_LOCK_FILE} ${TOMCAT_PID_FILE}
+      fi
+
+    fi
+}
+
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart)
+        stop
+        sleep 2	
+        start
+        ;;
+  condrestart)
+        if [ -f ${TOMCAT_PID_FILE} ] ; then
+                stop
+                start
+        fi
+        ;;
+  *)
+        echo "Usage: $TOMCAT_PROG {start|stop|restart|condrestart}"
+        exit 1
+esac
+
+exit $RETVAL

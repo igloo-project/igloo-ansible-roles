@@ -1,0 +1,17 @@
+- name: epel gpg key
+  copy:
+    dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+    src: RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: epel repository
+  yum_repository:
+    name: epel
+    description: Extra Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch
+    mirrorlist: https://mirrors.fedoraproject.org/metalink?repo=epel-{{ ansible_distribution_major_version }}&arch=$basearch
+    enabled: yes
+    file: epel
+    gpgcheck: yes
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}

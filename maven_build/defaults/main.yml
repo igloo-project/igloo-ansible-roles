@@ -1,0 +1,7 @@
+_mb_git_repository: "{{ mb_git_repository | default(None) }}"
+_mb_git_branch: "{{ mb_git_branch | default('dev') }}"
+_mb_project_path: "{{ mb_project_path }}"
+_mb_rebuild: "{{ mb_rebuild | default(False) }}"
+_mb_mvn_environment: "{{ mb_mvn_environment | default({}) }}"
+_mb_mvn_command: "{{ mb_mvn_command | default('mvn -DskipTests -P{{ apidae_environment }} clean install') }}"
+_mb_check_files: "{{ mb_check_files | default([]) }}"

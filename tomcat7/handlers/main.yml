@@ -1,0 +1,74 @@
+---
+## systemd
+- name: reload tomcat7 instances
+  become: yes
+  become_user: root
+  systemd:
+    name: tomcat7@{{ item.name }}
+    state: reloaded
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_systemd }}"
+
+- name: restart tomcat7 instances
+  become: yes
+  become_user: root
+  systemd:
+    name: tomcat7@{{ item.name }}
+    state: restarted
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_systemd }}"
+
+- name: start tomcat7 instances
+  become: yes
+  become_user: root
+  systemd:
+    name: tomcat7@{{ item.name }}
+    state: started
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_systemd }}"
+
+- name: stop tomcat7 instances
+  become: yes
+  become_user: root
+  systemd:
+    name: tomcat7@{{ item.name }}
+    state: stopped
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_systemd }}"
+
+## initd
+- name: reload tomcat7 instances
+  become: yes
+  become_user: root
+  service:
+    name: "{{ item.name }}"
+    state: reloaded
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_initd }}"
+
+- name: restart tomcat7 instances
+  become: yes
+  become_user: root
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_initd }}"
+
+- name: start tomcat7 instances
+  become: yes
+  become_user: root
+  service:
+    name: "{{ item.name }}"
+    state: started
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_initd }}"
+
+- name: stop tomcat7 instances
+  become: yes
+  become_user: root
+  service:
+    name: "{{ item.name }}"
+    state: stopped
+  with_items: "{{ tomcat7_catalina_bases }}"
+  when: "{{ _tomcat7_initd }}"

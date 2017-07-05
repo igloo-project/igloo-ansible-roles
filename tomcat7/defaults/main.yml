@@ -1,0 +1,60 @@
+tomcat7_user: tomcat
+tomcat7_catalina_bases: []
+tomcat7_catalina_base_root: /srv
+tomcat7_default_stop_wait_in_s: 60
+tomcat7_default_stop_allow_kill9: no
+_tomcat7_systemd: "{{ tomcat7_systemd | default(True) }}"
+_tomcat7_initd: "{{ tomcat7_initd | default(False) }}"
+
+_tomcat7_timeout_stop: "{{ tomcat7_timeout_stop | default(None) }}"
+
+_tomcat7_download_url: "http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/apache-tomcat-{{ tomcat7_version }}.tar.gz"
+_tomcat7_download_target: "{{ download_target_path }}/tomcat/apache-tomcat-{{ tomcat7_version }}.tar.gz"
+
+_log4j_download_url: "http://archive.apache.org/dist/logging/log4j/{{ log4j_version }}/log4j-{{ log4j_version }}.tar.gz"
+_log4j_download_target: "{{ download_target_path }}/log4j/log4j-{{ log4j_version }}.tar.gz"
+_log4j_tomcat_juli_url: http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/extras/tomcat-juli.jar
+_log4j_tomcat_juli_adapters_url: http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/extras/tomcat-juli-adapters.jar
+
+_catalina_base_server_xml: "{{ catalina_base.server_xml | default(_default_server_xml) }}"
+_catalina_base_http_port: "{{ catalina_base.http_port | default(_default_http_port) }}"
+_catalina_base_ajp_port: "{{ catalina_base.apj_port | default(_default_ajp_port) }}"
+_catalina_base_redirect_port: "{{ catalina_base.redirect_port | default(_default_redirect_port) }}"
+_catalina_base_shutdown_port: "{{ catalina_base.shutdown_port | default(_default_shutdown_port) }}"
+_catalina_base_ajp_max_threads: "{{ catalina_base.ajp_max_threads | default(_default_ajp_max_threads) }}"
+_catalina_base_http_max_threads: "{{ catalina_base.http_max_threads | default(_default_http_max_threads) }}"
+
+_default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
+_default_http_port: "{{ default_http_port | default(8080) }}"
+_default_ajp_port: "{{ default_ajp_port | default(8009) }}"
+_default_redirect_port: "{{ default_redirect_port | default(8443) }}"
+_default_shutdown_port: "{{ default_shutdown_port | default(8005) }}"
+_default_ajp_max_threads: "{{ default_ajp_max_threads | default(50) }}"
+_default_http_max_threads: "{{ default_http_max_threads | default(50) }}"
+
+_tomcat7_systemd_env: |
+    [Service]
+    {{% for key, value in _tomcat7_common_env.iteritems() %}}
+    Environment={{ key }}={{ value }}
+    {{% endfor %}}
+    PIDFile={{ _catalina_base }}/pid/tomcat.pid
+    ExecStart={{ tomcat7_dest }}/bin/catalina.sh start
+    ExecStop={{ tomcat7_dest }}/bin/catalina.sh {{ '-force' if _catalina_base_stop_allow_kill9 else '' }} stop
+    User={{ _catalina_base_user }}
+    Group={{ _catalina_base_user }}
+
+_tomcat7_initd_env: |
+    {{% for key, value in _tomcat7_common_env.iteritems() %}}
+    {{ key }}={{ value }}
+    {{% endfor %}}
+    TOMCAT_USER={{ _catalina_base_user }}
+    {% if tomcat7_default_stop_wait_in_s %}
+    TOMCAT_SLEEP_BEFORE_KILL={{ tomcat7_default_stop_wait_in_s }}
+    {% endif %}
+
+_tomcat7_common_env:
+    SLEEP: "{{ _catalina_base_stop_wait_in_s }}"
+    JAVA_HOME: "{{ _java_home }}"
+    CATALINA_HOME: "{{ _catalina_home }}"
+    CATALINA_BASE: "{{ _catalina_base }}"
+    CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"

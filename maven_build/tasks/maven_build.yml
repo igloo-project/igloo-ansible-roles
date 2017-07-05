@@ -1,0 +1,38 @@
+- name: project folder
+  file:
+    path: "{{ _mb_project_path }}"
+    state: directory
+
+- name: git checkout
+  git:
+    repo: "{{ _mb_git_repository }}"
+    update: yes
+    dest: "{{ _mb_project_path }}"
+    version: "{{ _mb_git_branch }}"
+    force: yes
+  when: _mb_git_repository is not none
+  register: git_checkout
+
+- name: pre check files
+  stat:
+    path: "{{ item }}"
+  register: check_files
+  with_items: "{{ _mb_check_files }}"
+
+- name: project build
+  command: "{{ _mb_mvn_command }}"
+  args:
+    chdir: "{{ mb_project_path }}"
+  environment: "{{ _mb_mvn_environment }}"
+  when: check_files.results | map(attribute="stat.exists") | select("equalto", False) | list | length > 0 or _mb_rebuild or git_checkout.changed
+
+- name: post check files
+  stat:
+    path: "{{ item }}"
+  register: check_files
+  with_items: "{{ _mb_check_files }}"
+
+- name: project check files
+  fail:
+    msg: "Some files are missing after maven build (checked files: [{{ _mb_check_files | join(', ') }}])"
+  when: check_files.results | map(attribute="stat.exists") | select("equalto", False) | list | length > 0
