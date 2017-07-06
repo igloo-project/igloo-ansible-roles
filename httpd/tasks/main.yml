@@ -14,14 +14,13 @@
   - name: httpd · configuration
     template:
       src: application.conf.j2
-      dest: /etc/httpd/conf.d/50-{{ httpd_application_name }}.conf
+      dest: /etc/httpd/conf.d/50-{{ _httpd_application_name }}.conf
       owner: root
       group: root
       mode: u=rw,g=r,o=r
     vars:
       _server_name: "{{ httpd_server_name }}"
       _server_aliases: "{{ httpd_server_aliases }}"
-      _application_name: "{{ httpd_application_name }}"
       _server_https_domain_redirect: "{{ httpd_https_domain_redirect }}"
       _ssl_certificate: "{{ httpd_ssl_certificate }}"
       _ssl_key: "{{ httpd_ssl_key }}"

@@ -6,14 +6,14 @@ ServerName {{ _server_name }}
     ServerAlias {{ _server_alias }}
     {% endfor %}
 
-    DocumentRoot /data/services/web/{{ _application_name }}/site
+    DocumentRoot {{ _httpd_documentroot }}
 
     ProxyErrorOverride On
     ProxyPass /static-content/ !
     ProxyPass /errors/ !
     ProxyPass /server-status !
-    ProxyPass         / ajp://localhost:8009/ keepalive=on timeout=3000 ttl=300
-    ProxyPassReverse  / ajp://localhost:8009/
+    ProxyPass         /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }} keepalive=on timeout=3000 ttl=300
+    ProxyPassReverse  /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }}
 
     ErrorDocument 403 /errors/403.html
     ErrorDocument 404 /errors/404.html
@@ -29,7 +29,7 @@ ServerName {{ _server_name }}
     #    SetHandler server-status
     #    Require ip 127.0.0.1
     #</Location>
-    <Directory /data/services/web/{{ _application_name }}/site>
+    <Directory {{ _httpd_documentroot }}>
         Require all granted
     </Directory>
 
@@ -38,8 +38,8 @@ ServerName {{ _server_name }}
     SSLCertificateKeyFile {{ _ssl_key }}
     SSLCACertificateFile {{ _ssl_certificate }}
 
-    CustomLog /data/log/web/{{ _application_name }}-ssl-access_log combined
-    ErrorLog /data/log/web/{{ _application_name }}-ssl-error_log
+    CustomLog /data/log/web/{{ _httpd_application_name }}-ssl-access_log combined
+    ErrorLog /data/log/web/{{ _httpd_application_name }}-ssl-error_log
 </VirtualHost>
 
 ## Redirection * vers le https .fr ##

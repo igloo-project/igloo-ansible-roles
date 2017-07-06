@@ -1,3 +1,8 @@
 httpd_https_domain_redirect: "{{ httpd_server_name }}"
 httpd_step_configuration: yes
 httpd_step_install: yes
+
+_httpd_application_name: "{{ httpd_application_name }}"
+_httpd_context_name: "{{ httpd_context_name | default('') }}"
+_httpd_documentroot: "{{ httpd_documentroot }}"
+_httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
