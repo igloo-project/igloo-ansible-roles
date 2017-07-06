@@ -1,10 +1,14 @@
 ---
 - name: "postgresql_cluster · user {{ _user.username }}"
-  postgresql_user:
-    name: "{{ _user.username }}"
+  postgresql_privs:
+    role: "{{ _user.username }}"
     port: "{{ _cluster_port }}"
-    role_attr_flags: "{{ _user.roles | default(postgresql_cluster_default_user_roles) }}"
-    password: "{{ _user.password }}"
+    database: "{{ database.name | default(database) }}"
+    type: database
+    privs: "{{ database.privileges | default(postgresql_cluster_default_user_privileges) }}"
+  with_items: "{{ _user.databases | default([]) }}"
+  loop_control:
+    loop_var: database
   become: yes
   become_user: "{{ postgresql_cluster_postgres_user }}"
   vars:

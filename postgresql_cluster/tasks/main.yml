@@ -10,13 +10,19 @@
   loop_control:
     loop_var: cluster
 
+- include: cluster_user_item.yml
+  with_items: "{{ postgresql_cluster_clusters | cluster_user_items }}"
+  loop_control:
+    loop_var: cluster_user_item
+    label: "{{ cluster_user_item.user.username }}"
+
 - include: cluster_db_item.yml
   with_items: "{{ postgresql_cluster_clusters | cluster_db_items }}"
   loop_control:
     loop_var: cluster_db_item
     label: "{{ cluster_db_item.database.name }}"
 
-- include: cluster_user_item.yml
+- include: cluster_user_perms.yml
   with_items: "{{ postgresql_cluster_clusters | cluster_user_items }}"
   loop_control:
     loop_var: cluster_user_item
