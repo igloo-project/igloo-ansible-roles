@@ -1,2 +1,9 @@
-war_tomcat_catalina_pid: "{{ war_tomcat_catalina_base }}/pid/tomcat.pid"
-war_application_war_remote_src: no
+_war_application_war_src: "{{ war_application_war_src }}"
+_war_application_war_target: "{{ war_application_war_target }}"
+_war_application_user: "{{ war_application_user }}"
+_war_tomcat_service: "{{ war_tomcat_service | default(war_tomcat_service) }}"
+_war_tomcat_catalina_base: "{{ war_tomcat_catalina_base }}"
+
+_war_application_war_remote_src: "{{ war_application_war_remote_src | default(False) }}"
+
+_war_tomcat_catalina_pid: "{{ war_tomcat_catalina_base }}/pid/tomcat.pid"
