@@ -1,8 +1,8 @@
 _war_application_war_src: "{{ war_application_war_src }}"
-_war_application_war_target: "{{ war_application_war_target }}"
 _war_application_user: "{{ war_application_user }}"
 _war_tomcat_service: "{{ war_tomcat_service | default(war_tomcat_service) }}"
 _war_tomcat_catalina_base: "{{ war_tomcat_catalina_base }}"
+_war_context_name: "{{ war_context_name | default(war_application_war_src | basename | replace('.war', '')) }}"
 
 _war_application_war_remote_src: "{{ war_application_war_remote_src | default(False) }}"
 

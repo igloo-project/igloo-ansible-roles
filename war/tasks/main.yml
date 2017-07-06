@@ -1,12 +1,13 @@
-- name: war · copy war
+- name: war . copy war
   copy:
     src: "{{ _war_application_war_src }}"
-    dest: "{{ _war_application_war_target }}"
     remote_src: "{{ _war_application_war_remote_src }}"
+    dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
     owner: "{{ _war_application_user }}"
     group: "{{ _war_application_user }}"
     mode: u=rw,g=r,o=r
   register: war
+  check_mode: yes
 
 - block:
   - name: war · stop application
@@ -23,16 +24,16 @@
     shell: >-
         rm -rf "{{ _war_tomcat_catalina_base }}/work/"*
         "{{ _war_tomcat_catalina_base }}/temp/"*
-        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_application_war_target | basename }}"
-        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_application_war_target | basename | splitext | first }}"
+        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
+        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}"
     args:
       warn: off
 
   - name: war . copy war
     copy:
-      src: "{{ _war_application_war_target }}"
-      dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_application_war_target | basename }}"
-      remote_src: yes
+      src: "{{ _war_application_war_src }}"
+      remote_src: "{{ _war_application_war_remote_src }}"
+      dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
       owner: "{{ _war_application_user }}"
       group: "{{ _war_application_user }}"
       mode: u=rw,g=r,o=r
