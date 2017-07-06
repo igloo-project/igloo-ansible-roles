@@ -174,7 +174,7 @@ start() {
    	      		read kpid < ${TOMCAT_PID_FILE}
          		if checkpid $kpid 2>&1; then
              			echo "process allready running"
-             			return -1
+             			return 0
          		else
              			echo "lock file found but no process running for pid $kpid, continuing"
  			fi
