@@ -1,0 +1,2 @@
+_dh_hostvars_name: "{{ dh_hostvars_name | default('dh_hostnames') }}"
+_dh_block_name: "{{ dh_block_name | default('dev_hosts') }}"
