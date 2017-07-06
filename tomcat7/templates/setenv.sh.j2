@@ -1,5 +1,6 @@
 #! /bin/bash
 
+JAVA_HOME="{{ _java_home }}"
 NETWORK_OPTS="-Djava.net.preferIPv4Stack=true"
 #-Dcom.sun.management.jmxremote.host=localhost works around for : java.net.MalformedURLException
 # https://bugs.openjdk.java.net/browse/JDK-8031753
@@ -8,5 +9,3 @@ MEMORY_OPTS="-Xms768m -Xmx1024m -XX:MaxPermSize=256m"
 LDAP_OPTS="-Dcom.sun.jndi.ldap.connect.pool.debug=fine -Dcom.sun.jndi.ldap.connect.pool.timeout=0"
 PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/services/tomcat/ -XX:-OmitStackTraceInFastThrow -XX:-TraceClassUnloading"
 CATALINA_OPTS="${CATALINA_OPTS} -Dfile.encoding=UTF-8 ${NETWORK_OPTS} ${JMX_OPTS} ${MEMORY_OPTS} ${LDAP_OPTS} ${PANIC_OPTS}"
-
-export CATALINA_OPTS

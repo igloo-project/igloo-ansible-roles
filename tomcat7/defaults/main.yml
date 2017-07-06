@@ -59,7 +59,6 @@ _tomcat7_initd_env: |
 
 _tomcat7_common_env:
     SLEEP: "{{ _catalina_base_stop_wait_in_s }}"
-    JAVA_HOME: "{{ _java_home }}"
     CATALINA_HOME: "{{ _catalina_home }}"
     CATALINA_BASE: "{{ _catalina_base }}"
     CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"

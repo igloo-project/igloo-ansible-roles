@@ -75,6 +75,18 @@
     become: yes
     become_user: "{{ _catalina_base_user }}"
 
+  - name: tomcat7 · catalina_base · service configuration file
+    template:
+      src: setenv.sh.j2
+      dest: "{{ _catalina_base_path }}/bin/setenv.sh"
+      owner: "{{ _catalina_base_user }}"
+      group: "{{ _catalina_base_group }}"
+      mode: u=rw,g=rw,o=r
+    become: yes
+    become_user: "{{ _catalina_base_user }}"
+    vars:
+      _java_home: "{{ _catalina_base_java_home }}"
+
   - block:
 
     - name: tomcat7 · catalina_base · service configuration directory
@@ -86,16 +98,6 @@
         mode: u=rwx,g=rx,o=rx
       become: yes
       become_user: root
-
-    - name: tomcat7 · catalina_base · service configuration file
-      template:
-        src: setenv.sh.j2
-        dest: "{{ _catalina_base_path }}/bin/setenv.sh"
-        owner: "{{ _catalina_base_user }}"
-        group: "{{ _catalina_base_group }}"
-        mode: u=rw,g=rw,o=r
-      become: yes
-      become_user: "{{ _catalina_base_user }}"
 
     - name: tomcat7 · catalina_base · service configuration file
       copy:
