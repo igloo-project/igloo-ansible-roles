@@ -87,6 +87,18 @@
   register: service_file
   become: yes
   become_user: root
+  when: _tomcat7_systemd
+
+- name: tomcat7 · catalina_base · initd file
+  template:
+    dest: "{{ _tomcat7_initscript }}"
+    owner: root
+    group: root
+    mode: u=rwx,g=rwx,o=r
+    src: tomcat7.j2
+  become: yes
+  become_user: root
+  when: _tomcat7_initd
 
 - name: tomcat7 · prepare instances
   include: catalina_base_item.yml

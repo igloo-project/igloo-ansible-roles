@@ -3,16 +3,21 @@ tomcat7_catalina_bases: []
 tomcat7_catalina_base_root: /srv
 tomcat7_default_stop_wait_in_s: 60
 tomcat7_default_stop_allow_kill9: no
+tomcat7_default_group: "{{ _catalina_base_user }}"
 _tomcat7_systemd: "{{ tomcat7_systemd | default(True) }}"
 _tomcat7_initd: "{{ tomcat7_initd | default(False) }}"
+_tomcat7_initscript: /etc/init.d/tomcat7-common
 
 _tomcat7_timeout_stop: "{{ tomcat7_timeout_stop | default(None) }}"
 
 _tomcat7_download_url: "http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/apache-tomcat-{{ tomcat7_version }}.tar.gz"
-_tomcat7_download_target: "{{ download_target_path }}/tomcat/apache-tomcat-{{ tomcat7_version }}.tar.gz"
+_tomcat7_download_target: "{{ tomcat7_download_target_path }}/apache-tomcat-{{ tomcat7_version }}.tar.gz"
 
-_log4j_download_url: "http://archive.apache.org/dist/logging/log4j/{{ log4j_version }}/log4j-{{ log4j_version }}.tar.gz"
-_log4j_download_target: "{{ download_target_path }}/log4j/log4j-{{ log4j_version }}.tar.gz"
+
+_tomcat7_log4j_checksum: md5:8218714e41ee0c6509dcfeafa2e1f53f
+_tomcat7_log4j_version: 1.2.17
+_log4j_download_url: "http://archive.apache.org/dist/logging/log4j/{{ _tomcat7_log4j_version }}/log4j-{{ _tomcat7_log4j_version }}.tar.gz"
+_tomcat7_log4j_download_target: "{{ tomcat7_download_target_path }}/log4j/log4j-{{ _tomcat7_log4j_version }}.tar.gz"
 _log4j_tomcat_juli_url: http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/extras/tomcat-juli.jar
 _log4j_tomcat_juli_adapters_url: http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomcat7_version }}/bin/extras/tomcat-juli-adapters.jar
 
@@ -34,9 +39,9 @@ _default_http_max_threads: "{{ default_http_max_threads | default(50) }}"
 
 _tomcat7_systemd_env: |
     [Service]
-    {{% for key, value in _tomcat7_common_env.iteritems() %}}
+    {% for key, value in _tomcat7_common_env.iteritems() %}
     Environment={{ key }}={{ value }}
-    {{% endfor %}}
+    {% endfor %}
     PIDFile={{ _catalina_base }}/pid/tomcat.pid
     ExecStart={{ tomcat7_dest }}/bin/catalina.sh start
     ExecStop={{ tomcat7_dest }}/bin/catalina.sh {{ '-force' if _catalina_base_stop_allow_kill9 else '' }} stop
@@ -44,9 +49,9 @@ _tomcat7_systemd_env: |
     Group={{ _catalina_base_user }}
 
 _tomcat7_initd_env: |
-    {{% for key, value in _tomcat7_common_env.iteritems() %}}
+    {% for key, value in _tomcat7_common_env.iteritems() %}
     {{ key }}={{ value }}
-    {{% endfor %}}
+    {% endfor %}
     TOMCAT_USER={{ _catalina_base_user }}
     {% if tomcat7_default_stop_wait_in_s %}
     TOMCAT_SLEEP_BEFORE_KILL={{ tomcat7_default_stop_wait_in_s }}

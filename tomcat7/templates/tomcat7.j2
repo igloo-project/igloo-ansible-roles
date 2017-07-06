@@ -37,7 +37,7 @@
 #
 
 # Find the name of the script
-NAME=`basename $0` 
+NAME=`basename $0`
 if [ ${NAME:0:1} = "S" -o ${NAME:0:1} = "K" ]; then
 	NAME=${NAME:3}
 fi
@@ -107,10 +107,10 @@ daemon_legacy() {
 
 	# make sure it doesn't core dump anywhere unless requested
 	corelimit="ulimit -S -c ${DAEMON_COREFILE_LIMIT:-0}"
-	
+
 	# if they set NICELEVEL in /etc/sysconfig/foo, honor it
 	[ -n "${NICELEVEL:-}" ] && nice="nice -n $NICELEVEL"
-	
+
 	# Echo daemon
         [ "${BOOTUP:-}" = "verbose" -a -z "${LSB:-}" ] && echo -n " $base"
 
@@ -138,7 +138,7 @@ TOMCAT_CFG="/etc/tomcat/${NAME}.conf"
 [ -r "$TOMCAT_CFG" ] && . "${TOMCAT_CFG}"
 
 # Path to the tomcat launch script (direct don't use wrapper)
-TOMCAT_SCRIPT=/data/services/web/${NAME}/bin/catalina.sh
+TOMCAT_SCRIPT=${CATALINA_HOME}/bin/catalina.sh
 
 # Tomcat pid file
 TOMCAT_PID_FILE=/var/run/${NAME}.pid
@@ -152,7 +152,7 @@ TOMCAT_PROG=${NAME}
 TOMCAT_SLEEP_BEFORE_KILL=30
 
 SHUTDOWN_WAIT=30
-        
+
 # if TOMCAT_USER is not set, use tomcat60 like Apache HTTP server
 if [ -z "$TOMCAT_USER" ]; then
     TOMCAT_USER="tomcat"
@@ -180,14 +180,14 @@ start() {
  			fi
  		fi
  	fi
- 
+
  	touch $TOMCAT_PID_FILE
  	chown $TOMCAT_USER:$TOMCAT_USER $TOMCAT_PID_FILE
 
         if [ -f /etc/rc.d/init.d/functions ]; then
-        	daemon_legacy --user $TOMCAT_USER --pidfile ${TOMCAT_PID_FILE} CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start
+        	daemon_legacy --user $TOMCAT_USER --pidfile ${TOMCAT_PID_FILE} CATALINA_BASE=$CATALINA_BASE CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start
     	else
-        	$SU - $TOMCAT_USER -c "CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start"
+        	$SU - $TOMCAT_USER -c "CATALINA_BASE=$CATALINA_BASE CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT start"
     	fi
 
     	RETVAL=$?
@@ -201,10 +201,10 @@ stop() {
 
     if [ -f ${TOMCAT_LOCK_FILE} ] ; then
       if [ -f /etc/rc.d/init.d/functions ]; then
-          daemon_legacy --user $TOMCAT_USER CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL
+          daemon_legacy --user $TOMCAT_USER CATALINA_BASE=$CATALINA_BASE CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL
           echo
       else
-          $SU - $TOMCAT_USER -c "CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL"
+          $SU - $TOMCAT_USER -c "CATALINA_BASE=$CATALINA_BASE CATALINA_PID=$TOMCAT_PID_FILE $TOMCAT_SCRIPT stop $TOMCAT_SLEEP_BEFORE_KILL"
       fi
       RETVAL=$?
 
@@ -234,7 +234,7 @@ stop() {
 		    fi
              fi
         fi
-    
+
         rm -f ${TOMCAT_LOCK_FILE} ${TOMCAT_PID_FILE}
       fi
 
@@ -252,7 +252,7 @@ case "$1" in
         ;;
   restart)
         stop
-        sleep 2	
+        sleep 2
         start
         ;;
   condrestart)

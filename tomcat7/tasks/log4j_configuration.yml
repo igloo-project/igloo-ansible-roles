@@ -1,36 +1,20 @@
 ---
 - name: log4j · create target directory
   file:
-    path: "{{ download_target_path }}/log4j"
+    path: "{{ tomcat7_download_target_path }}/log4j"
     state: directory
     mode: u+rwx,g+rx,o+rx
 
 - name: log4j · download binary
   get_url:
     url: "{{ _log4j_download_url }}"
-    dest: "{{ _log4j_download_target }}"
-    checksum: "{{ log4j_checksum }}"
+    dest: "{{ _tomcat7_log4j_download_target }}"
+    checksum: "{{ _tomcat7_log4j_checksum }}"
     owner: root
     group: root
     mode: u=rx,g=r,o=r
   become: yes
   become_user: root
-
-- name: log4j · create dest directory
-  file:
-    path: "{{ log4j_dest }}"
-    state: directory
-    mode: u+rwx,g+rx,o+rx
-
-- name: log4j · install binary
-  unarchive:
-    remote_src: true
-    src: "{{ _log4j_download_target }}"
-    dest: "{{ log4j_dest }}"
-    # conf files are not world-readable by default
-    mode: o+r
-    extra_opts:
-      - --strip-components=1
 
 - name: log4j · configuration
   template:
@@ -56,8 +40,8 @@
 - name: log4j · deploy log4j.jar
   copy:
     remote_src: true
-    src: "{{ log4j_dest }}/log4j-{{ log4j_version }}.jar"
-    dest: "{{ _catalina_base_path }}/lib/log4j-{{ log4j_version }}.jar"
+    src: "{{ _tomcat7_log4j_download_target }}"
+    dest: "{{ _catalina_base_path }}/lib/log4j-{{ _tomcat7_log4j_version }}.jar"
     owner: "{{ _catalina_base_user }}"
     group: "{{ _catalina_base_group }}"
 

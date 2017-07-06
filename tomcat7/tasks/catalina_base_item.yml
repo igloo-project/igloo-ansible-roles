@@ -124,6 +124,16 @@
 
   - block:
 
+    - name: tomcat7 · catalina_base · service configuration folder
+      file:
+        path: /etc/tomcat
+        state: directory
+        owner: root
+        group: root
+        mode: u=rwX,g=rwX,o=r
+      become: yes
+      become_user: root
+
     - name: tomcat7 · catalina_base · service configuration file
       copy:
         dest: /etc/tomcat/{{ catalina_base.name }}.conf
@@ -139,16 +149,10 @@
       become_user: root
 
     - name: tomcat7 · catalina_base · initd file
-      template:
-        dest: /etc/initd/{{ catalina_base.name }}
-        owner: root
-        group: root
-        mode: u=rwx,g=rwx,o=r
-        src: tomcat.j2
-      vars:
-        _catalina_home: "{{ tomcat7_dest }}"
-        _catalina_base: "{{ _catalina_base_path }}"
-        _java_home: "{{ _catalina_base_java_home }}"
+      file:
+        state: link
+        src: "{{ _tomcat7_initscript }}"
+        dest: /etc/init.d/{{ catalina_base.name }}
       become: yes
       become_user: root
 
