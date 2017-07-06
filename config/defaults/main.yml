@@ -1,0 +1,6 @@
+_config_name: "{{ config_name }}"
+_config_properties: "{{ config_properties | default({}) }}"
+_config_user: "{{ config_owner | default('root') }}"
+_config_group: "{{ config_group | default('root') }}"
+
+_config_path: "/etc/{{ config_name }}/configuration.properties"

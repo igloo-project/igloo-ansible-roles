@@ -1,0 +1,19 @@
+---
+- name: check folder
+  file:
+    path: "{{ _config_path | dirname }}"
+    state: directory
+    owner: "{{ _config_user }}"
+    group: "{{ _config_group }}"
+    mode: u=rwX,g=rwX,o=
+
+- name: properties file
+  copy:
+    dest: "{{ _config_path }}"
+    content: |
+      {% for key, value in _config_properties.iteritems() %}
+      {{ key }}={{ value }}
+      {% endfor %}
+    owner: "{{ _config_user }}"
+    group: "{{ _config_group }}"
+    mode: u=rw,g=rw,o=
