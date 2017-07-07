@@ -7,7 +7,7 @@ postgresql_cluster_default_user_roles: LOGIN
 postgresql_cluster_default_user_database_privileges: CONNECT,CREATE
 
 _postgresql_systemd: "{{ postgresql_systemd | default(True) }}"
-_postgresql_initd: "{{ postgresql_initd | default(True) }}"
+_postgresql_initd: "{{ postgresql_initd | default(False) }}"
 
 _database:
 _cluster:
