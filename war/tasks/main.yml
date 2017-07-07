@@ -2,7 +2,7 @@
   copy:
     src: "{{ _war_application_war_src }}"
     remote_src: "{{ _war_application_war_remote_src }}"
-    dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
+    dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}.war"
     owner: "{{ _war_application_user }}"
     group: "{{ _war_application_user }}"
     mode: u=rw,g=r,o=r
@@ -24,8 +24,8 @@
     shell: >-
         rm -rf "{{ _war_tomcat_catalina_base }}/work/"*
         "{{ _war_tomcat_catalina_base }}/temp/"*
-        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
-        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}"
+        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}.war"
+        "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}"
     args:
       warn: off
 
@@ -33,7 +33,7 @@
     copy:
       src: "{{ _war_application_war_src }}"
       remote_src: "{{ _war_application_war_remote_src }}"
-      dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name }}.war"
+      dest: "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}.war"
       owner: "{{ _war_application_user }}"
       group: "{{ _war_application_user }}"
       mode: u=rw,g=r,o=r

@@ -7,3 +7,5 @@ _war_context_name: "{{ war_context_name | default(war_application_war_src | base
 _war_application_war_remote_src: "{{ war_application_war_remote_src | default(False) }}"
 
 _war_tomcat_catalina_pid: "{{ war_tomcat_catalina_base }}/pid/tomcat.pid"
+
+_war_context_name_or_root: "{{ 'ROOT' if _war_context_name == '' else _war_context_name }}"
