@@ -1,3 +1,5 @@
+- include: prepare.yml
+
 - include: init.yml
   when: vagrant_task == 'up'
 

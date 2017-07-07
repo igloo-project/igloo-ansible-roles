@@ -1,0 +1,31 @@
+---
+- block:
+
+  # install vagrant (base xenial version is too old)
+  - name: vagrant install (== 1.95)
+    apt:
+      name: vagrant={{ _vagrant_deb_version }}
+      deb: "{{ _vagrant_deb_url }}"
+
+  # check virtualbox repository
+  - name: virtualbox repository keys
+    apt_key: id={{ item }} keyserver=keys.gnupg.net
+    with_items:
+      - 7B0FAB3A13B907435925D9C954422A4B98AB5139
+      - B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
+
+  - name: virtualbox repository
+    apt_repository:
+      repo: deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} non-free contrib
+      state: present
+      filename: virtualbox
+
+  - name: dkms installation
+    package: name=dkms state=present
+
+  - name: dkms installation
+    package: name=virtualbox-{{ _vagrant_virtualbox_deb_version }} state=present
+
+  # warning: we are on a delegated task, so we need to lookup
+  # ansible_distribution on delegated host
+  when: hostvars[ansible_host]['ansible_distribution'] == 'Ubuntu'

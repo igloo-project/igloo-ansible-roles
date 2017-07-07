@@ -5,3 +5,8 @@ _vagrant_provider: "{{ vagrant_provider | default('virtualbox') }}"
 _vagrant_base: "{{ vagrant_base | default('centos/7') }}"
 
 _vagrant_vm_name: "{{ _vagrant_host.replace('.', '_') }}"
+
+_vagrant_deb_url: https://releases.hashicorp.com/vagrant/{{ _vagrant_deb_version }}/vagrant_{{ _vagrant_deb_version }}_x86_64.deb
+_vagrant_deb_version: 1.9.6
+
+_vagrant_virtualbox_deb_version: 5.1
