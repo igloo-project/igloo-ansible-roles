@@ -1,0 +1,9 @@
+---
+- name: authorized_keys
+  authorized_key:
+    key: "{{ _ak_wi_key_ssh_key }}"
+    user: "{{ ansible_user }}"
+    manage_dir: no
+  with_items: "{{ ak_keys }}"
+  loop_control:
+    loop_var: _key

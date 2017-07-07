@@ -1,0 +1,18 @@
+---
+# users format
+# users:
+#   lalmeras:
+#     - name: firstname lastname
+#       username: login
+#       ssh_key: ssh-rsa AAAAB3N...nMkvsRf9iXNX email@smile.fr
+#
+# username: currently not used
+
+# dict storing all users
+_ak_users: "{{ ak_users | default({}) }}"
+# keys to deploy on the host (ak_users dict keys)
+_ak_keys: "{{ ak_keys | default([]) }}"
+
+# with_items: ak_users dict key: lookup keys by username from ak_users
+# and catenate ssh_key
+_ak_wi_key_ssh_key: "{{ _ak_users | selectattr('username', 'equalto', _key) | map(attribute='ssh_key') | join('\n') }}"
