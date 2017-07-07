@@ -105,7 +105,7 @@
         owner: root
         group: root
         mode: u=rw,g=rw,o=r
-        content: "{{ tomcat7_systemd_env }}"
+        content: "{{ _tomcat7_systemd_env }}"
       vars:
         _catalina_home: "{{ tomcat7_dest }}"
         _catalina_base: "{{ _catalina_base_path }}"
