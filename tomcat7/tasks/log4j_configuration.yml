@@ -1,10 +1,4 @@
 ---
-- name: log4j · create target directory
-  file:
-    path: "{{ tomcat7_download_target_path }}/log4j"
-    state: directory
-    mode: u+rwx,g+rx,o+rx
-
 - name: log4j · download binary
   get_url:
     url: "{{ _log4j_download_url }}"
