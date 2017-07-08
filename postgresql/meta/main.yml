@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: epel
+    become: yes
+    become_user: root
