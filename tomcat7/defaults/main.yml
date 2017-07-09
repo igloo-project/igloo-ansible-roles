@@ -1,9 +1,9 @@
 tomcat7_user: tomcat
 tomcat7_catalina_bases: []
 tomcat7_catalina_base_root: /srv
-tomcat7_default_stop_wait_in_s: 60
-tomcat7_default_stop_allow_kill9: no
 tomcat7_default_group: "{{ _catalina_base_user }}"
+_tomcat7_default_stop_allow_kill9: "{{ tomcat7_default_stop_allow_kill9 | default(False) }}"
+_tomcat7_default_stop_wait_in_s: "{{ tomcat7_default_stop_wait_in_s | default(60) }}"
 _tomcat7_systemd: "{{ tomcat7_systemd | default(True) }}"
 _tomcat7_initd: "{{ tomcat7_initd | default(False) }}"
 _tomcat7_initscript: /etc/init.d/tomcat7-common
@@ -28,6 +28,8 @@ _catalina_base_redirect_port: "{{ catalina_base.redirect_port | default(_default
 _catalina_base_shutdown_port: "{{ catalina_base.shutdown_port | default(_default_shutdown_port) }}"
 _catalina_base_ajp_max_threads: "{{ catalina_base.ajp_max_threads | default(_default_ajp_max_threads) }}"
 _catalina_base_http_max_threads: "{{ catalina_base.http_max_threads | default(_default_http_max_threads) }}"
+_catalina_base_stop_wait_in_s: "{{ catalina_base.stop_wait_in_s | default(_tomcat7_default_stop_wait_in_s) }}"
+_catalina_base_stop_allow_kill9: "{{ catalina_base.stop_allow_kill9 | default(_tomcat7_default_stop_allow_kill9) }}"
 
 _default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
 _default_http_port: "{{ default_http_port | default(8080) }}"
@@ -44,7 +46,7 @@ _tomcat7_systemd_env: |
     {% endfor %}
     PIDFile={{ _catalina_base }}/pid/tomcat.pid
     ExecStart={{ tomcat7_dest }}/bin/catalina.sh start
-    ExecStop={{ tomcat7_dest }}/bin/catalina.sh {{ '-force' if _catalina_base_stop_allow_kill9 else '' }} stop
+    ExecStop={{ tomcat7_dest }}/bin/catalina.sh stop {{ _catalina_base_stop_wait_in_s }}{{ ' -force' if _catalina_base_stop_allow_kill9 else '' }}
     User={{ _catalina_base_user }}
     Group={{ _catalina_base_user }}
 
@@ -53,12 +55,11 @@ _tomcat7_initd_env: |
     {{ key }}={{ value }}
     {% endfor %}
     TOMCAT_USER={{ _catalina_base_user }}
-    {% if tomcat7_default_stop_wait_in_s %}
-    TOMCAT_SLEEP_BEFORE_KILL={{ tomcat7_default_stop_wait_in_s }}
+    {% if _catalina_base_stop_wait_in_s %}
+    TOMCAT_SLEEP_BEFORE_KILL={{ _catalina_base_stop_wait_in_s }}
     {% endif %}
 
 _tomcat7_common_env:
-    SLEEP: "{{ _catalina_base_stop_wait_in_s }}"
     CATALINA_HOME: "{{ _catalina_home }}"
     CATALINA_BASE: "{{ _catalina_base }}"
     CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"

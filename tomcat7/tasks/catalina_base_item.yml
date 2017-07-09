@@ -169,5 +169,3 @@
     _catalina_base_user: "{{ catalina_base.user | default(tomcat7_default_user) }}"
     _catalina_base_group: "{{ catalina_base.group | default(tomcat7_default_group) }}"
     _catalina_base_java_home: "{{ catalina_base.java_home | default(tomcat7_default_java_home) }}"
-    _catalina_base_stop_wait_in_s: "{{ catalina_base.stop_wait_in_s | default(tomcat7_default_stop_wait_in_s) }}"
-    _catalina_base_stop_allow_kill9: "{{ catalina_base.stop_allow_kill9 | default(tomcat7_default_stop_allow_kill9) }}"
