@@ -26,20 +26,20 @@
   - block:
     - name: "postgresql-cluster · port configuration {{ cluster.name }}"
       lineinfile:
-        regexp: "\\s*port\\s*="
+        regexp: "^\\s*port\\s*="
         line: "port = {{ _cluster_port }}"
         dest: "{{ cluster.path }}/postgresql.conf"
     - name: "postgresql-cluster · unix socket configuration {{ cluster.name }}"
       lineinfile:
-        regexp: "\\s*{{ _unix_socket_directory | regex_escape }}\\s*="
+        regexp: "^\\s*{{ _unix_socket_directory | regex_escape }}\\s*="
         line: "{{ _unix_socket_directory }} = '/var/run/postgresql'"
         dest: "{{ cluster.path }}/postgresql.conf"
     - name: "postgresql-cluster · listen configuration {{ cluster.name }}"
       lineinfile:
-        regexp: "\\s*listen_addresses\\s*="
+        regexp: "^\\s*listen_addresses\\s*="
         line: "listen_addresses = '{{ _cluster_listen_addresses }}'"
         dest: "{{ cluster.path }}/postgresql.conf"
-        insertbefore: "#\\s*listen_addresses\\s*="
+        insertbefore: "^#\\s*listen_addresses\\s*="
     - name: "postgresql-cluster · pg_hba.conf {{ cluster.name }}"
       copy:
         src: pg_hba.conf
