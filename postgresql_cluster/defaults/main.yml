@@ -11,3 +11,8 @@ _postgresql_initd: "{{ postgresql_initd | default(False) }}"
 
 _database:
 _cluster:
+
+# needs var cluster
+_cluster_listen_addresses: "{{ cluster.listen_addresses | default(postgresql_cluster_listen_addresses) }}"
+
+postgresql_cluster_listen_addresses: localhost
