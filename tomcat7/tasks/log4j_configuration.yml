@@ -27,7 +27,7 @@
 - name: log4j · deploy tomcat-juli-adapters.jar
   get_url:
     url: "{{ _log4j_tomcat_juli_adapters_url }}"
-    dest: "{{ _catalina_base_path }}/bin/tomcat-juli-adapters.jar"
+    dest: "{{ _catalina_base_path }}/lib/tomcat-juli-adapters.jar"
     owner: "{{ _catalina_base_user }}"
     group: "{{ _catalina_base_group }}"
 
@@ -52,6 +52,7 @@
   file:
     path: "{{ _catalina_base_path }}/conf/logging.properties"
     state: absent
-  notify: restart tomcat7 instances
+# notify: restart tomcat7 instances
+# disabled for the moment; buggy if we are already starting tomcat
 
 # TODO: find how to not rolled the log
