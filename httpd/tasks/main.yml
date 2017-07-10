@@ -11,6 +11,18 @@
   when: httpd_step_install
 
 - block:
+  - name: httpd · selinux ports
+    seport:
+      ports: "{{ _port }}"
+      proto: tcp
+      setype: http_port_t
+      state: present
+    with_items:
+      - "{{ _httpd_ajp_port }}"
+    loop_control:
+      loop_var: _port
+    when: x_selinux_handle
+
   - name: httpd · configuration
     template:
       src: application.conf.j2

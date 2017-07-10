@@ -1,0 +1,3 @@
+---
+# auto, never; auto -> only if selinux is not disabled
+_selinux_handle: "{{ selinux_handle | default('auto') }}"

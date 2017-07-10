@@ -1,0 +1,33 @@
+---
+- name: check and register selinux mode
+  block:
+    # selinux module prerequisites
+    - name: selinux python binding
+      package:
+        name: "{{ _package }}"
+      with_items:
+        - policycoreutils-python
+        - libselinux-python
+      loop_control:
+        loop_var: _package
+
+    # check selinux on redhat system
+    - name: check selinux
+      selinux:
+        state: disabled
+      check_mode: yes
+      register: selinux_check
+
+    # register result
+    - name:
+      set_fact:
+        x_selinux_handle: "{{ selinux_check.changed }}"
+
+  # only if auto needed on RedHat environment
+  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat'
+
+# else set no
+- name:
+  set_fact:
+    x_selinux_handle: no
+  when: x_selinux_handle is not defined
