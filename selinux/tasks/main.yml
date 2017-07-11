@@ -1,4 +1,12 @@
 ---
+# selinux files does not exists on vserver guest
+- name: check /etc/sysconfig/selinux
+  stat:
+    path: /etc/sysconfig/selinux
+  register: sysconfig_selinux
+  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat'
+
+
 - name: check and register selinux mode
   block:
     # selinux module prerequisites
@@ -24,7 +32,8 @@
         x_selinux_handle: "{{ selinux_check.changed }}"
 
   # only if auto needed on RedHat environment
-  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat'
+  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat' and sysconfig_selinux.stat.exists
+
 
 # else set no
 - name:
