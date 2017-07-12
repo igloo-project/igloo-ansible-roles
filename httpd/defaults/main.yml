@@ -6,3 +6,7 @@ _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"
 _httpd_documentroot: "{{ httpd_documentroot }}"
 _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
+
+_httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
+_httpd_ssl_key: "{{ httpd_ssl_key }}"
+_httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"

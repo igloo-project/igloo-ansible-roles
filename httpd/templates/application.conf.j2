@@ -36,7 +36,9 @@ ServerName {{ _server_name }}
     SSLEngine on
     SSLCertificateFile {{ _ssl_certificate }}
     SSLCertificateKeyFile {{ _ssl_key }}
-    SSLCACertificateFile {{ _ssl_certificate }}
+{% if _ssl_cacertificate is not none %}
+    SSLCACertificateFile {{ _ssl_cacertificate }}
+{% endif %}
 
     CustomLog /data/log/web/{{ _httpd_application_name }}-ssl-access_log combined
     ErrorLog /data/log/web/{{ _httpd_application_name }}-ssl-error_log
