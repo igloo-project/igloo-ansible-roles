@@ -1,0 +1,42 @@
+- block:
+    - name: download plugin {{ plugin.name }}
+      maven_artifact:
+        artifact_id: "{{ plugin.artifact_id }}"
+        group_id: "{{ plugin.group_id }}"
+        version: "{{ plugin.version }}"
+        classifier: "{{ plugin.classifier }}"
+        extension: zip
+        repository_url: "{{ plugin.repository_url }}"
+        username: "{{ plugin.username }}"
+        password: "{{ plugin.password }}"
+        dest: "{{ _elasticsearch_plugin_dest }}/{{ _elasticsearch_plugin_filename }}"
+      register: artifact
+      become: yes
+      become_user: root
+
+    - name: plugin folder
+      file:
+        state: directory
+        path: "{{ _elasticsearch_install_dest }}/plugins/{{ plugin.name }}"
+        mode: u+rwx,o-rwx
+
+    - name: unarchive plugin
+      unarchive:
+        src: "{{ _elasticsearch_plugin_dest }}/{{ _elasticsearch_plugin_filename }}"
+        remote_src: yes
+        dest: "{{ _elasticsearch_install_dest }}/plugins/{{ plugin.name }}"
+      when: artifact | changed
+      notify: restart {{ _elasticsearch_unit_name }}
+  when: plugin.artifact_id is defined
+
+- block:
+    - name: check plugin {{ plugin.name }}
+      stat:
+        path: "{{ _elasticsearch_install_dest }}/plugins/{{ plugin.name }}"
+      register: plugin_dir
+    - name: install plugin {{ plugin.name }}
+      shell: "{{ _elasticsearch_install_dest }}/bin/plugin install {{ plugin.name }}"
+      when: not plugin_dir.stat.exists
+      environment:
+        JAVA_HOME: "{{ _elasticsearch_java_home }}"
+  when: plugin.artifact_id is not defined

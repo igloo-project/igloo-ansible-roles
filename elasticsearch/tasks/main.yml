@@ -1,0 +1,83 @@
+---
+- name: lxml · allow xml parsing
+  package:
+    name: python-lxml
+  become: yes
+  become_user: root
+
+- name: prepare elasticsearch download folder
+  file:
+    path: "{{ _elasticsearch_download_target | dirname }}"
+    state: directory
+  become: yes
+  become_user: root
+
+- name: download
+  get_url:
+    url: "{{ _elasticsearch_download_url }}"
+    dest: "{{ _elasticsearch_download_target }}"
+  become: yes
+  become_user: root
+
+- name: prepare elasticsearch dest folder
+  file:
+    path: "{{ _elasticsearch_install_dest }}"
+    state: directory
+
+- name: extract
+  unarchive:
+    src: "{{ _elasticsearch_download_target }}"
+    remote_src: yes
+    dest: "{{ _elasticsearch_install_dest }}"
+    exclude:
+      - "config/elasticsearch.yml"
+    extra_opts:
+      - --strip-components=1
+
+- name: create elasticsearch config file
+  template:
+    src: elasticsearch.conf.j2
+    dest: "{{ _elasticsearch_install_dest }}/config/elasticsearch.yml"
+
+- name: plugins
+  include: plugin.yml
+  with_items: "{{ _elasticsearch_plugins }}"
+  loop_control:
+    loop_var: plugin
+    label: "{{ plugin.name }}"
+
+- name: prepare elasticsearch data folder
+  file:
+    path: "{{ _elasticsearch_data_path }}"
+    state: directory
+    mode: u=rw,g=rw,o=r
+  when: _elasticsearch_data_path is not none
+
+- name: prepare elasticsearch logs folder
+  file:
+    path: "{{ _elasticsearch_logs_path }}"
+    state: directory
+    owner : "{{ _elasticsearch_user }}"
+    group : "{{ _elasticsearch_user }}"
+    mode: u=rwx,g=rx,o=rx
+  become: yes
+  become_user: root
+  when: _elasticsearch_data_path is not none
+
+- name: ensure systemd service configuration
+  become: yes
+  become_user: root
+  template:
+    src: elasticsearch.service.j2
+    dest: /etc/systemd/system/{{ _elasticsearch_unit_name }}.service
+    mode: u=rw,g=rw,o=r
+  notify:
+    - systemd daemon_reload {{ _elasticsearch_unit_name }}
+
+- name: enable elasticsearch service
+  become: yes
+  become_user: root
+  service:
+    name: "{{ elasticsearch_unit_name }}"
+    enabled: yes
+    state: started

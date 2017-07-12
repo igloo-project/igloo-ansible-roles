@@ -1,0 +1,16 @@
+[Unit]
+Description=Elasticsearch {{ _elasticsearch_version }}
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User={{ _elasticsearch_user }}
+{% if _elasticsearch_java_home %}
+Environment=JAVA_HOME={{ _elasticsearch_java_home }}
+{% endif %}
+ExecStart={{ _elasticsearch_install_dest }}/bin/elasticsearch
+Restart=on-failure
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,36 @@
+---
+
+- name: reload {{ _elasticsearch_unit_name }}
+  become: yes
+  become_user: root
+  service:
+    name: "{{ _elasticsearch_unit_name }}"
+    state: reloaded
+
+- name: restart {{ _elasticsearch_unit_name }}
+  become: yes
+  become_user: root
+  service:
+    name: "{{ _elasticsearch_unit_name }}"
+    state: restarted
+
+- name: start {{ _elasticsearch_unit_name }}
+  become: yes
+  become_user: root
+  service:
+    name: "{{ _elasticsearch_unit_name }}"
+    state: started
+
+- name: stop {{ _elasticsearch_unit_name }}
+  become: yes
+  become_user: root
+  service:
+    name: "{{ _elasticsearch_unit_name }}"
+    state: stopped
+
+- name: systemd daemon_reload {{ _elasticsearch_unit_name }}
+  become: yes
+  become_user: root
+  systemd:
+    name: "{{ _elasticsearch_unit_name }}"
+    daemon_reload: yes

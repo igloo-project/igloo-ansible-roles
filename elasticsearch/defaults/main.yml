@@ -1,0 +1,35 @@
+_elasticsearch_version: "{{ elasticsearch_version | default('5.2.1') }}"
+_elasticsearch_package: "elasticsearch-{{ _elasticsearch_version }}"
+_elasticsearch_unit_name: "{{ elasticsearch_unit_name | default('elasticsearch') }}"
+
+_elasticsearch_download_url: "{{ elasticsearch_download_url | default('https://artifacts.elastic.co/downloads/elasticsearch/'+ _elasticsearch_package + '.tar.gz') }}"
+_elasticsearch_download_target: "{{ elasticsearch_download_path }}/{{ _elasticsearch_package }}.tar.gz"
+
+_elasticsearch_target_path: "{{ elasticsearch_target_path }}"
+_elasticsearch_install_dest: "{{ _elasticsearch_target_path }}/{{ _elasticsearch_package }}"
+_elasticsearch_plugin_dest: "{{ elasticsearch_download_path }}"
+_elasticsearch_plugin_filename: "{{ plugin.name }}{{ '-' + plugin.classifier if plugin.classifier | default(None) else '' }}-{{ plugin.version }}.zip"
+_elasticsearch_java_home: "{{ elasticsearch_java_home | default(None) }}"
+
+_elasticsearch_conf_extra: "{{ elasticsearch_conf_extra | default(dict()) }}"
+
+_elasticsearch_bind_host: "{{ elasticsearch_bind_host | default('_local_') }}"
+_elasticsearch_user : "{{ elasticsearch_user }}"
+_elasticsearch_port: "{{ elasticsearch_port | default('9200') }}"
+_elasticsearch_data_path: "{{ elasticsearch_data_path | default(None) }}"
+_elasticsearch_logs_path: "{{ elasticsearch_logs_path | default(None) }}"
+
+_elasticsearch_plugins: "{{ elasticsearch_plugins | default([]) }}"
+# NOT IMPLEMENTED
+# - name: __NAME__
+#   file: __PATH__
+#
+# IMPLEMENTED
+# - name: __NAME__
+#   group_id: __GROUP_ID__
+#   artifact_id: __ARTIFACT_ID__
+#   version: __VERSION__
+#   classifier: __CLASSIFIER__
+#   repository_url: __URL__
+#   username: __USERNAME__
+#   password: __PASSWORD__
