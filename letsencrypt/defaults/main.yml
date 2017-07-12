@@ -1,0 +1,3 @@
+_letsencrypt_renew_email: "{{ letsencrypt_renew_email }}"
+_letsencrypt_renew_cron_expression: "{{ letsencrypt_renew_cron_expression | default('0 8,20 * * *') }}"
+_letsencrypt_renew_cron_target: "{{ letsencrypt_renew_cron_target | default('/etc/cron.d') }}"

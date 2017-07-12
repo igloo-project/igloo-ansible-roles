@@ -1,0 +1,2 @@
+MAILTO={{ _letsencrypt_renew_email }}
+{{ _letsencrypt_renew_cron_expression }} root /root/certbot-auto renew --quiet --apache --renew-hook "apachectl graceful"

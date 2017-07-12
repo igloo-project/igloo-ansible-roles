@@ -1,0 +1,7 @@
+---
+- name: letsencrypt · renew cron
+  template:
+    src: letsencrypt-renew-cron.j2
+    dest: "{{ _letsencrypt_renew_cron_target }}/letsencrypt"
+  become: yes
+  become_user: root
