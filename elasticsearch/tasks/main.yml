@@ -62,7 +62,7 @@
     mode: u=rwx,g=rx,o=rx
   become: yes
   become_user: root
-  when: _elasticsearch_data_path is not none
+  when: _elasticsearch_logs_path is not none
 
 - name: ensure systemd service configuration
   become: yes
