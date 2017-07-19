@@ -5,11 +5,11 @@
         artifact_id: "{{ plugin.artifact_id }}"
         group_id: "{{ plugin.group_id }}"
         version: "{{ plugin.version }}"
-        classifier: "{{ plugin.classifier }}"
+        classifier: "{{ plugin.classifier | default(omit) }}"
         extension: zip
         repository_url: "{{ plugin.repository_url }}"
-        username: "{{ plugin.username }}"
-        password: "{{ plugin.password }}"
+        username: "{{ plugin.username | default(omit) }}"
+        password: "{{ plugin.password | default(omit) }}"
         dest: "{{ _elasticsearch_plugin_dest }}/{{ _elasticsearch_plugin_filename }}"
       register: artifact
       become: yes
