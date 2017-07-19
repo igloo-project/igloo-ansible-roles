@@ -8,6 +8,7 @@ User={{ _elasticsearch_user }}
 {% if _elasticsearch_java_home %}
 Environment=JAVA_HOME={{ _elasticsearch_java_home }}
 {% endif %}
+Environment=ES_JAVA_OPTS=-Des.path.conf={{ _elasticsearch_conf_path }}
 ExecStart={{ _elasticsearch_install_dest }}/bin/elasticsearch
 Restart=on-failure
 SuccessExitStatus=143

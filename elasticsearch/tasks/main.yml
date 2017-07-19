@@ -5,7 +5,7 @@
   become: yes
   become_user: root
 
-- name: prepare elasticsearch download folder
+- name: prepare download folder
   file:
     path: "{{ _elasticsearch_download_target | dirname }}"
     state: directory
@@ -19,10 +19,12 @@
   become: yes
   become_user: root
 
-- name: prepare elasticsearch dest folder
+- name: prepare home folder
   file:
     path: "{{ _elasticsearch_install_dest }}"
     state: directory
+  become: yes
+  become_user: root
 
 - name: extract
   unarchive:
@@ -33,11 +35,35 @@
       - "config/elasticsearch.yml"
     extra_opts:
       - --strip-components=1
+  become: yes
+  become_user: root
 
-- name: create elasticsearch config file
+- name: base folder
+  file:
+    path: "{{ path }}"
+    state: directory
+    mode: u=rwX
+    owner: "{{ _elasticsearch_user }}"
+    group: "{{ _elasticsearch_group }}"
+  with_items:
+    - "{{ _elasticsearch_base_path }}"
+    - "{{ _elasticsearch_conf_path }}"
+    - "{{ _elasticsearch_data_path }}"
+    - "{{ _elasticsearch_scripts_path }}"
+    - "{{ _elasticsearch_plugins_path }}"
+    - "{{ _elasticsearch_logs_path }}"
+  loop_control:
+    loop_var: path
+  become: yes
+  become_user: root
+
+- name: config file
   template:
     src: elasticsearch.conf.j2
-    dest: "{{ _elasticsearch_install_dest }}/config/elasticsearch.yml"
+    dest: "{{ _elasticsearch_conf_path }}/elasticsearch.yml"
+    owner: "{{ _elasticsearch_user }}"
+    group: "{{ _elasticsearch_group }}"
+    mode: u=rw
 
 - name: plugins
   include: plugin.yml
@@ -45,24 +71,6 @@
   loop_control:
     loop_var: plugin
     label: "{{ plugin.name }}"
-
-- name: prepare elasticsearch data folder
-  file:
-    path: "{{ _elasticsearch_data_path }}"
-    state: directory
-    mode: u=rw,g=rw,o=r
-  when: _elasticsearch_data_path is not none
-
-- name: prepare elasticsearch logs folder
-  file:
-    path: "{{ _elasticsearch_logs_path }}"
-    state: directory
-    owner : "{{ _elasticsearch_user }}"
-    group : "{{ _elasticsearch_user }}"
-    mode: u=rwx,g=rx,o=rx
-  become: yes
-  become_user: root
-  when: _elasticsearch_logs_path is not none
 
 - name: ensure systemd service configuration
   become: yes
@@ -74,7 +82,7 @@
   notify:
     - systemd daemon_reload {{ _elasticsearch_unit_name }}
 
-- name: enable elasticsearch service
+- name: enable service
   become: yes
   become_user: root
   service:

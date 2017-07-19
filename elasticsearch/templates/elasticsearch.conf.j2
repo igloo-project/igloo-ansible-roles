@@ -44,6 +44,22 @@ path.logs: {{ _elasticsearch_logs_path }}
 #path.logs: /path/to/logs
 {% endif %}
 #
+# Path to plugin files:
+#
+{% if _elasticsearch_plugins_path is not none %}
+path.plugins: {{ _elasticsearch_plugins_path }}
+{% else %}
+#path.plugins: /path/to/plugins
+{% endif %}
+#
+# Path to script files:
+#
+{% if _elasticsearch_scripts_path is not none %}
+path.scripts: {{ _elasticsearch_scripts_path }}
+{% else %}
+#path.scripts: /path/to/config/scripts
+{% endif %}
+#
 #
 # ----------------------------------- Memory -----------------------------------
 #
