@@ -29,7 +29,7 @@
         remote_src: yes
         dest: "{{ _elasticsearch_plugins_path }}/{{ plugin.name }}"
       when: artifact | changed
-      notify: restart {{ _elasticsearch_unit_name }}
+      notify: elasticsearch.restart
 
   when: plugin.artifact_id is defined
 

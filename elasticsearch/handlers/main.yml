@@ -1,34 +1,34 @@
 ---
 
-- name: reload {{ _elasticsearch_unit_name }}
+- name: elasticsearch.reload
   become: yes
   become_user: root
   service:
     name: "{{ _elasticsearch_unit_name }}"
     state: reloaded
 
-- name: restart {{ _elasticsearch_unit_name }}
+- name: elasticsearch.restart
   become: yes
   become_user: root
   service:
     name: "{{ _elasticsearch_unit_name }}"
     state: restarted
 
-- name: start {{ _elasticsearch_unit_name }}
+- name: elasticsearch.start
   become: yes
   become_user: root
   service:
     name: "{{ _elasticsearch_unit_name }}"
     state: started
 
-- name: stop {{ _elasticsearch_unit_name }}
+- name: elasticsearch.stop
   become: yes
   become_user: root
   service:
     name: "{{ _elasticsearch_unit_name }}"
     state: stopped
 
-- name: systemd daemon_reload {{ _elasticsearch_unit_name }}
+- name: elasticsearch.systemd.daemon_reload
   become: yes
   become_user: root
   systemd:

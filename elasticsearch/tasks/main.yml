@@ -94,8 +94,7 @@
     src: elasticsearch.service.j2
     dest: /etc/systemd/system/{{ _elasticsearch_unit_name }}.service
     mode: u=rw,g=rw,o=r
-  notify:
-    - systemd daemon_reload {{ _elasticsearch_unit_name }}
+  notify: elasticsearch.systemd.daemon_reload
 
 - name: enable service
   become: yes
