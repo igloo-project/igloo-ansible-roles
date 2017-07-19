@@ -65,6 +65,21 @@
     group: "{{ _elasticsearch_group }}"
     mode: u=rw
 
+- name: logging.yml file (check)
+  stat:
+    path: "{{ _elasticsearch_conf_path }}/logging.yml"
+  register: logging_stat
+
+- name:
+  copy:
+    src: "{{ _elasticsearch_install_dest }}/config/logging.yml"
+    remote_src: yes
+    dest: "{{ _elasticsearch_conf_path }}/logging.yml"
+    owner: "{{ _elasticsearch_user }}"
+    group: "{{ _elasticsearch_group }}"
+    mode: u=rw
+  when: not logging_stat.stat.exists
+
 - name: plugins
   include: plugin.yml
   with_items: "{{ _elasticsearch_plugins }}"
