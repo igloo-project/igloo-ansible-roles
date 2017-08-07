@@ -1,7 +1,7 @@
 - name: ssl_selfsigned · prepare directory
   file:
     path: "{{ ssl_selfsigned_certificate | dirname }}"
-    mode: u=rwx,g=rx,o=r
+    mode: u=rwx,g=rx,o=rx
     owner: root
     group: root
     state: directory
