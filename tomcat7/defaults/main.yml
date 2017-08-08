@@ -17,7 +17,7 @@ _tomcat7_download_url: "http://archive.apache.org/dist/tomcat/tomcat-7/v{{ tomca
 _tomcat7_download_target: "{{ tomcat7_download_target_path }}/apache-tomcat-{{ tomcat7_version }}.tar.gz"
 
 
-_tomcat7_log4j_checksum: md5:8218714e41ee0c6509dcfeafa2e1f53f
+_tomcat7_log4j_checksum: md5:04a41f0a068986f0f73485cf507c0f40
 _tomcat7_log4j_version: 1.2.17
 _log4j_download_url: "http://archive.apache.org/dist/logging/log4j/{{ _tomcat7_log4j_version }}/log4j-{{ _tomcat7_log4j_version }}.jar"
 _tomcat7_log4j_download_target: "{{ tomcat7_download_target_path }}/log4j-{{ _tomcat7_log4j_version }}.jar"
