@@ -2,6 +2,9 @@ tomcat7_user: tomcat
 tomcat7_catalina_bases: []
 tomcat7_catalina_base_root: /srv
 tomcat7_default_group: "{{ _catalina_base_user }}"
+_tomcat7_default_xms: "{{ tomcat7_default_xms | default('-Xms768m') }}"
+_tomcat7_default_xmx: "{{ tomcat7_default_xmx | default('-Xmx1024m') }}"
+_tomcat7_default_extra_opts: "{{ tomcat7_default_extra_opts | default('') }}"
 _tomcat7_default_stop_allow_kill9: "{{ tomcat7_default_stop_allow_kill9 | default(False) }}"
 _tomcat7_default_stop_wait_in_s: "{{ tomcat7_default_stop_wait_in_s | default(60) }}"
 _tomcat7_systemd: "{{ tomcat7_systemd | default(True) }}"
@@ -31,6 +34,9 @@ _catalina_base_ajp_max_threads: "{{ catalina_base.ajp_max_threads | default(_def
 _catalina_base_http_max_threads: "{{ catalina_base.http_max_threads | default(_default_http_max_threads) }}"
 _catalina_base_stop_wait_in_s: "{{ catalina_base.stop_wait_in_s | default(_tomcat7_default_stop_wait_in_s) }}"
 _catalina_base_stop_allow_kill9: "{{ catalina_base.stop_allow_kill9 | default(_tomcat7_default_stop_allow_kill9) }}"
+_catalina_base_xms: "{{ catalina_base.xms | default(_tomcat7_default_xms) }}"
+_catalina_base_xmx: "{{ catalina_base.xmx | default(_tomcat7_default_xmx) }}"
+_catalina_base_extra_opts: "{{ catalina_base.extra_opts | default(_tomcat7_default_extra_opts) }}"
 
 _default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
 _default_jmx_port: "{{ default_jmx_port | default(9010) }}"
