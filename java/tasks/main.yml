@@ -3,7 +3,7 @@
     file:
       path: "{{ java_download_path }}"
       state: directory
-      mode: u=rwx,g=rwx,o=rx
+      mode: u=rwx,g=rx,o=rx
       owner: root
       group: root
 
@@ -11,7 +11,7 @@
     file:
       path: "{{ java_runtime_path }}"
       state: directory
-      mode: u=rwx,g=rwx,o=rx
+      mode: u=rwx,g=rx,o=rx
       owner: root
       group: root
 
