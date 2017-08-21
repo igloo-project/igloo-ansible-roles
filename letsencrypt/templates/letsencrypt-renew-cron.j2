@@ -1,2 +1,2 @@
 MAILTO={{ _letsencrypt_renew_email }}
-{{ _letsencrypt_renew_cron_expression }} root /root/certbot-auto renew --quiet --apache --renew-hook "apachectl graceful"
+{{ _letsencrypt_renew_cron_expression }} root /root/certbot-auto renew --quiet --apache --renew-hook "apachectl graceful"  {{ '| /bin/grep -v DeprecationWarning' if ansible_os_family == 'RedHat' and ansible_distribution_major_version == '6' else '' }}
