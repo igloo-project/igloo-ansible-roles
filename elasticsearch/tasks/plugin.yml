@@ -22,14 +22,20 @@
         mode: u=rwX
         owner: "{{ _elasticsearch_user }}"
         group: "{{ _elasticsearch_group }}"
+      become: yes
+      become_user: root
 
     - name: unarchive plugin
       unarchive:
         src: "{{ _elasticsearch_plugin_dest }}/{{ _elasticsearch_plugin_filename }}"
         remote_src: yes
         dest: "{{ _elasticsearch_plugins_path }}/{{ plugin.name }}"
+        owner: "{{ _elasticsearch_user }}"
+        group: "{{ _elasticsearch_group }}"
       when: artifact | changed
       notify: elasticsearch.restart
+      become: yes
+      become_user: root
 
   when: plugin.artifact_id is defined
 
@@ -47,5 +53,7 @@
       environment:
         JAVA_HOME: "{{ _elasticsearch_java_home }}"
         CONF_DIR: "{{ _elasticsearch_conf_path }}"
+      become: yes
+      become_user: "{{ elasticsearch_user }}"
 
   when: plugin.artifact_id is not defined

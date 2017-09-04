@@ -64,11 +64,15 @@
     owner: "{{ _elasticsearch_user }}"
     group: "{{ _elasticsearch_group }}"
     mode: u=rw
+  become: yes
+  become_user: root
 
 - name: logging.yml file (check)
   stat:
     path: "{{ _elasticsearch_conf_path }}/logging.yml"
   register: logging_stat
+  become: yes
+  become_user: root
 
 - name:
   copy:
@@ -79,6 +83,8 @@
     group: "{{ _elasticsearch_group }}"
     mode: u=rw
   when: not logging_stat.stat.exists
+  become: yes
+  become_user: root
 
 - name: plugins
   include: plugin.yml
