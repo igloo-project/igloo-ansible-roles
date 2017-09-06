@@ -95,6 +95,34 @@
   become: yes
   become_user: root
 
+- name: instance log4j2.properties file (check)
+  stat:
+    path: "{{ _elasticsearch_conf_path }}/log4j2.properties"
+  register: log4j2_stat
+  become: yes
+  become_user: root
+
+- name: dist log4j2.properties file (check)
+  stat:
+    path: "{{ _elasticsearch_conf_path }}/log4j2.properties"
+  register: log4j2_dist_stat
+  become: yes
+  become_user: root
+
+- name:
+  copy:
+    src: "{{ _elasticsearch_install_dest }}/config/log4j2.properties"
+    remote_src: yes
+    dest: "{{ _elasticsearch_conf_path }}/log4j2.properties"
+    owner: "{{ _elasticsearch_user }}"
+    group: "{{ _elasticsearch_group }}"
+    mode: u=rw
+  # elasticsearch 5.x is logging.yml-less; skip in this case
+  # needed for ES 2.x
+  when: log4j2_dist_stat.stat.exists and not log4j2_stat.stat.exists
+  become: yes
+  become_user: root
+
 - name: plugins
   include: plugin.yml
   with_items: "{{ _elasticsearch_plugins }}"
