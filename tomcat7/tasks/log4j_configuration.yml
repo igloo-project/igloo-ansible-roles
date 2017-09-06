@@ -52,6 +52,8 @@
   file:
     path: "{{ _catalina_base_path }}/conf/logging.properties"
     state: absent
+  become: yes
+  become_user: "{{ _catalina_base_user }}"
 # notify: restart tomcat7 instances
 # disabled for the moment; buggy if we are already starting tomcat
 

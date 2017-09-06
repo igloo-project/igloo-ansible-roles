@@ -36,6 +36,8 @@
       dest: "{{ _catalina_base_path }}/conf/server.xml"
       mode: u=rw,g=rw,o=r
     when: _catalina_base_server_xml != False
+    become: yes
+    become_user: "{{ _catalina_base_user }}"
 
   # conf/ file inventory
   - name: tomcat7 · catalina_base · {{ tomcat7_dest }}/conf/ inventory"
