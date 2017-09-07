@@ -1,4 +1,8 @@
 ---
+#
+# can be run by any sudo-root-able program
+#
+
 - name: log4j · download binary
   get_url:
     url: "{{ _log4j_download_url }}"
@@ -7,8 +11,6 @@
     owner: root
     group: root
     mode: u=rx,g=r,o=r
-  become: yes
-  become_user: root
 
 - name: log4j · configuration
   template:
@@ -52,8 +54,6 @@
   file:
     path: "{{ _catalina_base_path }}/conf/logging.properties"
     state: absent
-  become: yes
-  become_user: "{{ _catalina_base_user }}"
 # notify: restart tomcat7 instances
 # disabled for the moment; buggy if we are already starting tomcat
 

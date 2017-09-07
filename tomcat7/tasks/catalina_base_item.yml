@@ -165,6 +165,8 @@
   # uncomment to use log4j for tomcat instances
   - name: tomcat7 · log4j configuration
     include: log4j_configuration.yml
+    become: yes
+    become_user: root
 
   vars:
     _catalina_base_path: "{{ catalina_base.path | default((tomcat7_catalina_base_root, catalina_base.name) | join('/')) }}"
