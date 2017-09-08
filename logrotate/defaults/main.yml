@@ -49,8 +49,8 @@ _logrotate_entries:
   tomcat:
     filename: "{{ _logrotate_application_name }}-tomcat"
     pattern: >-
-      "{{ _logrotate_tomcat_log_path }}/*.log
-      "{{ _logrotate_tomcat_log_path }}/*.out
+      {{ _logrotate_tomcat_log_path }}/*.log
+      {{ _logrotate_tomcat_log_path }}/*.out
     config: "{{ _logrotate_default_config }}"
     template_vars:
       user: "{{ logrotate_user }}"
