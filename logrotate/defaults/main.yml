@@ -1,6 +1,8 @@
 ---
 # mandatory argument
 _logrotate_application_name: "{{ logrotate_application_name }}"
+_logrotate_user: "{{ logrotate_user }}"
+_logrotate_group: "{{ logrotate_group }}"
 
 
 # others
@@ -24,7 +26,7 @@ _logrotate_default_config: |
       rotate 30
       compress
       notifempty
-      create 644 root adm
+      create 644 {{ template_vars.user | default('root') }} {{ template_vars.group | default('adm') }}
       dateext
       sharedscripts
       {{ template_vars.postrotate if template_vars.postrotate else '' }}
@@ -42,10 +44,14 @@ _logrotate_entries:
         postrotate
           /bin/systemctl httpd reload > /dev/null 2>/dev/null || true
         endscript
+      user: root
+      group: adm
   tomcat:
     filename: "{{ _logrotate_application_name }}-tomcat"
     pattern: >-
-      {{ _logrotate_tomcat_log_path }}/*.log
-      {{ _logrotate_tomcat_log_path }}/*.out
+      "{{ _logrotate_tomcat_log_path }}/*.log
+      "{{ _logrotate_tomcat_log_path }}/*.out
     config: "{{ _logrotate_default_config }}"
-    template_vars: {}
+    template_vars:
+      user: root
+      group: adm
