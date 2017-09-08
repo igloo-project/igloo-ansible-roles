@@ -28,7 +28,6 @@ _logrotate_default_config: |
       dateext
       sharedscripts
       {{ template_vars.postrotate if template_vars.postrotate else '' }}
-      endscript
   }
 
 _logrotate_entries:
@@ -42,6 +41,7 @@ _logrotate_entries:
       postrotate: |-
         postrotate
           /bin/systemctl httpd reload > /dev/null 2>/dev/null || true
+        endscript
   tomcat:
     filename: "{{ _logrotate_application_name }}-tomcat"
     pattern: >-
