@@ -7,6 +7,6 @@
       {{ _logrotate_item.pattern }} {{ _logrotate_item.config }}
     owner: root
     group: root
-    mode: u=rwx,g=rx,o=rx
+    mode: u=rw,g=r,o=r
   vars:
     template_vars: "{{ _logrotate_item.template_vars }}"
