@@ -67,6 +67,10 @@
   become: yes
   become_user: root
 
+##
+## logging.yml
+##
+
 - name: instance logging.yml file (check)
   stat:
     path: "{{ _elasticsearch_conf_path }}/logging.yml"
@@ -76,7 +80,7 @@
 
 - name: dist logging.yml file (check)
   stat:
-    path: "{{ _elasticsearch_conf_path }}/logging.yml"
+    path: "{{ _elasticsearch_install_dest }}/config/logging.yml"
   register: logging_dist_stat
   become: yes
   become_user: root
@@ -95,6 +99,10 @@
   become: yes
   become_user: root
 
+##
+## log4j2.properties
+##
+
 - name: instance log4j2.properties file (check)
   stat:
     path: "{{ _elasticsearch_conf_path }}/log4j2.properties"
@@ -104,7 +112,7 @@
 
 - name: dist log4j2.properties file (check)
   stat:
-    path: "{{ _elasticsearch_conf_path }}/log4j2.properties"
+    path: "{{ _elasticsearch_install_dest }}/config/log4j2.properties"
   register: log4j2_dist_stat
   become: yes
   become_user: root
@@ -117,9 +125,41 @@
     owner: "{{ _elasticsearch_user }}"
     group: "{{ _elasticsearch_group }}"
     mode: u=rw
-  # elasticsearch 5.x is logging.yml-less; skip in this case
-  # needed for ES 2.x
+  # elasticsearch 2.x is log4j2.properties-less; skip in this case
+  # needed for ES 5.x
   when: log4j2_dist_stat.stat.exists and not log4j2_stat.stat.exists
+  become: yes
+  become_user: root
+
+##
+## jvm.options
+##
+
+- name: instance jvm.options file (check)
+  stat:
+    path: "{{ _elasticsearch_conf_path }}/jvm.options"
+  register: jvmoptions_stat
+  become: yes
+  become_user: root
+
+- name: dist jvm.options file (check)
+  stat:
+    path: "{{ _elasticsearch_install_dest }}/config/jvm.options"
+  register: jvmoptions_dist_stat
+  become: yes
+  become_user: root
+
+- name:
+  copy:
+    src: "{{ _elasticsearch_install_dest }}/config/jvm.options"
+    remote_src: yes
+    dest: "{{ _elasticsearch_conf_path }}/jvm.options"
+    owner: "{{ _elasticsearch_user }}"
+    group: "{{ _elasticsearch_group }}"
+    mode: u=rw
+  # elasticsearch 2.x is jvm.options-less; skip in this case
+  # needed for ES 5.x
+  when: jvmoptions_dist_stat.stat.exists and not jvmoptions_stat.stat.exists
   become: yes
   become_user: root
 

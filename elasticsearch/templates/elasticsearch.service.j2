@@ -9,6 +9,9 @@ User={{ _elasticsearch_user }}
 Environment=JAVA_HOME={{ _elasticsearch_java_home }}
 {% endif %}
 Environment=ES_JAVA_OPTS=-Des.path.conf={{ _elasticsearch_conf_path }}
+# https://github.com/elastic/elasticsearch/issues/21932
+# Needed for ES 5.x
+Environment=ES_JVM_OPTIONS={{ _elasticsearch_conf_path }}/jvm.options
 ExecStart={{ _elasticsearch_install_dest }}/bin/elasticsearch
 Restart=on-failure
 SuccessExitStatus=143
