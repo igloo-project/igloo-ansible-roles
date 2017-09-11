@@ -12,5 +12,3 @@
   vars:
     # if item is a dict, use this dict, else search in _logrotate_entries dict
     _logrotate_item: "{{ item if item is mapping else _logrotate_entries[item] }}"
-    # default value, can be overriden in _logrotate_item.template_vars
-    template_vars: "{{ _logrotate_default_template_vars }}"

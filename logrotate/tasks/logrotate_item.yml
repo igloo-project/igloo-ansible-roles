@@ -3,10 +3,9 @@
   become_user: root
   copy:
     dest: /etc/logrotate.d/{{ _logrotate_item.filename }}
+    # lazy templating of config_var if available, else config
     content: |
-      {{ _logrotate_item.pattern }} {{ _logrotate_item.config }}
+      {{ _logrotate_item.config }}
     owner: root
     group: root
     mode: u=rw,g=r,o=r
-  vars:
-    template_vars: "{{ _logrotate_item.template_vars }}"

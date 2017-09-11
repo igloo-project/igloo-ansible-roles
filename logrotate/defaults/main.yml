@@ -8,50 +8,50 @@ _logrotate_group: "{{ logrotate_group }}"
 # others
 # list : ['httpd', 'tomcat'] by default
 _logrotate_items: "{{ logrotate_items | default(_logrotate_default_items) }}"
-# list of either _logrotate_entries key or dict(pattern=,config=,template_vars=,)
+# list of either _logrotate_entries key or dict(pattern=,config=,...)
 _logrotate_default_items:
   - httpd
   - tomcat
 
-_logrotate_default_template_vars:
-  postrotate: ''
-_logrotate_web_log_path: /data/log/web
-_logrotate_tomcat_log_path: >-
-  /data/services/web/{{ _logrotate_application_name }}/tomcat/logs
-
-_logrotate_default_config: |
-  {
-      daily
-      missingok
-      rotate 30
-      compress
-      notifempty
-      create 644 {{ template_vars.user | default('root') }} {{ template_vars.group | default('adm') }}
-      dateext
-      sharedscripts
-      {{ template_vars.postrotate if template_vars.postrotate else '' }}
-  }
+_logrotate_web_log_pattern: >-
+   {{ logrotate_web_log_pattern | default(_logrotate_default_web_log_pattern) }}
+_logrotate_tomcat_log_pattern: >-
+  {{ logrotate_tomcat_log_pattern | default(_logrotate_default_tomcat_log_pattern) }}
 
 _logrotate_entries:
   httpd:
     filename: "{{ _logrotate_application_name }}-httpd"
-    pattern: >-
-      {{ _logrotate_web_log_path }}/*/*.log
-      {{ _logrotate_web_log_path }}/*/*_log
-    config: "{{ _logrotate_default_config }}"
-    template_vars:
-      postrotate: |-
+    config: |
+      {{ _logrotate_web_log_pattern }} {
+        daily
+        missingok
+        rotate 30
+        compress
+        notifempty
+        create 644 root adm
+        dateext
+        sharedscripts
         postrotate
           /bin/systemctl httpd reload > /dev/null 2>/dev/null || true
         endscript
-      user: root
-      group: adm
+      }
+
   tomcat:
     filename: "{{ _logrotate_application_name }}-tomcat"
-    pattern: >-
-      {{ _logrotate_tomcat_log_path }}/*.log
-      {{ _logrotate_tomcat_log_path }}/*.out
-    config: "{{ _logrotate_default_config }}"
-    template_vars:
-      user: "{{ logrotate_user }}"
-      group: "{{ logrotate_group }}"
+    config: |
+      {{ _logrotate_tomcat_log_pattern }} {
+        daily
+        missingok
+        rotate 30
+        compress
+        notifempty
+        create 644 {{ _logrotate_user }} {{ _logrotate_group }}
+        su {{ _logrotate_user }} {{ _logrotate_group }}
+        dateext
+        sharedscripts
+      }
+
+_logrotate_default_web_log_pattern: /data/log/web/*.log /data/log/web/*_log
+_logrotate_default_tomcat_log_pattern: >-
+  /data/services/web/{{ _logrotate_application_name }}/tomcat/logs/*.log
+  /data/services/web/{{ _logrotate_application_name }}/tomcat/logs/*.out
