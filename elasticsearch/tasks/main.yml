@@ -163,6 +163,13 @@
   become: yes
   become_user: root
 
+- name: plugins not supported for ES 5.x
+  fail:
+    msg: plugins are not supported by this role for ES >= 5.x
+  when: >-
+    _elasticsearch_plugins | length > 0
+    and _elasticsearch_version | version_compare('5.0.0', '>=')
+
 - name: plugins
   include: plugin.yml
   with_items: "{{ _elasticsearch_plugins }}"

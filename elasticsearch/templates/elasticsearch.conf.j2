@@ -43,6 +43,8 @@ path.logs: {{ _elasticsearch_logs_path }}
 {% else %}
 #path.logs: /path/to/logs
 {% endif %}
+
+{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
 #
 # Path to plugin files:
 #
@@ -51,6 +53,9 @@ path.plugins: {{ _elasticsearch_plugins_path }}
 {% else %}
 #path.plugins: /path/to/plugins
 {% endif %}
+{% endif %}
+
+{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
 #
 # Path to script files:
 #
@@ -58,6 +63,7 @@ path.plugins: {{ _elasticsearch_plugins_path }}
 path.scripts: {{ _elasticsearch_scripts_path }}
 {% else %}
 #path.scripts: /path/to/config/scripts
+{% endif %}
 {% endif %}
 #
 #
