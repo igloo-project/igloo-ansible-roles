@@ -14,10 +14,10 @@ Environment=JAVA_HOME={{ _elasticsearch_java_home }}
 {% if _elasticsearch_version | version_compare('5.0.0', '<') %}
 {% do extra_opts.extend(_elasticsearch_java_opts) %}
 {% if _elasticsearch_mem_min %}
-{% do extra_opts.append('-Xms' + _elasticsearch_mem_min) %}
+Environment=ES_MIN_MEM={{ _elasticsearch_mem_min }}
 {% endif %}
 {% if _elasticsearch_mem_max %}
-{% do extra_opts.append('-Xmx' + _elasticsearch_mem_max) %}
+Environment=ES_MAX_MEM={{ _elasticsearch_mem_max }}
 {% endif %}
 {% else %}
 {# for elasticsearch > 5.x, configure jvm.options path #}
