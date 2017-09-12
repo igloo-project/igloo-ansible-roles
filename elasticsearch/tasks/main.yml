@@ -163,6 +163,33 @@
   become: yes
   become_user: root
 
+- name: memory (>=5.x)
+  # only for ES 5.x
+  when: _elasticsearch_version | version_compare('5.0.0', '>=')
+  become: yes
+  become_user: root
+  block:
+    - name:
+      lineinfile:
+        path: "{{ _elasticsearch_conf_path }}/jvm.options"
+        regexp: "^-Xms.*$"
+        line: "-Xms{{ _elasticsearch_mem_min }}"
+
+    - name:
+      lineinfile:
+        path: "{{ _elasticsearch_conf_path }}/jvm.options"
+        regexp: "^-Xmx.*$"
+        line: "-Xmx{{ _elasticsearch_mem_max }}"
+
+    - name:
+      blockinfile:
+        path: "{{ _elasticsearch_conf_path }}/jvm.options"
+        marker: "## {mark} ANSIBLE MANAGED elasticsearch_java_opts"
+        block: |-
+          {% for item in _elasticsearch_java_opts %}
+          {{ item }}
+          {% endfor %}
+
 - name: plugins not supported for ES 5.x
   fail:
     msg: plugins are not supported by this role for ES >= 5.x

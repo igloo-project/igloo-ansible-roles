@@ -8,10 +8,25 @@ User={{ _elasticsearch_user }}
 {% if _elasticsearch_java_home %}
 Environment=JAVA_HOME={{ _elasticsearch_java_home }}
 {% endif %}
-Environment=ES_JAVA_OPTS=-Des.path.conf={{ _elasticsearch_conf_path }}
+{% set extra_opts = [] %}
+
+{# for elasticsearch < 5.x, jvm settings via systemd Environment #}
+{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
+{% do extra_opts.extend(_elasticsearch_java_opts) %}
+{% if _elasticsearch_mem_min %}
+{% do extra_opts.append('-Xms' + _elasticsearch_mem_min) %}
+{% endif %}
+{% if _elasticsearch_mem_max %}
+{% do extra_opts.append('-Xmx' + _elasticsearch_mem_max) %}
+{% endif %}
+{% else %}
+{# for elasticsearch > 5.x, configure jvm.options path #}
 # https://github.com/elastic/elasticsearch/issues/21932
 # Needed for ES 5.x
 Environment=ES_JVM_OPTIONS={{ _elasticsearch_conf_path }}/jvm.options
+{% endif %}
+{# for elasticsearch < 5.x, jvm settings #}
+Environment=ES_JAVA_OPTS=-Des.path.conf={{ _elasticsearch_conf_path }} {{ ' '.join(extra_opts) }}
 ExecStart={{ _elasticsearch_install_dest }}/bin/elasticsearch
 Restart=on-failure
 SuccessExitStatus=143

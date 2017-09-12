@@ -1,6 +1,9 @@
 _elasticsearch_version: "{{ elasticsearch_version | default('5.2.1') }}"
 _elasticsearch_package: "elasticsearch-{{ _elasticsearch_version }}"
 _elasticsearch_unit_name: "{{ elasticsearch_unit_name | default('elasticsearch') }}"
+_elasticsearch_mem_min: "{{ elasticsearch_mem_min | default('2g') }}"
+_elasticsearch_mem_max: "{{ elasticsearch_mem_max | default('2g') }}"
+_elasticsearch_java_opts: "{{ elasticsearch_java_opts | default([]) }}"
 
 _elasticsearch_download_url: "{{ elasticsearch_download_url | default('https://artifacts.elastic.co/downloads/elasticsearch/'+ _elasticsearch_package + '.tar.gz') }}"
 _elasticsearch_download_target: "{{ elasticsearch_download_path }}/{{ _elasticsearch_package }}.tar.gz"
