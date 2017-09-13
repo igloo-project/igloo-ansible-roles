@@ -1,4 +1,7 @@
 - block:
+  - set_fact: {"{{ java_results_var }}": {}}
+    when: java_results_var not in hostvars[inventory_hostname]
+
   - name: prepare {{ java_download_path }} folder
     file:
       path: "{{ java_download_path }}"
@@ -14,6 +17,11 @@
       mode: u=rwx,g=rx,o=rx
       owner: root
       group: root
+
+  - include: yum_repository.yml
+    when: >-
+      _java_yum_repository is defined
+      and _java_yum_repository
 
   - name: install {{ item.type }} {{ item.version }}
     include: java_runtime_item.yml

@@ -1,4 +1,5 @@
-- block:
+- name: download and extract
+  block:
   - name: download {{ item.type }} {{ item.version }}
     get_url:
       url: "{{ _java_archive_url }}"
@@ -66,8 +67,19 @@
     when: ansible_distribution_major_version == "5"
 
   - name: provide {{ item.type }} {{ item.version }} path
-    set_fact: {"{{ java_results_var }}": "{{ dict([[item.key, {\"path\": _java_install_destination, \"runtime\": item}]]) }}"}
+    set_fact:
+      # update current var by combining with current value
+      "{{ java_results_var }}": >-
+        {{ hostvars[inventory_hostname][java_results_var]
+           | combine(dict([_map_entry])) }}
+    vars:
+      # couple (key, value) (as dynamic key is not possible for a dict)
+      _map_entry:
+        - "{{ item.key }}"
+        - path: "{{ _java_install_destination }}"
+          runtime: "{{ item }}"
 
+  when: item.packaging is not defined or item.packaging == 'archive'
   vars:
     _java_archive_destination: "{{ java_download_path }}/java-{{ item.type }}-{{ item.version }}-{{ item.arch }}.tar.gz"
     _java_archive_url: "{{ java_archive_url_template }}"
@@ -75,3 +87,33 @@
     _java_install_destination: "{{ java_runtime_path }}/{{ item.type }}-{{ item.version }}-{{ item.arch }}"
     # used when unarchive with strip components is not available
     _java_install_wa_destination: "{{ java_runtime_path }}/wa-{{ item.type }}-{{ item.version }}-{{ item.arch }}"
+
+- name: package
+  block:
+    - name: package
+      package:
+        name: "{{ _java_package }}"
+
+    - name: provide {{ _java_key }} {{ _java_version }} path
+      set_fact:
+        # update current var by combining with current value
+        "{{ java_results_var }}": >-
+          {{ hostvars[inventory_hostname][java_results_var]
+             | combine(dict([_map_entry])) }}
+      vars:
+        # couple (key, value) (as dynamic key is not possible for a dict)
+        _map_entry:
+          - "{{ _java_key }}"
+          - path: "{{ _java_path }}"
+            runtime: "{{ _java_runtime }}"
+
+  when: item.packaging is defined and item.packaging == 'yum'
+  vars:
+    _java_package: "{{ item.package }}"
+    _java_version: "{{ item.version }}"
+    _java_key: "{{ item.key }}"
+    _java_path: "{{ item.java_home }}"
+    _java_runtime: "{{ item }}"
+
+- debug:
+    msg: "{{ hostvars[inventory_hostname][java_results_var] }}"

@@ -1,1 +1,23 @@
 java_archive_url_template: "http://download.oracle.com/otn-pub/java/jdk/{{ item.version }}-b{{ item.version_build }}/{{ item.id }}/{{ item.type }}-{{ item.version }}-linux-{{ item.arch }}.tar.gz"
+
+_java_yum_repository: "{{ java_yum_repository | default('') }}"
+# else dict(path=..., content=...)
+
+# java_runtimes is a list
+
+# item example for download and extract:
+# - version: 8u131
+#   version_build: 11
+#   arch: x64
+#   type: jdk
+#   checksum: md5:75b2cb2249710d822a60f83e28860053
+#   key: jdk-8u131-x64
+#   # download jvm to determine id (used for url building)
+#   id: d54c1d3a095b4ff2b6607d096fa80163
+
+# item example for package installation
+# - version: 8u144
+#   packaging: yum
+#   package: jdk1.8.0_144
+#   java_home: /usr/java/jdk1.8.0_144
+#   key: jdk-8u144-x64
