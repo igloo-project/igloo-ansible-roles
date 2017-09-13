@@ -43,6 +43,7 @@ _logrotate_entries:
         daily
         missingok
         rotate 30
+        copytruncate
         compress
         notifempty
         create 644 {{ _logrotate_user }} {{ _logrotate_group }}
