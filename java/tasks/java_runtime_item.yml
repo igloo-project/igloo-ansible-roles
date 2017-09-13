@@ -114,6 +114,3 @@
     _java_key: "{{ item.key }}"
     _java_path: "{{ item.java_home }}"
     _java_runtime: "{{ item }}"
-
-- debug:
-    msg: "{{ hostvars[inventory_hostname][java_results_var] }}"
