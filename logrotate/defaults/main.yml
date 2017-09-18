@@ -32,7 +32,7 @@ _logrotate_entries:
         dateext
         sharedscripts
         postrotate
-          /bin/systemctl httpd reload > /dev/null 2>/dev/null || true
+          /bin/systemctl reload httpd > /dev/null 2>/dev/null || true
         endscript
       }
 
