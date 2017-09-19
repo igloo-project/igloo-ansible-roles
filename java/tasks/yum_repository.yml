@@ -1,6 +1,4 @@
 ---
-- debug:
-    msg: "{{ _java_yum_repository is none }}"
 - name: yum repository
   copy:
     dest: "{{ _java_yum_repository.path }}"
