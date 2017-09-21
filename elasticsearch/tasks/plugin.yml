@@ -49,6 +49,9 @@
 
     - name: install plugin {{ plugin.name }}
       shell: "{{ _elasticsearch_install_dest }}/bin/plugin install {{ plugin.name }}"
+      # mandatory when become_user has /bin/nologin shell
+      args:
+        executable: /bin/bash
       when: not plugin_dir.stat.exists
       environment:
         JAVA_HOME: "{{ _elasticsearch_java_home }}"
