@@ -7,16 +7,16 @@
       path: "{{ java_download_path }}"
       state: directory
       mode: u=rwx,g=rx,o=rx
-      owner: root
-      group: root
+      owner: "{{ _java_user }}"
+      group: "{{ _java_group }}"
 
   - name: prepare {{ java_runtime_path }} folder
     file:
       path: "{{ java_runtime_path }}"
       state: directory
       mode: u=rwx,g=rx,o=rx
-      owner: root
-      group: root
+      owner: "{{ _java_user }}"
+      group: "{{ _java_group }}"
 
   - include: yum_repository.yml
     when: >-

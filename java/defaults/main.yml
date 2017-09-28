@@ -1,5 +1,8 @@
 java_archive_url_template: "http://download.oracle.com/otn-pub/java/jdk/{{ item.version }}-b{{ item.version_build }}/{{ item.id }}/{{ item.type }}-{{ item.version }}-linux-{{ item.arch }}.tar.gz"
 
+_java_user: "{{ java_user | default('root') }}"
+_java_group: "{{ java_group | default(_java_user) }}"
+
 _java_yum_repository: "{{ java_yum_repository | default('') }}"
 # else dict(path=..., content=...)
 

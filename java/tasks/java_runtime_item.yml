@@ -5,8 +5,8 @@
       url: "{{ _java_archive_url }}"
       dest: "{{ _java_archive_destination }}"
       checksum: "{{ _java_archive_checksum }}"
-      owner: root
-      group: root
+      owner: "{{ _java_user }}"
+      group: "{{ _java_group }}"
       headers: "Cookie: oraclelicense=accept-securebackup-cookie"
 
   - block:
@@ -15,8 +15,8 @@
         path: "{{ _java_install_destination }}"
         state: directory
         mode: u=rwx,g=rwx,o=rx
-        owner: root
-        group: root
+        owner: "{{ _java_user }}"
+        group: "{{ _java_group }}"
 
     - name: install {{ item.type }} {{ item.version }}
       unarchive:
@@ -38,8 +38,8 @@
         path: "{{ _java_install_wa_destination }}"
         state: directory
         mode: u=rwx,g=rwx,o=rx
-        owner: root
-        group: root
+        owner: "{{ _java_user }}"
+        group: "{{ _java_group }}"
 
     - name: install {{ item.type }} {{ item.version }}
       unarchive:
