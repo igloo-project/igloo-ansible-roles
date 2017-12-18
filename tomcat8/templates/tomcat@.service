@@ -1,0 +1,17 @@
+# Systemd unit file for tomcat instances.
+
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=syslog.target network.target
+
+[Service]
+Type=forking
+SuccessExitStatus=143
+User={{ _user }}
+Group={{ _user }}
+{% if _tomcat_timeout_stop %}
+TimeoutStopSec={{ _tomcat_timeout_stop }}
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

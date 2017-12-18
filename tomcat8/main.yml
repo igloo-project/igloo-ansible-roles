@@ -1,0 +1,74 @@
+tomcat_user: tomcat
+tomcat_catalina_bases: []
+tomcat_catalina_base_root: /srv
+tomcat_default_group: "{{ _catalina_base_user }}"
+_tomcat_major: "{{ tomcat_version.split('.')[0] }}"
+_tomcat_default_xms: "{{ tomcat_default_xms | default('-Xms768m') }}"
+_tomcat_default_xmx: "{{ tomcat_default_xmx | default('-Xmx1024m') }}"
+_tomcat_default_extra_opts: "{{ tomcat_default_extra_opts | default('') }}"
+_tomcat_default_stop_allow_kill9: "{{ tomcat_default_stop_allow_kill9 | default(False) }}"
+_tomcat_default_stop_wait_in_s: "{{ tomcat_default_stop_wait_in_s | default(60) }}"
+_tomcat_systemd: "{{ tomcat_systemd | default(True) }}"
+_tomcat_initd: "{{ tomcat_initd | default(False) }}"
+_tomcat_initscript: /etc/init.d/tomcat-common
+
+_tomcat_timeout_stop: "{{ tomcat_timeout_stop | default(None) }}"
+
+_tomcat_download_url: "http://archive.apache.org/dist/tomcat/tomcat-{{ _tomcat_major }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+_tomcat_download_target: "{{ tomcat_download_target_path }}/apache-tomcat-{{ tomcat_version }}.tar.gz"
+
+
+_tomcat_log4j_checksum: md5:04a41f0a068986f0f73485cf507c0f40
+_tomcat_log4j_version: 1.2.17
+_log4j_download_url: "http://archive.apache.org/dist/logging/log4j/{{ _tomcat_log4j_version }}/log4j-{{ _tomcat_log4j_version }}.jar"
+_tomcat_log4j_download_target: "{{ tomcat_download_target_path }}/log4j-{{ _tomcat_log4j_version }}.jar"
+_log4j_tomcat_juli_url: http://archive.apache.org/dist/tomcat/tomcat-{{ _tomcat_major }}/v{{ tomcat_version }}/bin/extras/tomcat-juli.jar
+_log4j_tomcat_juli_adapters_url: http://archive.apache.org/dist/tomcat/tomcat-{{ _tomcat_major }}/v{{ tomcat_version }}/bin/extras/tomcat-juli-adapters.jar
+
+_catalina_base_server_xml: "{{ catalina_base.server_xml | default(_default_server_xml) }}"
+_catalina_base_jmx_port: "{{ catalina_base.jmx_port | default(_default_jmx_port) }}"
+_catalina_base_http_port: "{{ catalina_base.http_port | default(_default_http_port) }}"
+_catalina_base_ajp_port: "{{ catalina_base.apj_port | default(_default_ajp_port) }}"
+_catalina_base_redirect_port: "{{ catalina_base.redirect_port | default(_default_redirect_port) }}"
+_catalina_base_shutdown_port: "{{ catalina_base.shutdown_port | default(_default_shutdown_port) }}"
+_catalina_base_ajp_max_threads: "{{ catalina_base.ajp_max_threads | default(_default_ajp_max_threads) }}"
+_catalina_base_http_max_threads: "{{ catalina_base.http_max_threads | default(_default_http_max_threads) }}"
+_catalina_base_stop_wait_in_s: "{{ catalina_base.stop_wait_in_s | default(_tomcat_default_stop_wait_in_s) }}"
+_catalina_base_stop_allow_kill9: "{{ catalina_base.stop_allow_kill9 | default(_tomcat_default_stop_allow_kill9) }}"
+_catalina_base_xms: "{{ catalina_base.xms | default(_tomcat_default_xms) }}"
+_catalina_base_xmx: "{{ catalina_base.xmx | default(_tomcat_default_xmx) }}"
+_catalina_base_extra_opts: "{{ catalina_base.extra_opts | default(_tomcat_default_extra_opts) }}"
+
+_default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
+_default_jmx_port: "{{ default_jmx_port | default(9010) }}"
+_default_http_port: "{{ default_http_port | default(8080) }}"
+_default_ajp_port: "{{ default_ajp_port | default(8009) }}"
+_default_redirect_port: "{{ default_redirect_port | default(8443) }}"
+_default_shutdown_port: "{{ default_shutdown_port | default(8005) }}"
+_default_ajp_max_threads: "{{ default_ajp_max_threads | default(50) }}"
+_default_http_max_threads: "{{ default_http_max_threads | default(50) }}"
+
+_tomcat_systemd_env: |
+    [Service]
+    {% for key, value in _tomcat_common_env.iteritems() %}
+    Environment={{ key }}={{ value }}
+    {% endfor %}
+    PIDFile={{ _catalina_base }}/pid/tomcat.pid
+    ExecStart={{ tomcat_dest }}/bin/catalina.sh start
+    ExecStop={{ tomcat_dest }}/bin/catalina.sh stop {{ _catalina_base_stop_wait_in_s }}{{ ' -force' if _catalina_base_stop_allow_kill9 else '' }}
+    User={{ _catalina_base_user }}
+    Group={{ _catalina_base_user }}
+
+_tomcat_initd_env: |
+    {% for key, value in _tomcat_common_env.iteritems() %}
+    {{ key }}={{ value }}
+    {% endfor %}
+    TOMCAT_USER={{ _catalina_base_user }}
+    {% if _catalina_base_stop_wait_in_s %}
+    TOMCAT_SLEEP_BEFORE_KILL={{ _catalina_base_stop_wait_in_s }}
+    {% endif %}
+
+_tomcat_common_env:
+    CATALINA_HOME: "{{ _catalina_home }}"
+    CATALINA_BASE: "{{ _catalina_base }}"
+    CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"
