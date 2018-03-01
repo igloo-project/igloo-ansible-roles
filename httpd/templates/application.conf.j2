@@ -52,5 +52,5 @@ ServerName {{ _server_name }}
 {% endfor %}
 
     RewriteEngine On
-    RewriteRule ^(.*)$ https://{{ _server_https_domain_redirect }}/$1 [R,L]
+    RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
 </VirtualHost>
