@@ -2,9 +2,9 @@ ServerName {{ _server_name }}
 
 <VirtualHost *:443>
     ServerName {{ _server_name }}
-    {% for _server_alias in _server_aliases | default([]) %}
+{% for _server_alias in _server_aliases | default([]) %}
     ServerAlias {{ _server_alias }}
-    {% endfor %}
+{% endfor %}
 
     DocumentRoot {{ _httpd_documentroot }}
 
@@ -47,9 +47,10 @@ ServerName {{ _server_name }}
 ## Redirection * vers le https .fr ##
 <VirtualHost *:80>
     ServerName {{ _server_name }}
-    {% for _server_alias in _server_aliases | default([]) %}
+{% for _server_alias in _server_aliases | default([]) %}
     ServerAlias {{ _server_alias }}
-    {% endfor %}
+{% endfor %}
+
     RewriteEngine On
     RewriteRule ^(.*)$ https://{{ _server_https_domain_redirect }}/$1 [R,L]
 </VirtualHost>
