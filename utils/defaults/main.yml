@@ -1,7 +1,15 @@
 utils_packages: []
-utils_default_packages:
-  - vim-enhanced
-  - screen
-  - ImageMagick
-  - net-tools
-  - libselinux-python
+utils_default_packages: "{{ _utils_default_packages | distro(vars) }}"
+
+_utils_default_packages:
+  Redhat:
+    - vim-enhanced
+    - screen
+    - ImageMagick
+    - net-tools
+    - libselinux-python
+  Debian:
+    - vim
+    - screen
+    - imagemagick
+    - net-tools
