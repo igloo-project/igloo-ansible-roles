@@ -2,10 +2,7 @@
   package:
     name: "{{ item }}"
     state: installed
-  with_items:
-    - httpd
-    - httpd-tools
-    - mod_ssl
+  with_items: "{{ _httpd_packages | distro(vars) }}"
   become: yes
   become_user: root
   when: httpd_step_install

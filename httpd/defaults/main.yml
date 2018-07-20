@@ -10,3 +10,11 @@ _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
 _httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"
+
+_httpd_packages:
+  RedHat:
+    - httpd
+    - httpd-tools
+    - mod_ssl
+  Debian:
+    - apache2
