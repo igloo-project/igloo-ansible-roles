@@ -11,6 +11,9 @@ _postgresql_initd: "{{ postgresql_initd | default(False) }}"
 _postgresql_initdb:
   RedHat: /usr/pgsql-{{ cluster.postgresql_version }}/bin/initdb
   Debian: /usr/lib/postgresql/{{ cluster.postgresql_version }}/bin/initdb
+_postgresql_service_include:
+  RedHat:
+  Debian: /lib/systemd/system/postgresql.service
 
 _database:
 _cluster:

@@ -2,7 +2,7 @@ utils_packages: []
 utils_default_packages: "{{ _utils_default_packages | distro(vars) }}"
 
 _utils_default_packages:
-  Redhat:
+  RedHat:
     - vim-enhanced
     - screen
     - ImageMagick
@@ -13,3 +13,4 @@ _utils_default_packages:
     - screen
     - imagemagick
     - net-tools
+    - locales-all
