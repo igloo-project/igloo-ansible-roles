@@ -8,6 +8,9 @@ postgresql_cluster_default_user_database_privileges: CONNECT,CREATE
 
 _postgresql_systemd: "{{ postgresql_systemd | default(True) }}"
 _postgresql_initd: "{{ postgresql_initd | default(False) }}"
+_postgresql_initdb:
+  RedHat: /usr/pgsql-{{ cluster.postgresql_version }}/bin/initdb
+  Debian: /usr/lib/postgresql/{{ cluster.postgresql_version }}/bin/initdb
 
 _database:
 _cluster:

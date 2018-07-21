@@ -18,7 +18,7 @@
         become_user: root
 
       - name: "postgresql-cluster · create {{ cluster.name }}"
-        command: "sudo -u postgres /usr/pgsql-{{ cluster.postgresql_version }}/bin/initdb --locale='{{ _cluster_locale }}' --lc-messages=en_US.UTF-8 '{{ cluster.path }}'"
+        command: "sudo -u postgres {{ _postgresql_initdb | distro(vars) }} --locale='{{ _cluster_locale }}' --lc-messages=en_US.UTF-8 '{{ cluster.path }}'"
         become: yes
         become_user: root
     when: not cluster_configuration.stat.exists
