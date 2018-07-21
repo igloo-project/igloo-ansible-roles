@@ -4,7 +4,7 @@
       path: "{{ cluster.path }}/postgresql.conf"
     register: cluster_configuration
     become: yes
-    become_user: "{{ postgresql_cluster_postgres_user }}"
+    become_user: root
 
   - block:
       - name: "postgresql-cluster · create directory {{ cluster.name }}"
@@ -18,9 +18,9 @@
         become_user: root
 
       - name: "postgresql-cluster · create {{ cluster.name }}"
-        command: "/usr/pgsql-{{ cluster.postgresql_version }}/bin/initdb --locale='{{ _cluster_locale }}' --lc-messages=en_US.UTF-8 '{{ cluster.path }}'"
+        command: "sudo -u postgres /usr/pgsql-{{ cluster.postgresql_version }}/bin/initdb --locale='{{ _cluster_locale }}' --lc-messages=en_US.UTF-8 '{{ cluster.path }}'"
         become: yes
-        become_user: "{{ postgresql_cluster_postgres_user }}"
+        become_user: root
     when: not cluster_configuration.stat.exists
 
   - block:
@@ -48,7 +48,7 @@
         group: "{{ postgresql_cluster_postgres_user }}"
         mode: u+r,g+r,o=
     become: yes
-    become_user: "{{ postgresql_cluster_postgres_user }}"
+    become_user: root
 
   - block:
 
