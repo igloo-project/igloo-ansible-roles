@@ -23,7 +23,7 @@
   - name: httpd · configuration
     template:
       src: application.conf.j2
-      dest: /etc/httpd/conf.d/50-{{ _httpd_application_name }}.conf
+      dest: "{{ _httpd_configuration_folder }}/50-{{ _httpd_application_name }}.conf"
       owner: root
       group: root
       mode: u=rw,g=r,o=r
@@ -41,7 +41,7 @@
   - name: httpd · status page
     template:
       src: server-status.conf.j2
-      dest: /etc/httpd/conf.d/25-server-status.conf
+      dest: "{{ _httpd_configuration_folder }}/25-server-status.conf"
       owner: root
       group: root
       mode: u=rw,g=r,o=r
@@ -51,7 +51,7 @@
 
   - name: httpd · remove default conf
     file:
-      path: "/etc/httpd/conf.d/{{ item }}"
+      path: "{{ _httpd_configuration_folder }}/{{ item }}"
       state: absent
     with_items:
       - autoindex.conf
@@ -63,7 +63,7 @@
 
   - name: httpd · service
     service:
-      name: httpd
+      name: "{{ _httpd_service }}"
       enabled: yes
       state: started
     become: yes

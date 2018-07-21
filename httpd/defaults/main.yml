@@ -11,6 +11,16 @@ _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
 _httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"
 
+_httpd_configuration_folder: "{{ _httpd_configuration_folder_distro | distro(vars) }}"
+_httpd_configuration_folder_distro:
+  RedHat: /etc/httpd/conf.d
+  Debian: /etc/apache2/sites-enabled
+
+_httpd_service: "{{ _httpd_service_distro | distro(vars) }}"
+_httpd_service_distro:
+  RedHat: httpd
+  Debian: apache2
+
 _httpd_packages:
   RedHat:
     - httpd

@@ -1,6 +1,6 @@
 - name: httpd
   service:
-    name: httpd
+    name: "{{ _httpd_service }}"
     state: restarted
   become: yes
   become_user: root
