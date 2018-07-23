@@ -9,8 +9,8 @@
   with_items: "{{ _user.databases | default([]) }}"
   loop_control:
     loop_var: database
-  become: yes
-  become_user: "{{ postgresql_cluster_postgres_user }}"
+  become: true
+  become_user: root
   vars:
     _cluster: "{{ cluster_user_item.cluster }}"
     _user: "{{ cluster_user_item.user }}"
