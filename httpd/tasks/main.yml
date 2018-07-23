@@ -7,6 +7,22 @@
   become_user: root
   when: httpd_step_install
 
+- name: enable modules
+  file:
+    path: "/etc/apache2/mods-enabled/{{ item | basename }}"
+    state: link
+    src: "{{ item }}"
+  with_items:
+    - /etc/apache2/mods-available/rewrite.load
+    - /etc/apache2/mods-available/proxy.conf
+    - /etc/apache2/mods-available/proxy.load
+    - /etc/apache2/mods-available/proxy_ajp.load
+    # needed by ssl
+    - /etc/apache2/mods-available/socache_shmcb.load
+    - /etc/apache2/mods-available/ssl.conf
+    - /etc/apache2/mods-available/ssl.load
+  when: ansible_os_family == 'Debian'
+
 - block:
   - name: httpd · selinux ports
     seport:
@@ -58,6 +74,7 @@
       - README
       - userdir.conf
       - welcome.conf
+      - 000-default.conf
     become: yes
     become_user: root
 
