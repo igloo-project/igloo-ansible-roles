@@ -38,6 +38,7 @@
     - path: /data/services/web/{{ filesystem_application_name }}/tomcat
       mode: u=rwx,o=rx
       owner: "{{ filesystem_application_user }}"
+    - "{{ filesystem_application_folders }}"
   loop_control:
     label: "{{ item.path }}"
   become: yes
