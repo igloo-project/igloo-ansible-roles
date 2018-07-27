@@ -1,7 +1,7 @@
 - name: install psycopg2
   package:
     name: python-psycopg2
-    state: installed
+    state: present
   become: yes
   become_user: root
 
