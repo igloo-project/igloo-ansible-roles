@@ -3,14 +3,14 @@
 # can be run by any sudo-root-able program
 #
 
-# - name: log4j · download binary
-#   get_url:
-#     url: "{{ _log4j_download_url }}"
-#     dest: "{{ _tomcat_log4j_download_target }}"
-#     checksum: "{{ _tomcat_log4j_checksum }}"
-#     owner: root
-#     group: root
-#     mode: u=rx,g=r,o=r
+- name: log4j · download binary
+  get_url:
+    url: "{{ _log4j_download_url }}"
+    dest: "{{ _tomcat_log4j_download_target }}"
+    checksum: "{{ _tomcat_log4j_checksum }}"
+    owner: root
+    group: root
+    mode: u=rx,g=r,o=r
 
 - name: log4j · configuration
   template:
@@ -19,27 +19,27 @@
     owner: "{{ _catalina_base_user }}"
     group: "{{ _catalina_base_group }}"
 
-# - name: log4j · deploy tomcat-juli.jar
-#   get_url:
-#     url: "{{ _log4j_tomcat_juli_url }}"
-#     dest: "{{ _catalina_base_path }}/bin/tomcat-juli.jar"
-#     owner: "{{ _catalina_base_user }}"
-#     group: "{{ _catalina_base_group }}"
-#
-# - name: log4j · deploy tomcat-juli-adapters.jar
-#   get_url:
-#     url: "{{ _log4j_tomcat_juli_adapters_url }}"
-#     dest: "{{ _catalina_base_path }}/lib/tomcat-juli-adapters.jar"
-#     owner: "{{ _catalina_base_user }}"
-#     group: "{{ _catalina_base_group }}"
-#
-# - name: log4j · deploy log4j.jar
-#   copy:
-#     remote_src: true
-#     src: "{{ _tomcat_log4j_download_target }}"
-#     dest: "{{ _catalina_base_path }}/lib/log4j-{{ _tomcat_log4j_version }}.jar"
-#     owner: "{{ _catalina_base_user }}"
-#     group: "{{ _catalina_base_group }}"
+- name: log4j · deploy tomcat-juli.jar
+  get_url:
+    url: "{{ _log4j_tomcat_juli_url }}"
+    dest: "{{ _catalina_base_path }}/bin/tomcat-juli.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: log4j · deploy tomcat-juli-adapters.jar
+  get_url:
+    url: "{{ _log4j_tomcat_juli_adapters_url }}"
+    dest: "{{ _catalina_base_path }}/lib/tomcat-juli-adapters.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
+
+- name: log4j · deploy log4j.jar
+  copy:
+    remote_src: true
+    src: "{{ _tomcat_log4j_download_target }}"
+    dest: "{{ _catalina_base_path }}/lib/log4j-{{ _tomcat_log4j_version }}.jar"
+    owner: "{{ _catalina_base_user }}"
+    group: "{{ _catalina_base_group }}"
 
 - name: edit /conf/catalina.policy
   copy:
