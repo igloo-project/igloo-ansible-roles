@@ -190,12 +190,6 @@
 
     when: _tomcat_initd
 
-  # uncomment to use log4j for tomcat instances
-  - name: tomcat · log4j configuration
-    include: log4j_configuration.yml
-    become: yes
-    become_user: root
-
   vars:
     _catalina_base_path: "{{ catalina_base.path | default((tomcat_catalina_base_root, catalina_base.name) | join('/')) }}"
     _catalina_base_user: "{{ catalina_base.user | default(tomcat_default_user) }}"
