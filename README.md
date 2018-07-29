@@ -11,3 +11,4 @@ powo.utils (https://github.com/powo-roles/powo.utils) is required.
 * 2018-07-28: postgresql moved to https://github.com/igloo-project/roles-postgresql
 * 2018-07-28: postgresql\_cluster moved to https://github.com/igloo-project/roles-postgresql-cluster
 * 2018-07-28: delivery and firewall added
+* 2018-07-28: dropped letsencrypt, use git@github.com:igloo-project/ansible-letsencrypt.git
