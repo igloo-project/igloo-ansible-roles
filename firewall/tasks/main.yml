@@ -1,0 +1,45 @@
+---
+
+- name: firewalld
+  package:
+    name: firewalld
+
+- name: service
+  service:
+    name: firewalld
+    state: started
+
+- name: zone
+  firewalld:
+    permanent: true
+    interface: eth0
+    zone: public
+    state: enabled
+
+- name: ssh
+  firewalld:
+    permanent: true
+    service: ssh
+    state: enabled
+  notify: firewalld.restart
+
+- name: http
+  firewalld:
+    permanent: true
+    service: http
+    state: enabled
+  notify: firewalld.restart
+
+- name: https
+  firewalld:
+    permanent: true
+    service: https
+    state: enabled
+  notify: firewalld.restart
+
+- name: service
+  service:
+    name: firewalld
+    enabled: true
+    state: started
+  notify: firewalld.restart

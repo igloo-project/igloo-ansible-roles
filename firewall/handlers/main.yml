@@ -1,0 +1,21 @@
+---
+- name: firewalld.restart
+  service:
+    name: firewalld
+    state: restarted
+  become: true
+  become_user: root
+
+- name: firewalld.start
+  service:
+    name: firewalld
+    state: started
+  become: true
+  become_user: root
+
+- name: firewalld.stop
+  service:
+    name: firewalld
+    state: stopped
+  become: true
+  become_user: root
