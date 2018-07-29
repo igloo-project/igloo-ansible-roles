@@ -1,0 +1,11 @@
+_delivery_application_war_src: "{{ delivery_application_war_src }}"
+_delivery_application_user: "{{ delivery_application_user }}"
+_delivery_tomcat_service: "{{ delivery_tomcat_service | default(delivery_tomcat_service) }}"
+_delivery_tomcat_catalina_base: "{{ delivery_tomcat_catalina_base }}"
+_delivery_context_name: "{{ delivery_context_name | default(delivery_application_war_src | basename | replace('.war', '')) }}"
+
+_delivery_application_war_remote_src: "{{ delivery_application_war_remote_src | default(False) }}"
+
+_delivery_tomcat_catalina_pid: "{{ delivery_tomcat_catalina_base }}/pid/tomcat.pid"
+
+_delivery_context_name_or_root: "{{ 'ROOT' if _delivery_context_name == '' else _delivery_context_name }}"

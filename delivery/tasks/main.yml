@@ -1,0 +1,50 @@
+---
+
+- name: delivery · copy war
+  copy:
+    src: "{{ _delivery_application_war_src }}"
+    remote_src: "{{ _delivery_application_war_remote_src }}"
+    dest: "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}.war"
+    owner: "{{ _delivery_application_user }}"
+    group: "{{ _delivery_application_user }}"
+    mode: u=rw,g=r,o=r
+  register: war
+  check_mode: yes
+
+- block:
+
+  # Cette opération est faite directement en shell pour éviter
+  # les problèmes d'authentification systemd. Avec CentOS8 il
+  # sera possible d'utiliser polkit pour mieux gérer cette
+  # problématique.
+  - name: delivery · stop application
+    shell: "sudo systemctl stop {{ _delivery_tomcat_service }}"
+
+  - name: delivery · wait application stop
+    wait_for:
+      path: "{{ _delivery_tomcat_catalina_pid }}"
+      state: absent
+
+  - name: delivery · clean
+    shell: >-
+        rm -rf "{{ _delivery_tomcat_catalina_base }}/work/"*
+        "{{ _delivery_tomcat_catalina_base }}/temp/"*
+        "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}.war"
+        "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}"
+    args:
+      warn: off
+
+  - name: delivery · copy war
+    copy:
+      src: "{{ _delivery_application_war_src }}"
+      remote_src: "{{ _delivery_application_war_remote_src }}"
+      dest: "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}.war"
+      owner: "{{ _delivery_application_user }}"
+      group: "{{ _delivery_application_user }}"
+      mode: u=rw,g=r,o=r
+
+  # C.f commentaire 'stop aplication'
+  - name: delivery · start application
+    shell: "sudo systemctl start {{ _delivery_tomcat_service }}"
+
+  when: war.changed
