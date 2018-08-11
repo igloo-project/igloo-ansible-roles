@@ -8,8 +8,6 @@
       state: directory
     with_items:
       - "{{ _catalina_base_path }}"
-    become: yes
-    become_user: root
 
   - name: tomcat · catalina_base · subdirectories "{{ _catalina_base_path }}"
     file:
@@ -27,8 +25,6 @@
       - "{{ _catalina_base_path }}/work"
       - "{{ _catalina_base_path }}/temp"
       - "{{ _catalina_base_path }}/pid"
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
 
   - name: configuration tomcat (server.xml updated)
     template:
@@ -38,8 +34,6 @@
       group: "{{ _catalina_base_user }}"
       mode: u=rw,g=rw,o=r
     when: _catalina_base_server_xml != False
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
 
   # conf/ file inventory
   - name: tomcat · catalina_base · {{ tomcat_dest }}/conf/ inventory"
@@ -49,8 +43,6 @@
         - "{{ tomcat_dest }}/conf"
       file_type: file
     register: catalina_home_files
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
 
   # current {catalina_base}/conf/ status
   - name: "tomcat · catalina_base · files {{ _catalina_base_path }}"
@@ -60,8 +52,6 @@
     loop_control:
       label: "{{ item.path | relpath(tomcat_dest) }}"
     register: catalina_base_files
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
 
   # copy missing conf/ files by using catalina_home as source
   - name: "tomcat · catalina_base · init file {{ _catalina_base_path }}"
@@ -76,8 +66,6 @@
     loop_control:
       label: "{{ item.item.path | relpath(tomcat_dest) }}"
     when: not item.stat.exists and not item.invocation.module_args.path | basename == 'logging.properties'
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
 
   # tomcat needs at least the global web.xml
   - name: tomcat · catalina_base · copy web.xml
@@ -88,8 +76,6 @@
       group: "{{ _catalina_base_group }}"
       remote_src: yes
       force: no
-    become: yes
-    become_user: root
 
   - name: tomcat · catalina_base · service configuration file
     template:
@@ -98,8 +84,6 @@
       owner: "{{ _catalina_base_user }}"
       group: "{{ _catalina_base_group }}"
       mode: u=rw,g=rw,o=r
-    become: yes
-    become_user: "{{ _catalina_base_user }}"
     vars:
       _java_home: "{{ _catalina_base_java_home }}"
 
@@ -112,8 +96,6 @@
         owner: root
         group: root
         mode: u=rwx,g=rx,o=rx
-      become: yes
-      become_user: root
 
     - name: tomcat · catalina_base · service configuration file
       copy:
@@ -126,8 +108,6 @@
         _catalina_home: "{{ tomcat_dest }}"
         _catalina_base: "{{ _catalina_base_path }}"
         _java_home: "{{ _catalina_base_java_home }}"
-      become: yes
-      become_user: root
 
     - name: tomcat · systemd configuration
       systemd:
@@ -135,8 +115,6 @@
         daemon_reload: "{{ service_file.changed }}"
         enabled: true
         # state: "{{ 'restarted' if service_file.changed else 'started' }}"
-      become: yes
-      become_user: root
 
     - name: tomcat · sudoers
       lineinfile:
@@ -163,8 +141,6 @@
         owner: root
         group: root
         mode: u=rwX,g=rwX,o=r
-      become: yes
-      become_user: root
 
     - name: tomcat · catalina_base · service configuration file
       copy:
@@ -177,16 +153,12 @@
         _catalina_home: "{{ tomcat_dest }}"
         _catalina_base: "{{ _catalina_base_path }}"
         _java_home: "{{ _catalina_base_java_home }}"
-      become: yes
-      become_user: root
 
     - name: tomcat · catalina_base · initd file
       file:
         state: link
         src: "{{ _tomcat_initscript }}"
         dest: /etc/init.d/{{ catalina_base.name }}
-      become: yes
-      become_user: root
 
     when: _tomcat_initd
 

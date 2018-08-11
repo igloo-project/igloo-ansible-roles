@@ -1,7 +1,9 @@
-tomcat_user: tomcat
+tomcat_default_user: tomcat
+tomcat_default_group: "{{ tomcat_default_user }}"
+tomcat_user: "{{ tomcat_default_user }}"
+tomcat_group: "{{ tomcat_default_group }}"
 tomcat_catalina_bases: []
 tomcat_catalina_base_root: /srv
-tomcat_default_group: "{{ _catalina_base_user }}"
 _tomcat_major: "{{ tomcat_version.split('.')[0] }}"
 _tomcat_default_xms: "{{ tomcat_default_xms | default('-Xms768m') }}"
 _tomcat_default_xmx: "{{ tomcat_default_xmx | default('-Xmx1024m') }}"

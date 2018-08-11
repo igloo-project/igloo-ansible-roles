@@ -1,127 +1,14 @@
-- name: tomcat · group
-  group:
-    name: tomcat
-    gid: 2100
+---
 
-- name: tomcat · user
-  user:
-    name: "{{ playbook_remote_user }}"
-    groups: "tomcat"
-    append: yes
-
-- name: tomcat · download binary
-  get_url:
-    url: "{{ _tomcat_download_url }}"
-    dest: "{{ _tomcat_download_target }}"
-    checksum: "{{ tomcat_checksum }}"
-    owner: root
-    group: root
-    mode: u=rx,g=r,o=r
-  become: yes
+- name: tomcat · prepare catalina home
+  become: true
   become_user: root
-
-- block:
-  - name: tomcat · create directory
-    file:
-      dest: "{{ tomcat_dest }}"
-      state: directory
-      owner: root
-      group: tomcat
-      mode: u+rwx,g+rx,o+rx
-
-  - name: tomcat · install binary
-    unarchive:
-      remote_src: true
-      src: "{{ _tomcat_download_target }}"
-      dest: "{{ tomcat_dest }}"
-      owner: root
-      group: tomcat
-      # conf files are not group-readable by default
-      mode: g+r,o+r
-      extra_opts:
-        - --strip-components=1
-
-  when: ansible_distribution_major_version != "5"
-  become: yes
-  become_user: root
-
-# strip-components is not available in CentOS 5, we need a workaround
-# untar in alternate folder
-# find parent of bin folder
-# symlink tomcat_dest to found folder
-- block:
-  - name: tomcat · prepare {{ tomcat_wa_dest }} folder
-    file:
-      path: "{{ tomcat_wa_dest }}"
-      state: directory
-      mode: u=rwx,g=rwx,o=rx
-      owner: root
-      group: tomcat
-
-  - name: tomcat · install in {{ tomcat_wa_dest }}
-    unarchive:
-      remote_src: true
-      dest: "{{ tomcat_wa_dest }}"
-      src: "{{ _tomcat_download_target }}"
-
-  - name: tomcat · find target for {{ tomcat_dest }}
-    command: "find {{ tomcat_wa_dest }} -maxdepth 2 -name bin -type d -exec dirname {} \\;"
-    register: find_result
-    changed_when: no
-    check_mode: no
-
-  - name: tomcat · check {{ find_result.stdout_lines[0] }}
-    file:
-      state: directory
-      path: "{{ find_result.stdout_lines[0] }}"
-
-  - name: tomcat · symlink {{ tomcat_dest }}
-    file:
-      state: link
-      path: "{{ tomcat_dest }}"
-      src: "{{ find_result.stdout_lines[0] }}"
-
-  vars:
-    tomcat_wa_dest: "{{ tomcat_dest.rstrip('/') | dirname }}/wa-{{ tomcat_dest.rstrip('/') | basename }}"
-
-  when: ansible_distribution_major_version == "5"
-  become: yes
-  become_user: root
-
-- name: tomcat · folder permissions
-  file:
-    dest: "{{ tomcat_dest }}"
-    owner: root
-    group: tomcat
-    recurse: yes
-
-- name: tomcat · install tomcat@.service
-  template:
-    src: tomcat@.service
-    dest: /etc/systemd/system/tomcat@.service
-    owner: root
-    group: root
-    mode: u=rw,g=rw,o=r
-  vars:
-    _user: "{{ tomcat_default_user }}"
-  register: service_file
-  become: yes
-  become_user: root
-  when: _tomcat_systemd
-
-- name: tomcat · catalina_base · initd file
-  template:
-    dest: "{{ _tomcat_initscript }}"
-    owner: root
-    group: root
-    mode: u=rwx,g=rwx,o=r
-    src: tomcat-initd.j2
-  become: yes
-  become_user: root
-  when: _tomcat_initd
+  import_tasks: catalina_home.yml
 
 - name: tomcat · prepare instances
-  include: catalina_base_item.yml
+  become: true
+  become_user: root
+  include_tasks: catalina_base_item.yml
   with_items: "{{ tomcat_catalina_bases }}"
   loop_control:
     loop_var: catalina_base
