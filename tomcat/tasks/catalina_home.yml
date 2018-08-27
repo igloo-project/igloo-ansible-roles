@@ -87,7 +87,7 @@
   file:
     dest: "{{ tomcat_dest }}"
     owner: root
-    group: tomcat
+    group: "{{ tomcat_group }}"
     recurse: yes
 
 - name: tomcat · install tomcat@.service
