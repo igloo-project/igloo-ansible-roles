@@ -20,6 +20,7 @@
       mode: u=rwx,g=rx,o=rx
     - path: /data/log/tomcat
       mode: u=rwx,g=rx,o=rx
+      owner: "{{ filesystem_application_user }}"
     - path: /data/log/mail
       mode: u=rwx,g=rx,o=rx
     - path: /data/work
