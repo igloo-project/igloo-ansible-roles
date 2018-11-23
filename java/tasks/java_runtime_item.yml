@@ -107,7 +107,7 @@
           - path: "{{ _java_path }}"
             runtime: "{{ _java_runtime }}"
 
-  when: item.packaging is defined and item.packaging == 'yum'
+  when: item.packaging is defined and item.packaging == 'package'
   vars:
     _java_package: "{{ item.package }}"
     _java_version: "{{ item.version }}"
