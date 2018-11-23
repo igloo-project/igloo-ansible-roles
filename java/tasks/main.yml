@@ -2,21 +2,23 @@
   - set_fact: {"{{ java_results_var }}": {}}
     when: java_results_var not in hostvars[inventory_hostname]
 
-  - name: prepare {{ java_download_path }} folder
+  - name: prepare {{ _java_download_path }} folder
     file:
-      path: "{{ java_download_path }}"
+      path: "{{ _java_download_path }}"
       state: directory
       mode: u=rwx,g=rx,o=rx
       owner: "{{ _java_user }}"
       group: "{{ _java_group }}"
+    when: _java_download_path != ''
 
-  - name: prepare {{ java_runtime_path }} folder
+  - name: prepare {{ _java_runtime_path }} folder
     file:
-      path: "{{ java_runtime_path }}"
+      path: "{{ _java_runtime_path }}"
       state: directory
       mode: u=rwx,g=rx,o=rx
       owner: "{{ _java_user }}"
       group: "{{ _java_group }}"
+    when: _java_runtime_path != ''
 
   - include: yum_repository.yml
     when: >-
