@@ -1,4 +1,12 @@
 ---
+
+##
+## TODO: drop this role
+## bug fixed: https://github.com/ansible/ansible/issues/16612
+## workaround selinux detection. x_selinux_handle set according to effective
+## selinux state.
+##
+
 # selinux files does not exists on vserver guest
 - name: check /etc/sysconfig/selinux
   stat:
