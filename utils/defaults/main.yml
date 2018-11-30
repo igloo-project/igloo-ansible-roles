@@ -8,9 +8,11 @@ _utils_default_packages:
     - ImageMagick
     - net-tools
     - libselinux-python
+    - sysstat
   Debian:
     - vim
     - screen
     - imagemagick
     - net-tools
     - locales-all
+    - sysstat
