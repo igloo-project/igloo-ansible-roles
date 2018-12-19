@@ -28,7 +28,7 @@
       - "{{ _catalina_base_path }}/temp"
       - "{{ _catalina_base_path }}/pid"
     become: yes
-    become_user: "{{ _catalina_base_user }}"
+    become_user: root
 
   - name: configuration tomcat (server.xml updated)
     template:
@@ -75,7 +75,7 @@
       label: "{{ item.item.path | relpath(tomcat7_dest) }}"
     when: not item.stat.exists and not item.invocation.module_args.path | basename == 'logging.properties'
     become: yes
-    become_user: "{{ _catalina_base_user }}"
+    become_user: root
 
   - name: tomcat7 · catalina_base · service configuration file
     template:
@@ -85,7 +85,7 @@
       group: "{{ _catalina_base_group }}"
       mode: u=rw,g=rw,o=r
     become: yes
-    become_user: "{{ _catalina_base_user }}"
+    become_user: root
     vars:
       _java_home: "{{ _catalina_base_java_home }}"
 
