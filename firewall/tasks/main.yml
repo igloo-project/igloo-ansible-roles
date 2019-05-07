@@ -19,6 +19,7 @@
 - name: ssh
   firewalld:
     permanent: true
+    immediate: true
     service: ssh
     state: enabled
   notify: firewalld.restart
@@ -26,6 +27,7 @@
 - name: http
   firewalld:
     permanent: true
+    immediate: true
     service: http
     state: enabled
   notify: firewalld.restart
@@ -33,6 +35,7 @@
 - name: https
   firewalld:
     permanent: true
+    immediate: true
     service: https
     state: enabled
   notify: firewalld.restart
