@@ -11,7 +11,7 @@
   copy:
     dest: "{{ _config_path }}"
     content: |
-      {% for key, value in _config_properties.iteritems() %}
+      {% for key, value in _config_properties.items() %}
       {{ key }}={{ value }}
       {% endfor %}
     owner: "{{ _config_user }}"

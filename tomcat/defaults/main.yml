@@ -52,7 +52,7 @@ _default_http_max_threads: "{{ default_http_max_threads | default(50) }}"
 
 _tomcat_systemd_env: |
     [Service]
-    {% for key, value in _tomcat_common_env.iteritems() %}
+    {% for key, value in _tomcat_common_env.items() %}
     Environment={{ key }}={{ value }}
     {% endfor %}
     PIDFile={{ _catalina_base }}/pid/tomcat.pid
@@ -62,7 +62,7 @@ _tomcat_systemd_env: |
     Group={{ _catalina_base_user }}
 
 _tomcat_initd_env: |
-    {% for key, value in _tomcat_common_env.iteritems() %}
+    {% for key, value in _tomcat_common_env.items() %}
     {{ key }}={{ value }}
     {% endfor %}
     TOMCAT_USER={{ _catalina_base_user }}
