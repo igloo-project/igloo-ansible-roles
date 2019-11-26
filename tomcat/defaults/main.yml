@@ -37,8 +37,8 @@ _catalina_base_ajp_max_threads: "{{ catalina_base.ajp_max_threads | default(_def
 _catalina_base_http_max_threads: "{{ catalina_base.http_max_threads | default(_default_http_max_threads) }}"
 _catalina_base_stop_wait_in_s: "{{ catalina_base.stop_wait_in_s | default(_tomcat_default_stop_wait_in_s) }}"
 _catalina_base_stop_allow_kill9: "{{ catalina_base.stop_allow_kill9 | default(_tomcat_default_stop_allow_kill9) }}"
-_catalina_base_xms: "{{ catalina_base.xms | default(_tomcat_default_xms) }}"
-_catalina_base_xmx: "{{ catalina_base.xmx | default(_tomcat_default_xmx) }}"
+_catalina_base_xms: "{{ ('-Xms' + catalina_base.xms) if not catalina_base.xms.startswith('-Xms') else catalina_base.xms | default(_tomcat_default_xms) }}"
+_catalina_base_xmx: "{{ ('-Xmx' + catalina_base.xmx) if not catalina_base.xmx.startswith('-Xmx') else catalina_base.xmx | default(_tomcat_default_xmx) }}"
 _catalina_base_extra_opts: "{{ catalina_base.extra_opts | default(_tomcat_default_extra_opts) }}"
 
 _default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
