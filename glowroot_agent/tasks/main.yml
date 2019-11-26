@@ -1,0 +1,51 @@
+---
+
+- name: unzip
+  package:
+    name: unzip
+  become: true
+  become_user: root
+
+- name: glowroot agent · download
+  get_url:
+    url: "{{ _glowroot_agent_archive_url }}"
+    checksum: "{{ _glowroot_agent_archive_checksum }}"
+    dest: "{{ _glowroot_agent_download_target_path }}"
+    owner: "root"
+    group: "root"
+  become: true
+  become_user: root
+
+- name: glowroot agent · unarchive
+  unarchive:
+    src: "{{ _glowroot_agent_download_target_path }}/{{ _glowroot_agent_archive_name }}"
+    dest: "{{ _glowroot_agent_install_path }}"
+    copy: no
+    mode: u=rwx,g=rX,o=rX
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+  become: true
+  become_user: root
+
+- name: glowroot agent · log dir
+  file:
+    name: "{{ _glowroot_config_log_dir }}"
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root
+
+- name: glowroot agent · config
+  copy:
+    dest: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+    mode: u=rw,g=r,o=
+    content: |
+      agent.id={{ _glowroot_config_agent_id }}
+      collector.address={{ _glowroot_config_collector_address }}
+      log.dir={{ _glowroot_config_log_dir }}
+  become: true
+  become_user: root
