@@ -53,6 +53,7 @@
     notify: httpd
     become: yes
     become_user: root
+    when: httpd_manage_vhost_configuration | default(true)
 
   - name: httpd · status page
     template:

@@ -1,6 +1,8 @@
 httpd_https_domain_redirect: "{{ httpd_server_name }}"
 httpd_step_configuration: yes
 httpd_step_install: yes
+# override so that role do not created a vhost file
+# httpd_manage_vhost_configuration: true
 
 _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"
