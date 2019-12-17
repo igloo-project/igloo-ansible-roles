@@ -32,12 +32,13 @@
       selinux:
         state: disabled
       check_mode: yes
+      changed_when: false
       register: selinux_check
 
     # register result
     - name:
       set_fact:
-        x_selinux_handle: "{{ selinux_check.changed }}"
+        x_selinux_handle: "{{ selinux_check.policy != 'disabled' }}"
 
   # only if auto needed on RedHat environment
   when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat' and sysconfig_selinux.stat.exists
