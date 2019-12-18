@@ -1,0 +1,45 @@
+---
+
+- name: glowroot agent · log dir
+  file:
+    path: "{{ _item_log_dir }}"
+    owner: "{{ _item_owner }}"
+    group: "{{ _item_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root
+
+- name: glowroot agent · tmp dir
+  file:
+    path: "{{ _item_tmp_dir }}"
+    owner: "{{ _item_owner }}"
+    group: "{{ _item_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root
+
+- name: glowroot agent · conf dir
+  file:
+    path: "{{ _item_conf_dir }}"
+    owner: "{{ _item_owner }}"
+    group: "{{ _item_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root
+
+- name: glowroot agent · config
+  copy:
+    dest: "{{ _item_conf_dir }}/glowroot.properties"
+    owner: "{{ _item_owner }}"
+    group: "{{ _item_group }}"
+    mode: u=rw,g=r,o=
+    content: |
+      agent.id={{ _item_agent_id }}
+      collector.address={{ _item_collector_address }}
+      log.dir={{ _item_log_dir }}
+      tmp.dir={{ _item_tmp_dir }}
+  become: true
+  become_user: root

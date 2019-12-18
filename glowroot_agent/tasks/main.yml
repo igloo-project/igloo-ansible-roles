@@ -6,6 +6,21 @@
   become: true
   become_user: root
 
+# if a glowroot.properties is found in install folder
+# we keep old behavior to make a writable install
+# and to provision configuration in install folder
+#
+# else, install folder is not world-writable and
+# glowroot_base must be used
+- name: check old configuration
+  stat:
+    path: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
+  register: old_config
+
+- name: register old configuration status
+  set_fact:
+    _glowroot_old_config: "{{ old_config.stat.exists }}"
+
 - name: glowroot agent · download
   get_url:
     url: "{{ _glowroot_agent_archive_url }}"
@@ -16,14 +31,26 @@
   become: true
   become_user: root
 
+- name: glowroot agent · unarchive readonly
+  unarchive:
+    src: "{{ _glowroot_agent_download_target_path }}/{{ _glowroot_agent_archive_name }}"
+    dest: "{{ _glowroot_agent_install_path }}"
+    remote_src: true
+    owner: root
+    group: root
+  when: not _glowroot_old_config
+  become: true
+  become_user: root
+
 - name: glowroot agent · unarchive
   unarchive:
     src: "{{ _glowroot_agent_download_target_path }}/{{ _glowroot_agent_archive_name }}"
     dest: "{{ _glowroot_agent_install_path }}"
     copy: no
-    mode: u=rwx,g=rX,o=rX
     owner: "{{ _glowroot_agent_user }}"
     group: "{{ _glowroot_agent_group }}"
+    mode: u=rwx,g=rX,o=rX
+  when: _glowroot_old_config
   become: true
   become_user: root
 
@@ -34,6 +61,7 @@
     group: "{{ _glowroot_agent_group }}"
     mode: u=rwx,g=rx,o=rx
     state: directory
+  when: _glowroot_old_config
   become: true
   become_user: root
 
@@ -47,5 +75,23 @@
       agent.id={{ _glowroot_config_agent_id }}
       collector.address={{ _glowroot_config_collector_address }}
       log.dir={{ _glowroot_config_log_dir }}
+  when: _glowroot_old_config
   become: true
   become_user: root
+
+- name: glowroot clean
+  file:
+    path: "{{ _glowroot_agent_install_path }}/glowroot/{{ item }}"
+    state: absent
+  become: true
+  become_user: root
+  with_items:
+    - tmp
+    - config.json
+    - config.synced
+    - glowroot.properties
+  when: _glowroot_old_config or _glowroot_old_config_clean
+
+- name: initialize glowroot bases
+  include_tasks: glowroot_base.yml
+  with_items: "{{ _glowroot_bases }}"

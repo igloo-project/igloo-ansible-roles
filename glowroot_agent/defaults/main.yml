@@ -2,6 +2,34 @@
 
 default_glowroot_version: "0.13.0"
 
+# allow to build <path>/{conf|log/tmp} dirs; this items must be
+# configured with glowroot.{conf|log|tmp}.dir properties
+_glowroot_bases: "{{ glowroot_bases | default([]) }}"
+
+# override from command-line to remove configuration in install
+# folder once 
+_glowroot_old_config_clean: "{{ glowroot_old_config_clean | default(False) }}"
+
+## log_path can be configured with an absolute path if we want
+## store logs in a separate directory
+# glowroot_bases:
+#   - path: /path/to/root
+#     agent_id: client::host
+#     address: scheme://host:port
+#     owner: tomcat
+#     group: tomcat
+#     log_path: relative or absolute path, optional
+
+_item_conf_dir: "{{ item.path }}/conf"
+_item_tmp_dir: "{{ item.path }}/tmp"
+_item_log_dir: "{{ _item_log_path if _item_log_path.startswith('/') else item.path + '/' + _item_log_path }}"
+_item_owner: "{{ item.owner }}"
+_item_group: "{{ item.group }}"
+_item_agent_id: "{{ item.agent_id }}"
+_item_collector_address: "{{ item.collector_address }}"
+# not used directly: build default path as <basePath> + '/log'
+_item_log_path: "{{ item.log_path if item.log_path is defined and item.log_path else item.path + '/log' }}"
+
 _glowroot_agent_version: "{{ glowroot_agent_version | default(default_glowroot_version) }}"
 _glowroot_agent_archive_checksum: "{{ _glowroot_versions[_glowroot_agent_version].checksum | default(glowroot_agent_archive_checksum) }}"
 
