@@ -1,0 +1,5 @@
+---
+
+_firewall_skip_ssh: "{{ firewall_skip_ssh | default(False) }}"
+_firewall_skip_http: "{{ firewall_skip_http | default(False) }}"
+_firewall_skip_https: "{{ firewall_skip_https | default(False) }}"

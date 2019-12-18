@@ -22,6 +22,7 @@
     immediate: true
     service: ssh
     state: enabled
+  when: not _firewall_skip_ssh
   notify: firewalld.restart
 
 - name: http
@@ -30,6 +31,7 @@
     immediate: true
     service: http
     state: enabled
+  when: not _firewall_skip_http
   notify: firewalld.restart
 
 - name: https
@@ -38,6 +40,7 @@
     immediate: true
     service: https
     state: enabled
+  when: not _firewall_skip_https
   notify: firewalld.restart
 
 - name: service
