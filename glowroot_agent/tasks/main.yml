@@ -90,7 +90,7 @@
     - config.json
     - config.synced
     - glowroot.properties
-  when: _glowroot_old_config or _glowroot_old_config_clean
+  when: not _glowroot_old_config or _glowroot_old_config_clean
 
 - name: initialize glowroot bases
   include_tasks: glowroot_base.yml
