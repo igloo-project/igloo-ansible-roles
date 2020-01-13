@@ -61,6 +61,6 @@ ServerName {{ _server_name }}
     ServerAlias {{ _server_alias }}
 {% endfor %}
 
-    RewriteEngine On
-    RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+{{ _httpd_conf_rewrites | indent(width=4, indentfirst=True) }}
+
 </VirtualHost>
