@@ -32,6 +32,12 @@ ServerName {{ _server_name }}
     <Directory {{ _httpd_documentroot }}>
         Require all granted
     </Directory>
+    <Location {{ _httpd_api_endpoint }}>
+        # Do not replace API responses as error codes
+        # may be exposed with messages
+        ProxyErrorOverride Off
+    </Location>
+
 
     SSLEngine on
     SSLCertificateFile {{ _ssl_certificate }}

@@ -9,6 +9,10 @@ _httpd_context_name: "{{ httpd_context_name | default('') }}"
 _httpd_documentroot: "{{ httpd_documentroot }}"
 _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
 
+# this path is used to override API-type endpoints settings
+# (like ProxyErrorOverride Off)
+_httpd_api_endpoint: "{{ httpd_api_endpoint | default('/api') }}"
+
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
 _httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"
