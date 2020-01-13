@@ -15,6 +15,8 @@ ServerName {{ _server_name }}
     ProxyPass         /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }} keepalive=on timeout=3000 ttl=300
     ProxyPassReverse  /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }}
 
+{{ _httpd_conf_https_rewrites | indent(width=4, indentfirst=True) }}
+
     ErrorDocument 403 /errors/403.html
     ErrorDocument 404 /errors/404.html
     ErrorDocument 500 /errors/500.html
@@ -61,6 +63,6 @@ ServerName {{ _server_name }}
     ServerAlias {{ _server_alias }}
 {% endfor %}
 
-{{ _httpd_conf_rewrites | indent(width=4, indentfirst=True) }}
+{{ _httpd_conf_http_rewrites | indent(width=4, indentfirst=True) }}
 
 </VirtualHost>

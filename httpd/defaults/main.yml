@@ -12,7 +12,8 @@ _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
 # this path is used to override API-type endpoints settings
 # (like ProxyErrorOverride Off)
 _httpd_api_endpoint: "{{ httpd_api_endpoint | default('/api') }}"
-_httpd_conf_rewrites: "{{ httpd_conf_rewrites | default(_httpd_conf_rewrites_default) }}"
+_httpd_conf_http_rewrites: "{{ httpd_conf_http_rewrites | default(_httpd_conf_http_rewrites_default) }}"
+_httpd_conf_https_rewrites: "{{ httpd_conf_https_rewrites | default(_httpd_conf_https_rewrites_default) }}"
 
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
@@ -36,7 +37,9 @@ _httpd_packages:
   Debian:
     - apache2
 
-_httpd_conf_rewrites_default: |
+_httpd_conf_http_rewrites_default: |
   RewriteEngine On
   RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+
+_httpd_conf_https_rewrites_default: ""
  
