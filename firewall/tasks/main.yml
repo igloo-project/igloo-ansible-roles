@@ -23,7 +23,9 @@
     service: ssh
     state: enabled
   when: not _firewall_skip_ssh
-  notify: firewalld.restart
+  notify:
+    - firewalld.restart
+    - firewalld.restart.skipped
 
 - name: http
   firewalld:
@@ -32,7 +34,9 @@
     service: http
     state: enabled
   when: not _firewall_skip_http
-  notify: firewalld.restart
+  notify:
+    - firewalld.restart
+    - firewalld.restart.skipped
 
 - name: https
   firewalld:
@@ -41,11 +45,15 @@
     service: https
     state: enabled
   when: not _firewall_skip_https
-  notify: firewalld.restart
+  notify:
+    - firewalld.restart
+    - firewalld.restart.skipped
 
 - name: service
   service:
     name: firewalld
     enabled: true
     state: started
-  notify: firewalld.restart
+  notify:
+    - firewalld.restart
+    - firewalld.restart.skipped

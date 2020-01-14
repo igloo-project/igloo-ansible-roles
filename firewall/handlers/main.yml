@@ -5,6 +5,13 @@
     state: restarted
   become: true
   become_user: root
+  when: not _firewall_handlers_inhibited
+
+- name: firewalld.restart.skipped
+  debug:
+    msg: Restart inhibited by configuration; you must restart manually firewalld
+  changed_when: true
+  when: _firewall_handlers_inhibited
 
 - name: firewalld.start
   service:
@@ -12,6 +19,13 @@
     state: started
   become: true
   become_user: root
+  when: not _firewall_handlers_inhibited
+
+- name: firewalld.start.skipped
+  debug:
+    msg: Start inhibited by configuration; you must start manually firewalld
+  changed_when: true
+  when: _firewall_handlers_inhibited
 
 - name: firewalld.stop
   service:
@@ -19,3 +33,10 @@
     state: stopped
   become: true
   become_user: root
+  when: not _firewall_handlers_inhibited
+
+- name: firewalld.stop.skipped
+  debug:
+    msg: Stop inhibited by configuration; you must stop manually firewalld
+  changed_when: true
+  when: _firewall_handlers_inhibited

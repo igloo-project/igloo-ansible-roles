@@ -100,13 +100,6 @@
   vars:
     _user: "{{ tomcat_user }}"
   register: service_file
-  when: _tomcat_systemd
-
-- name: tomcat · catalina_base · initd file
-  template:
-    dest: "{{ _tomcat_initscript }}"
-    owner: root
-    group: root
-    mode: u=rwx,g=rwx,o=r
-    src: tomcat-initd.j2
-  when: _tomcat_initd
+  notify:
+    - tomcat.restart
+    - tomcat.restart.skipped

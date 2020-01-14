@@ -43,3 +43,4 @@ _httpd_conf_http_rewrites_default: |
 
 _httpd_conf_https_rewrites_default: ""
  
+_httpd_handlers_inhibited: "{{ handlers_inhibited | default(False) or httpd_handlers_inhibited | default(False) }}"

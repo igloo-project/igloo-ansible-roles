@@ -10,9 +10,9 @@ _tomcat_default_xmx: "{{ tomcat_default_xmx | default('-Xmx1024m') }}"
 _tomcat_default_extra_opts: "{{ tomcat_default_extra_opts | default('') }}"
 _tomcat_default_stop_allow_kill9: "{{ tomcat_default_stop_allow_kill9 | default(False) }}"
 _tomcat_default_stop_wait_in_s: "{{ tomcat_default_stop_wait_in_s | default(60) }}"
-_tomcat_systemd: "{{ tomcat_systemd | default(True) }}"
-_tomcat_initd: "{{ tomcat_initd | default(False) }}"
-_tomcat_initscript: /etc/init.d/tomcat-common
+_tomcat_systemd: true
+# support removed on 2020-01
+_tomcat_initd: false
 
 _tomcat_timeout_stop: "{{ tomcat_timeout_stop | default(None) }}"
 
@@ -61,16 +61,9 @@ _tomcat_systemd_env: |
     User={{ _catalina_base_user }}
     Group={{ _catalina_base_user }}
 
-_tomcat_initd_env: |
-    {% for key, value in _tomcat_common_env.items() %}
-    {{ key }}={{ value }}
-    {% endfor %}
-    TOMCAT_USER={{ _catalina_base_user }}
-    {% if _catalina_base_stop_wait_in_s %}
-    TOMCAT_SLEEP_BEFORE_KILL={{ _catalina_base_stop_wait_in_s }}
-    {% endif %}
-
 _tomcat_common_env:
     CATALINA_HOME: "{{ _catalina_home }}"
     CATALINA_BASE: "{{ _catalina_base }}"
     CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"
+
+_tomcat_handlers_inhibited: "{{ handlers_inhibited | default(False) or tomcat_handlers_inhibited | default(False) }}"

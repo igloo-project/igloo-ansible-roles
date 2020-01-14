@@ -1,6 +1,19 @@
-- name: httpd
+---
+
+# Handlers are installed multiple times if role is called multiple times
+# as we use listen: binding
+# We need to prevent handler binding on httpd_step_install phase
+
+- name: httpd.restart
   service:
     name: "{{ _httpd_service }}"
     state: restarted
   become: yes
   become_user: root
+  when: not _httpd_handlers_inhibited
+
+- name: httpd.restart.skipped
+  changed_when: true
+  debug:
+    msg: Restart inhibited by configuration; you must restart manually httpd
+  when: _httpd_handlers_inhibited

@@ -50,7 +50,9 @@
       _ssl_certificate: "{{ _httpd_ssl_certificate }}"
       _ssl_key: "{{ _httpd_ssl_key }}"
       _ssl_cacertificate: "{{ _httpd_ssl_cacertificate }}"
-    notify: httpd
+    notify:
+      - httpd.restart
+      - httpd.restart.skipped
     become: yes
     become_user: root
     when: httpd_manage_vhost_configuration | default(true)
@@ -62,7 +64,9 @@
       owner: root
       group: root
       mode: u=rw,g=r,o=r
-    notify: httpd
+    notify:
+      - httpd.restart
+      - httpd.restart.skipped
     become: yes
     become_user: root
 

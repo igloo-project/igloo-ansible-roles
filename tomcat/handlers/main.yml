@@ -1,74 +1,65 @@
 ---
 ## systemd
-- name: reload tomcat instances
+- name: tomcat.reload
   become: yes
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
     state: reloaded
   with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_systemd }}"
+  when: not _tomcat_handlers_inhibited
 
-- name: restart tomcat instances
+- name: tomcat.reload.skipped
+  debug:
+    msg: reload inhibited by configuration; you must reload manually tomcat@{{ item.name }}
+  changed_when: true
+  with_items: "{{ tomcat_catalina_bases }}"
+  when: _tomcat_handlers_inhibited
+
+- name: tomcat.restart
   become: yes
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
     state: restarted
   with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_systemd }}"
+  when: not _tomcat_handlers_inhibited
 
-- name: start tomcat instances
+- name: tomcat.restart.skipped
+  debug:
+    msg: Restart inhibited by configuration; you must restart manually tomcat@{{ item.name }}
+  changed_when: _tomcat_handlers_inhibited
+  with_items: "{{ tomcat_catalina_bases }}"
+  when: _tomcat_handlers_inhibited
+
+- name: tomcat.start
   become: yes
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
     state: started
   with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_systemd }}"
+  when: not _tomcat_handlers_inhibited
 
-- name: stop tomcat instances
+- name: tomcat.start.skipped
+  debug:
+    msg: Start inhibited by configuration; you must start manually tomcat@{{ item.name }}
+  changed_when: true
+  with_items: "{{ tomcat_catalina_bases }}"
+  when: _tomcat_handlers_inhibited
+
+- name: tomcat.stop
   become: yes
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
     state: stopped
   with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_systemd }}"
+  when: not _tomcat_handlers_inhibited
 
-## initd
-- name: reload tomcat instances
-  become: yes
-  become_user: root
-  service:
-    name: "{{ item.name }}"
-    state: reloaded
+- name: tomcat.stop.skipped
+  debug:
+    msg: Stop inhibited by configuration; you must stop manually tomcat@{{ item.name }}
+  changed_when: true
   with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_initd }}"
-
-- name: restart tomcat instances
-  become: yes
-  become_user: root
-  service:
-    name: "{{ item.name }}"
-    state: restarted
-  with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_initd }}"
-
-- name: start tomcat instances
-  become: yes
-  become_user: root
-  service:
-    name: "{{ item.name }}"
-    state: started
-  with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_initd }}"
-
-- name: stop tomcat instances
-  become: yes
-  become_user: root
-  service:
-    name: "{{ item.name }}"
-    state: stopped
-  with_items: "{{ tomcat_catalina_bases }}"
-  when: "{{ _tomcat_initd }}"
+  when: _tomcat_handlers_inhibited
