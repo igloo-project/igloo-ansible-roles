@@ -25,7 +25,7 @@
       dest: "{{ tomcat_dest }}"
       state: directory
       owner: root
-      group: "{{ tomcat_group }}"
+      group: root
       mode: u+rwx,g+rx,o+rx
 
   - name: tomcat · install binary
@@ -34,9 +34,9 @@
       src: "{{ _tomcat_download_target }}"
       dest: "{{ tomcat_dest }}"
       owner: root
-      group: "{{ tomcat_group }}"
+      group: root
       # conf files are not group-readable by default
-      mode: g+r,o+r
+      mode: g+rX,o+rX
       extra_opts:
         - --strip-components=1
 
@@ -53,7 +53,7 @@
       state: directory
       mode: u=rwx,g=rwx,o=rx
       owner: root
-      group: "{{ tomcat_group }}"
+      group: root
 
   - name: tomcat · install in {{ tomcat_wa_dest }}
     unarchive:
@@ -87,7 +87,7 @@
   file:
     dest: "{{ tomcat_dest }}"
     owner: root
-    group: "{{ tomcat_group }}"
+    group: root
     recurse: yes
 
 - name: tomcat · install tomcat@.service
