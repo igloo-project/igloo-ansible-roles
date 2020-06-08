@@ -1,2 +1,2 @@
 ---
-- include: logrotate.yml
+- import_tasks: logrotate.yml

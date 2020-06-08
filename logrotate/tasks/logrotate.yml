@@ -5,9 +5,9 @@
     name: logrotate
 
 - name: configurations
-  include: logrotate_item.yml
+  include_tasks: logrotate_item.yml
   with_items: "{{ _logrotate_items }}"
-  loop_var:
+  loop_control:
     label: "{{ _logrotate_item.filename }}"
   vars:
     # if item is a dict, use this dict, else search in _logrotate_entries dict
