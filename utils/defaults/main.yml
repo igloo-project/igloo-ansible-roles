@@ -16,3 +16,11 @@ _utils_default_packages:
     - net-tools
     - locales-all
     - sysstat
+  RedHat_8:
+    - vim-enhanced
+    - screen
+    - ImageMagick
+    - net-tools
+    - libselinux-python3
+    - sysstat
+
