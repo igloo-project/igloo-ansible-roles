@@ -1,26 +1,25 @@
 utils_packages: []
 utils_default_packages: "{{ _utils_default_packages | distro(vars) }}"
 
+_selinux_package:
+  RedHat: libselinux-python
+  CentOS_8: libselinux-python3
+
+_redhat_commons:
+  - vim-enhanced
+  - screen
+  - ImageMagick
+  - net-tools
+  - sysstat
+  - "{{ _selinux_package | distro(vars) }}"
+
 _utils_default_packages:
-  RedHat:
-    - vim-enhanced
-    - screen
-    - ImageMagick
-    - net-tools
-    - libselinux-python
-    - sysstat
+  RedHat: "{{ _redhat_commons }}"
   Debian:
     - vim
     - screen
     - imagemagick
     - net-tools
     - locales-all
-    - sysstat
-  RedHat_8:
-    - vim-enhanced
-    - screen
-    - ImageMagick
-    - net-tools
-    - libselinux-python3
     - sysstat
 
