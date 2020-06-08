@@ -1,51 +1,11 @@
 ---
 
 ##
-## TODO: drop this role
 ## bug fixed: https://github.com/ansible/ansible/issues/16612
-## workaround selinux detection. x_selinux_handle set according to effective
-## selinux state.
+## We now use an inventory definition for x_selinux_handle, set from
+## ansible_selinux definition.
 ##
 
-# selinux files does not exists on vserver guest
-- name: check /etc/sysconfig/selinux
-  stat:
-    path: /etc/sysconfig/selinux
-  register: sysconfig_selinux
-  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat'
-
-
-- name: check and register selinux mode
-  block:
-    # selinux module prerequisites
-    - name: selinux python binding
-      package:
-        name: "{{ _package }}"
-      with_items:
-        - policycoreutils-python
-        - libselinux-python
-      loop_control:
-        loop_var: _package
-
-    # check selinux on redhat system
-    - name: check selinux
-      selinux:
-        state: disabled
-      check_mode: yes
-      changed_when: false
-      register: selinux_check
-
-    # register result
-    - name:
-      set_fact:
-        x_selinux_handle: "{{ 'changed' in selinux_check.msg }}"
-
-  # only if auto needed on RedHat environment
-  when: _selinux_handle == 'auto' and ansible_os_family == 'RedHat' and sysconfig_selinux.stat.exists
-
-
-# else set no
-- name:
-  set_fact:
-    x_selinux_handle: no
+- name: check x_selinux_handle
+  fail: "Use this role with an updated igloo-ansible-playbooks that defines x_selinux_handle!"
   when: x_selinux_handle is not defined
