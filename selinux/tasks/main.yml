@@ -7,5 +7,6 @@
 ##
 
 - name: check x_selinux_handle
-  fail: "Use this role with an updated igloo-ansible-playbooks that defines x_selinux_handle!"
+  fail:
+    msg: "Use this role with an updated igloo-ansible-playbooks that defines x_selinux_handle!"
   when: x_selinux_handle is not defined
