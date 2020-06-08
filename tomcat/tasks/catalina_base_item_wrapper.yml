@@ -1,0 +1,5 @@
+---
+
+- import_tasks: catalina_base_item.yml
+  become: true
+  become_user: root

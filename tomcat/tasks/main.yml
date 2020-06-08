@@ -6,9 +6,7 @@
   import_tasks: catalina_home.yml
 
 - name: tomcat · prepare instances
-  become: true
-  become_user: root
-  include_tasks: catalina_base_item.yml
+  include_tasks: catalina_base_item_wrapper.yml
   with_items: "{{ tomcat_catalina_bases }}"
   loop_control:
     loop_var: catalina_base
