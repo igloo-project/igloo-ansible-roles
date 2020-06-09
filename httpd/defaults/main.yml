@@ -7,6 +7,9 @@ httpd_step_install: yes
 # Allow to override listen ports for HTTP and HTTPS
 _httpd_https_port: "{{ httpd_https_port | default(443) }}"
 _httpd_http_port: "{{ httpd_http_port | default(80) }}"
+_httpd_common_config: "{{ httpd_common_config | default(_httpd_listens | bool) }}"
+_httpd_common_template: "{{ httpd_common_template | default('common.conf.j2') }}"
+_httpd_listens: "{{ httpd_listens | default([]) }}"
 
 _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"

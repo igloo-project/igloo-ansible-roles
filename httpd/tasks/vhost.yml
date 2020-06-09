@@ -1,5 +1,18 @@
 ---
 
+- name: httpd · general configuration
+  template:
+    src: "{{ _httpd_common_template }}"
+    dest: "{{ _httpd_configuration_folder }}/00-common.conf"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify:
+    - httpd.restart
+    - httpd.restart.skipped
+  become: true
+  become_user: root
+
 - name: httpd · configuration
   template:
     src: application.conf.j2

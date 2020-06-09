@@ -1,5 +1,6 @@
 {% macro macro_vhost(macro_files={}, vhost_item={}) %}
 {% from macro_files['ssl'] import macro_ssl %}
+{# Main SSL vhost definition #}
 <VirtualHost *:{{ vhost_item['sslPort'] }}>
     ServerName {{ vhost_item['serverName'] }}
 {% for alias in vhost_item['serverAlias'] | default([]) %}
@@ -54,6 +55,7 @@
     ErrorLog /data/log/web/{{ vhost_item['appName'] }}-ssl-error_log
 </VirtualHost>
 
+{# Non-SSL definition; no connection bound. Default rewrites config performs redirect-all behavior #}
 {% if vhost_item['ssl'] | default(False) and vhost_item['nonSslPort'] | default('') %}
 ## Redirection * vers le https ##
 <VirtualHost *:{{ vhost_item['nonSslPort'] }}>

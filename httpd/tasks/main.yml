@@ -36,7 +36,7 @@
       loop_var: _port
     when: x_selinux_handle
 
-  - import_tasks: vhost.yml 
+  - import_tasks: vhost.yml
 
   - name: httpd · status page
     template:
