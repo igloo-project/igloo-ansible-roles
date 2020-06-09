@@ -1,0 +1,4 @@
+---
+
+- include_tasks: restore.yml
+  when: restore_dump | bool

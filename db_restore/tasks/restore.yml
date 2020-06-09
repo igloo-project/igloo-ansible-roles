@@ -1,0 +1,27 @@
+---
+
+- stat:
+    path: "{{ restore_dump_file }}"
+  delegate_to: localhost
+  register: dump
+
+- name: restore
+  become: true
+  become_user: root
+  block:
+    - name: copy dump
+      copy:
+        src: "{{ restore_dump_file }}"
+        dest: "{{ _restore_dump_file_target }}"
+        remote_src: false
+    - name: drop database
+      shell: psql -U postgres -p {{ playbook_postgresql_port }} {{ playbook_postgresql_database }} -c "drop schema {{ playbook_postgresql_user }} cascade;"
+      when: restore_drop_database
+    - name: restore database
+      shell: pg_restore -U postgres -Fc -d {{ playbook_postgresql_database }} {{ _restore_dump_file_target }}
+  when: dump.stat.exists
+
+- fail:
+    msg: "File {{ restore_dump_file }} missing on localhost. Restore failed."
+  ignore_errors: "{{ restore_dump_ignore_missing }}"
+  when: not dump.stat.exists
