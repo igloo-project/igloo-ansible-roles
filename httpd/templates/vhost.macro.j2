@@ -1,0 +1,69 @@
+{% macro macro_vhost(macro_files={}, vhost_item={}) %}
+{% from macro_files['ssl'] import macro_ssl %}
+<VirtualHost *:{{ vhost_item['sslPort'] }}>
+    ServerName {{ vhost_item['serverName'] }}
+{% for alias in vhost_item['serverAlias'] | default([]) %}
+    ServerAlias {{ alias }}
+{% endfor %}
+
+    DocumentRoot {{ vhost_item['documentRoot'] }}
+
+    ProxyErrorOverride On
+    ProxyPass /static-content/ !
+    ProxyPass /errors/ !
+    ProxyPass /server-status !
+{% for proxyPass in vhost_item['proxyPassUnmount'] | default([]) %}
+    ProxyPass {{ proxyPass }} !
+{% endfor %}
+    ProxyPass         /{{ vhost_item['contextName'] }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout=3000 ttl=300
+    ProxyPassReverse  /{{ vhost_item['contextName'] }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }}
+
+{{ vhost_item['sslRewrites'] | default('') | indent(width=4, indentfirst=True) }}
+
+    ErrorDocument 403 /errors/403.html
+    ErrorDocument 404 /errors/404.html
+    ErrorDocument 500 /errors/500.html
+    ErrorDocument 503 /errors/503.html
+
+    AddOutputFilterByType DEFLATE application/x-javascript text/html text/xml text/css text/javascript
+
+    AddDefaultCharset UTF-8
+    AddCharset UTF-8 .js .css
+
+    #<Location "/server-status">
+    #    SetHandler server-status
+    #    Require ip 127.0.0.1
+    #</Location>
+    <Directory {{ vhost_item['documentRoot'] }}>
+        Require all granted
+    </Directory>
+{% if vhost_item['apiEndpoint'] | default('') %}
+    <Location {{ vhost_item['apiEndpoint'] }}>
+        # Do not replace API responses as error codes
+        # may be exposed with messages
+        ProxyErrorOverride Off
+    </Location>
+{% endif %}
+
+{% if vhost_item['sslLocations'] | default('') %}
+{{ vhost_item['sslLocations'] | indent(width=4, indentfirst=True) }}
+{% endif %}
+
+{{ macro_ssl(vhost_item=vhost_item, macro_files=macro_files) }}
+    CustomLog /data/log/web/{{ vhost_item['appName'] }}-ssl-access_log combined
+    ErrorLog /data/log/web/{{ vhost_item['appName'] }}-ssl-error_log
+</VirtualHost>
+
+{% if vhost_item['ssl'] | default(False) and vhost_item['nonSslPort'] | default('') %}
+## Redirection * vers le https ##
+<VirtualHost *:{{ vhost_item['nonSslPort'] }}>
+    ServerName {{ vhost_item['serverName'] }}
+{% for alias in vhost_item['serverAlias'] | default([]) %}
+    ServerAlias {{ alias }}
+{% endfor %}
+
+{{ vhost_item['rewrites'] | default('') | indent(width=4, indentfirst=True) }}
+
+</VirtualHost>
+{% endif %}
+{% endmacro %}

@@ -1,68 +1,25 @@
+{% from _httpd_macro_files['vhost'] import macro_vhost %}
 ServerName {{ _server_name }}
 
-<VirtualHost *:443>
-    ServerName {{ _server_name }}
-{% for _server_alias in _server_aliases | default([]) %}
-    ServerAlias {{ _server_alias }}
-{% endfor %}
-
-    DocumentRoot {{ _httpd_documentroot }}
-
-    ProxyErrorOverride On
-    ProxyPass /static-content/ !
-    ProxyPass /errors/ !
-    ProxyPass /server-status !
-    ProxyPass         /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }} keepalive=on timeout=3000 ttl=300
-    ProxyPassReverse  /{{ _httpd_context_name }} ajp://localhost:{{ _httpd_ajp_port }}/{{ _httpd_context_name }}
-
-{{ _httpd_conf_https_rewrites | indent(width=4, indentfirst=True) }}
-
-    ErrorDocument 403 /errors/403.html
-    ErrorDocument 404 /errors/404.html
-    ErrorDocument 500 /errors/500.html
-    ErrorDocument 503 /errors/503.html
-
-    AddOutputFilterByType DEFLATE application/x-javascript text/html text/xml text/css text/javascript
-
-    AddDefaultCharset UTF-8
-    AddCharset UTF-8 .js .css
-
-    #<Location "/server-status">
-    #    SetHandler server-status
-    #    Require ip 127.0.0.1
-    #</Location>
-    <Directory {{ _httpd_documentroot }}>
-        Require all granted
-    </Directory>
-    <Location {{ _httpd_api_endpoint }}>
-        # Do not replace API responses as error codes
-        # may be exposed with messages
-        ProxyErrorOverride Off
-    </Location>
-
-
-    SSLEngine on
-    SSLCertificateFile {{ _ssl_certificate }}
-    SSLCertificateKeyFile {{ _ssl_key }}
-{% if _ssl_cacertificate is not none %}
-    SSLCACertificateFile {{ _ssl_cacertificate }}
-{% endif %}
-
-    SSLProtocol all -SSLv3
-    SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
-    SSLHonorCipherOrder on
-
-    CustomLog /data/log/web/{{ _httpd_application_name }}-ssl-access_log combined
-    ErrorLog /data/log/web/{{ _httpd_application_name }}-ssl-error_log
-</VirtualHost>
-
-## Redirection * vers le https .fr ##
-<VirtualHost *:80>
-    ServerName {{ _server_name }}
-{% for _server_alias in _server_aliases | default([]) %}
-    ServerAlias {{ _server_alias }}
-{% endfor %}
-
-{{ _httpd_conf_http_rewrites | indent(width=4, indentfirst=True) }}
-
-</VirtualHost>
+{{ macro_vhost(macro_files=_httpd_macro_files,
+               vhost_item={
+                 "ssl": true,
+                 "sslPort": _httpd_https_port,
+                 "nonSslPort": _httpd_http_port,
+                 "appName": _httpd_application_name,
+                 "documentRoot": _httpd_documentroot,
+                 "serverName": _server_name,
+                 "serverAlias": _server_alias,
+                 "contextName": _httpd_context_name,
+                 "ajpPort": _httpd_ajp_port,
+                 "apiEndpoint": _httpd_api_endpoint,
+                 "sslRewrites": _httpd_conf_https_rewrites,
+                 "rewrites": _httpd_conf_http_rewrites,
+                 "sslLocations": _httpd_conf_https_locations,
+                 "locations": _httpd_conf_http_locations,
+                 "proxyPassUnmount": _httpd_conf_proxypass_unmount,
+                 "sslCertificateFile": _ssl_certificate,
+                 "sslCertificateKeyFile": _ssl_key,
+                 "sslCaCertificateFile": _ssl_cacertificate
+              })
+}}

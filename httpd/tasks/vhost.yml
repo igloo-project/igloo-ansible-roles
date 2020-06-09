@@ -1,0 +1,39 @@
+---
+
+- name: httpd · configuration
+  template:
+    src: application.conf.j2
+    dest: "{{ _httpd_configuration_folder }}/50-{{ _httpd_application_name }}.conf"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  vars:
+    _server_name: "{{ httpd_server_name }}"
+    _server_aliases: "{{ httpd_server_aliases }}"
+    _server_https_domain_redirect: "{{ httpd_https_domain_redirect }}"
+    _ssl_certificate: "{{ _httpd_ssl_certificate }}"
+    _ssl_key: "{{ _httpd_ssl_key }}"
+    _ssl_cacertificate: "{{ _httpd_ssl_cacertificate }}"
+  notify:
+    - httpd.restart
+    - httpd.restart.skipped
+  become: yes
+  become_user: root
+  when: httpd_manage_vhost_configuration | default(true)
+
+- name: httpd · configuration {{ vhost_item.filename }}
+  template:
+    src: "{{ vhost_item.template | default('custom.conf.j2') }}"
+    dest: "{{ _httpd_configuration_folder }}/{{ vhost_item.filename }}"
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify:
+    - httpd.restart
+    - httpd.restart.skipped
+  become: yes
+  become_user: root
+  with_items: "{{ _httpd_custom_vhosts }}"
+  loop_control:
+    loop_var: vhost_item
+    label: "{{ vhost_item.filename }}"

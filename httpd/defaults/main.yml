@@ -4,16 +4,50 @@ httpd_step_install: yes
 # override so that role do not created a vhost file
 # httpd_manage_vhost_configuration: true
 
+# Allow to override listen ports for HTTP and HTTPS
+_httpd_https_port: "{{ httpd_https_port | default(443) }}"
+_httpd_http_port: "{{ httpd_http_port | default(80) }}"
+
 _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"
 _httpd_documentroot: "{{ httpd_documentroot }}"
 _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
+
+# Only needed for custom extra vhosts. Default vhost handling is controlled by
+# httpd_manage_vhost_configuration var, in vhost.yml
+_httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
+# Content of a vhost definition
+#template: custom.conf.j2
+#filename: 50-vhost.conf
+#ssl: true,
+#sslPort: _httpd_https_port,
+#appName: _httpd_application_name,
+#nonSslPort: _httpd_http_port,
+#documentRoot: _httpd_documentroot,
+#serverName: _server_name,
+#serverAlias: _server_alias,
+#contextName: _httpd_context_name,
+#ajpPort: _httpd_ajp_port,
+#apiEndpoint: _httpd_api_endpoint,
+#sslRewrites: _httpd_conf_https_rewrites,
+#rewrites: _httpd_conf_http_rewrites,
+#sslLocations: _httpd_conf_https_locations,
+#locations: _httpd_conf_http_locations,
+#proxyPassUnmount: _httpd_conf_proxypass_unmount,
+#sslCertificateFile: _ssl_certificate,
+#sslCertificateKeyFile: _ssl_key,
+#sslCaCertificateFile: _ssl_cacertificate
 
 # this path is used to override API-type endpoints settings
 # (like ProxyErrorOverride Off)
 _httpd_api_endpoint: "{{ httpd_api_endpoint | default('/api') }}"
 _httpd_conf_http_rewrites: "{{ httpd_conf_http_rewrites | default(_httpd_conf_http_rewrites_default) }}"
 _httpd_conf_https_rewrites: "{{ httpd_conf_https_rewrites | default(_httpd_conf_https_rewrites_default) }}"
+# List of <path>; allow to add ProxyPass <path> ! statements before ajp mounts
+_httpd_conf_proxypass_unmount: "{{ httpd_conf_proxypass_unmount | default([]) }}"
+# Allow to add custom Location blocks
+_httpd_conf_https_locations: "{{ httpd_conf_https_locations | default('') }}"
+_httpd_conf_http_locations: "{{ httpd_conf_http_locations | default('') }}"
 
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
@@ -42,5 +76,18 @@ _httpd_conf_http_rewrites_default: |
   RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
 
 _httpd_conf_https_rewrites_default: ""
- 
+
 _httpd_handlers_inhibited: "{{ handlers_inhibited | default(False) or httpd_handlers_inhibited | default(False) }}"
+
+# macro definition
+_httpd_macro_file_vhost: "{{ httpd_macro_file_vhost | default('vhost.macro.j2') }}"
+_httpd_macro_file_ssl: "{{ httpd_macro_file_ssl | default('ssl.macro.j2') }}"
+
+# If you want to use custom macros: just override corresponding httpd_macro_file_<macro>
+# Override httpd_macro_files only if you want to use extra macros inside your
+# custom macros, and you want to use a variable in place of a static filename
+# (this is needed as ansible vars are not available in macros)
+_default_httpd_macro_files:
+  ssl: "{{ _httpd_macro_file_ssl }}"
+  vhost: "{{ _httpd_macro_file_vhost }}"
+_httpd_macro_files: "{{ httpd_macro_files | default(_default_httpd_macro_files) }}"
