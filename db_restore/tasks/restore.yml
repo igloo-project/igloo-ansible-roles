@@ -3,25 +3,38 @@
 - stat:
     path: "{{ restore_dump_file }}"
   delegate_to: localhost
-  register: dump
+  when: not restore_dump_file_remote_src
+  register: dump_local
+
+- stat:
+    path: "{{ restore_dump_file }}"
+  when: restore_dump_file_remote_src
+  register: dump_remote
 
 - name: restore
   become: true
   become_user: root
   block:
-    - name: copy dump
+    - name: copy dump if local file
       copy:
         src: "{{ restore_dump_file }}"
         dest: "{{ _restore_dump_file_target }}"
         remote_src: false
+      when: not restore_dump_file_remote_src
+    - name: confirm
+      pause:
+        prompt: database drop and restore from {{ restore_dump_file }}. Press 'CTRL+C' then 'A' to abort. Press ENTER to continue"
+      when: not restore_dump_skip_confirm | default(False)
     - name: drop database
       shell: psql -U postgres -p {{ playbook_postgresql_port }} {{ playbook_postgresql_database }} -c "drop schema {{ playbook_postgresql_user }} cascade;"
       when: restore_drop_database
     - name: restore database
-      shell: pg_restore -U postgres -Fc -d {{ playbook_postgresql_database }} {{ _restore_dump_file_target }}
-  when: dump.stat.exists
+      shell: >
+        pg_restore -U postgres -Fc -d {{ playbook_postgresql_database }}
+        {{ _restore_dump_file_target if not restore_dump_file_remote_src else restore_dump_file }}
+  when: restore_dump_file_remote_src and dump_remote.stat.exists or not restore_dump_file_remote_src and dump_local.stat.exists
 
 - fail:
-    msg: "File {{ restore_dump_file }} missing on localhost. Restore failed."
+    msg: "File {{ restore_dump_file }} missing. Restore failed."
   ignore_errors: "{{ restore_dump_ignore_missing }}"
-  when: not dump.stat.exists
+  when: restore_dump_file_remote_src and not dump_remote.stat.exists or not restore_dump_file_remote_src and not dump_local.stat.exists

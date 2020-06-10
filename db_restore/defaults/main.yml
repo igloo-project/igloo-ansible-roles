@@ -2,8 +2,9 @@
 
 restore_dump: false
 restore_dump_file: "{{ inventory_dir }}/../database.dump"
+restore_dump_file_remote_src: false
 restore_dump_file_target_folder: "{{ '~' }}"
 restore_dump_ignore_missing: false
-restore_drop_database: false
+restore_drop_database: true
 
 _restore_dump_file_target: "{{ restore_dump_file_target_folder }}/{{ restore_dump_file | basename }}"
