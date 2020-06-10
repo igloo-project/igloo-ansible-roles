@@ -1,0 +1,11 @@
+---
+
+# static_archive:
+# static_target:
+static_owner: "{{ _distro_httpd_user | distro(vars) }}"
+static_group: "{{ _distro_httpd_user | distro(vars) }}"
+static_mode: u=rX,g=rX,o=rX
+
+_distro_httpd_user:
+  RedHat: apache
+  Debian: www-data

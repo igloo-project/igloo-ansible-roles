@@ -1,0 +1,11 @@
+---
+
+- name: deploy static resources
+  unarchive:
+    src: "{{ static_archive }}"
+    dest: "{{ static_target }}"
+    owner: "{{ static_owner }}"
+    group: "{{ static_group }}"
+    mode: "{{ static_mode }}"
+  become: true
+  become_user: root
