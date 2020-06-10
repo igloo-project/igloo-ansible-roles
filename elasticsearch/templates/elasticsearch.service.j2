@@ -11,7 +11,7 @@ Environment=JAVA_HOME={{ _elasticsearch_java_home }}
 {% set extra_opts = [] %}
 
 {# for elasticsearch < 5.x, jvm settings via systemd Environment #}
-{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
+{% if _elasticsearch_version is version('5.0.0', '<') %}
 {% do extra_opts.extend(_elasticsearch_java_opts) %}
 {% if _elasticsearch_mem_min %}
 Environment=ES_MIN_MEM={{ _elasticsearch_mem_min }}

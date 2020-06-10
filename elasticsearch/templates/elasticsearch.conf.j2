@@ -44,7 +44,7 @@ path.logs: {{ _elasticsearch_logs_path }}
 #path.logs: /path/to/logs
 {% endif %}
 
-{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
+{% if _elasticsearch_version is version('5.0.0', '<') %}
 #
 # Path to plugin files:
 #
@@ -55,7 +55,7 @@ path.plugins: {{ _elasticsearch_plugins_path }}
 {% endif %}
 {% endif %}
 
-{% if _elasticsearch_version | version_compare('5.0.0', '<') %}
+{% if _elasticsearch_version is version('5.0.0', '<') %}
 #
 # Path to script files:
 #

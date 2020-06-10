@@ -17,3 +17,5 @@
     - name: enable powertools
       shell: yum config-manager --set-enabled PowerTools
       when: "'PowerTools' not in powertools_repolist.stdout"
+      args:
+        warn: false

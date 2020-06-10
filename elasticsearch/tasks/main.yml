@@ -165,7 +165,7 @@
 
 - name: memory (>=5.x)
   # only for ES 5.x
-  when: _elasticsearch_version | version_compare('5.0.0', '>=')
+  when: _elasticsearch_version is version('5.0.0', '>=')
   become: yes
   become_user: root
   block:
@@ -195,7 +195,7 @@
     msg: plugins are not supported by this role for ES >= 5.x
   when: >-
     _elasticsearch_plugins | length > 0
-    and _elasticsearch_version | version_compare('5.0.0', '>=')
+    and _elasticsearch_version is version('5.0.0', '>=')
 
 - name: plugins
   include: plugin.yml
