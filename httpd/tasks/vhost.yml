@@ -34,6 +34,17 @@
   become_user: root
   when: httpd_manage_vhost_configuration | default(true)
 
+- name: httpd · configuration robots.txt
+  copy:
+    content: "{{ _httpd_conf_robots_txt }}"
+    dest: "{{ _httpd_documentroot }}/robots.txt"
+    owner: "{{ _httpd_user }}"
+    group: "{{ _httpd_user }}"
+    mode: u=rw,g=r,o=r
+  become: yes
+  become_user: root
+  when: _httpd_conf_robots_txt | default('') != ''
+
 - name: httpd · configuration {{ vhost_item.filename }}
   template:
     src: "{{ vhost_item.template | default('custom.conf.j2') }}"
@@ -50,3 +61,18 @@
   loop_control:
     loop_var: vhost_item
     label: "{{ vhost_item.filename }}"
+
+- name: httpd · configuration {{ vhost_item.filename }} robots.txt
+  copy:
+    content: "{{ vhost_item.robots_txt }}"
+    dest: "{{ vhost_item.documentRoot }}/robots.txt"
+    owner: "{{ _httpd_user }}"
+    group: "{{ _httpd_user }}"
+    mode: u=rw,g=r,o=r
+  become: yes
+  become_user: root
+  with_items: "{{ _httpd_custom_vhosts }}"
+  when: vhost_item['robots_txt'] | default('') != ''
+  loop_control:
+    loop_var: vhost_item
+    label: "{{ vhost_item.filename }} robots.txt"

@@ -13,6 +13,9 @@
     ProxyPass /static-content/ !
     ProxyPass /errors/ !
     ProxyPass /server-status !
+{% if vhost_item['robots_txt'] | default('') %}
+    ProxyPass /robots.txt !
+{% endif %}
 {% for proxyPass in vhost_item['proxyPassUnmount'] | default([]) %}
     ProxyPass {{ proxyPass }} !
 {% endfor %}
