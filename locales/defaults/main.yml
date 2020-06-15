@@ -1,0 +1,4 @@
+---
+
+_locales_locale: "{{ system_locale | default('fr_FR.utf8') }}"
+_locales_timezone: "{{ system_timezone | default('Europe/Paris') }}"
