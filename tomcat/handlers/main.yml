@@ -63,3 +63,9 @@
   changed_when: true
   with_items: "{{ tomcat_catalina_bases }}"
   when: _tomcat_handlers_inhibited
+
+- name: systemd.daemon-reload
+  systemd:
+    daemon_reload: true
+  become: true
+  become_user: root

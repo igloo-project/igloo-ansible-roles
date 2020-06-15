@@ -119,6 +119,34 @@
         _catalina_base: "{{ _catalina_base_path }}"
         _java_home: "{{ _catalina_base_java_home }}"
 
+    - name: tomcat · catalina_base · service configuration file · clean script
+      copy:
+        dest: /etc/systemd/system/tomcat@{{ catalina_base.name }}.service.d/10-clean.conf
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+        content: |
+          [Service]
+          ExecStartPre={{ _catalina_base_path }}/bin/clean.sh
+      when: catalina_base.clean_on_start | default(False)
+      notify: systemd.daemon-reload
+
+    - name: tomcat · catalina_base · service configuration file · clean script
+      file:
+        state: absent
+        path: /etc/systemd/system/tomcat@{{ catalina_base.name }}.service.d/10-clean.conf
+      when: not (catalina_base.clean_on_start | default(False))
+      notify: systemd.daemon-reload
+
+    - name: tomcat · catalina_base · clean script
+      copy:
+        src: clean.sh
+        dest: "{{ _catalina_base_path }}/bin/clean.sh"
+        owner: root
+        group: root
+        mode: u=rwx,g=rx,o=rx
+      when: catalina_base.clean_on_start | default(False)
+
     - name: tomcat · systemd configuration
       systemd:
         name: tomcat@{{ catalina_base.name }}
@@ -139,4 +167,3 @@
         - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl start tomcat@{{playbook_application_name}}' }
         - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl stop tomcat@{{playbook_application_name}}' }
         - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl status tomcat@{{playbook_application_name}}' }
-
