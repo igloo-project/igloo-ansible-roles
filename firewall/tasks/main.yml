@@ -49,6 +49,19 @@
     - firewalld.restart
     - firewalld.restart.skipped
 
+- name: other services
+  firewalld:
+    permanent: true
+    immediate: true
+    service: "{{ item.service if item.service | default('') else omit }}"
+    port: "{{ item.port if item.port | default('') else omit }}"
+    state: "{{ item.state if item.state | default('') else omit }}"
+    zone: "{{ item.zone if item.zone | default('') else omit }}"
+  notify:
+    - firewalld.restart
+    - firewalld.restart.skipped
+  with_items: "{{ _firewall_services }}"
+
 - name: service
   service:
     name: firewalld
