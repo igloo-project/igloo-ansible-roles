@@ -5,6 +5,10 @@ _selinux_package:
   RedHat: libselinux-python
   CentOS_8: libselinux-python3
 
+_langpacks_packages:
+  - glibc-langpack-en
+  - glibc-langpack-fr
+
 _redhat_commons:
   - vim-enhanced
   - screen
@@ -14,7 +18,11 @@ _redhat_commons:
   - "{{ _selinux_package | distro(vars) }}"
 
 _utils_default_packages:
+  # surcharge par famille (ne prend pas en compte la version)
   RedHat: "{{ _redhat_commons }}"
+  # surcharge par distribution et version
+  RedHat_8: "{{ _redhat_commons + _langpacks_packages }}"
+  CentOS_8: "{{ _redhat_commons + _langpacks_packages }}"
   Debian:
     - vim
     - screen
@@ -22,4 +30,3 @@ _utils_default_packages:
     - net-tools
     - locales-all
     - sysstat
-
