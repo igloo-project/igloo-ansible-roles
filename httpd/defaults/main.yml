@@ -28,7 +28,7 @@ _httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
 #nonSslPort: _httpd_http_port,
 #documentRoot: _httpd_documentroot,
 #serverName: _server_name,
-#serverAlias: _server_alias,
+#serverAliases: _server_aliases,
 #contextName: _httpd_context_name,
 #ajpPort: _httpd_ajp_port,
 #apiEndpoint: _httpd_api_endpoint,

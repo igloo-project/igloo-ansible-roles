@@ -3,7 +3,7 @@
 {# Main SSL vhost definition #}
 <VirtualHost *:{{ vhost_item['sslPort'] }}>
     ServerName {{ vhost_item['serverName'] }}
-{% for alias in vhost_item['serverAlias'] | default([]) %}
+{% for alias in vhost_item['serverAliases'] | default([]) %}
     ServerAlias {{ alias }}
 {% endfor %}
 
@@ -63,7 +63,7 @@
 ## Redirection * vers le https ##
 <VirtualHost *:{{ vhost_item['nonSslPort'] }}>
     ServerName {{ vhost_item['serverName'] }}
-{% for alias in vhost_item['serverAlias'] | default([]) %}
+{% for alias in vhost_item['serverAliases'] | default([]) %}
     ServerAlias {{ alias }}
 {% endfor %}
 
