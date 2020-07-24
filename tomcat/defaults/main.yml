@@ -67,3 +67,8 @@ _tomcat_common_env:
     CATALINA_PID: "{{ _catalina_base }}/pid/tomcat.pid"
 
 _tomcat_handlers_inhibited: "{{ handlers_inhibited | default(False) or tomcat_handlers_inhibited | default(False) }}"
+
+_systemctl_command: "{{ _systemctl_command_distro | distro(vars) }}"
+_systemctl_command_distro:
+  RedHat: /usr/bin/systemctl
+  Debian: /bin/systemctl

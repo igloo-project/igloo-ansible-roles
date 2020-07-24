@@ -163,7 +163,7 @@
         state: present
       with_items:
         - { line: '# {{ playbook_remote_user }} user' }
-        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl restart tomcat@{{playbook_application_name}}' }
-        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl start tomcat@{{playbook_application_name}}' }
-        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl stop tomcat@{{playbook_application_name}}' }
-        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/systemctl status tomcat@{{playbook_application_name}}' }
+        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: {{ _systemctl_command }} restart tomcat@{{playbook_application_name}}' }
+        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: {{ _systemctl_command }} start tomcat@{{playbook_application_name}}' }
+        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: {{ _systemctl_command }} stop tomcat@{{playbook_application_name}}' }
+        - { line: '{{ playbook_remote_user }} ALL=NOPASSWD: {{ _systemctl_command }} status tomcat@{{playbook_application_name}}' }
