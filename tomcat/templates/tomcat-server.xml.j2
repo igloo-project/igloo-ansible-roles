@@ -70,9 +70,6 @@
                connectionTimeout="20000"
                redirectPort="{{ _catalina_base_redirect_port }}"
                maxThreads="{{ _catalina_base_http_max_threads }}"
-{% if playbook_tomcat_version is version('9.0.31', '>') %}
-               secretRequired="false"
-{% endif %}
                URIEncoding="UTF-8" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
@@ -123,6 +120,9 @@
                 maxThreads="{{ _catalina_base_ajp_max_threads }}"
                 minSpareThreads="10"
                 bindOnInit="false"
+{% if playbook_tomcat_version is version('9.0.31', '>') %}
+                secretRequired="false"
+{% endif %}
                 URIEncoding="UTF-8" />
 
 
