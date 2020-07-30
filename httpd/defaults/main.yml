@@ -13,6 +13,7 @@ _httpd_listens: "{{ httpd_listens | default([]) }}"
 
 _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"
+_httpd_targeted_context_name : "{{ httpd_targeted_context_name | default(httpd_context_name) }}"
 _httpd_documentroot: "{{ httpd_documentroot }}"
 _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
 
@@ -30,6 +31,7 @@ _httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
 #serverName: _server_name,
 #serverAliases: _server_aliases,
 #contextName: _httpd_context_name,
+#targetedContextName: _httpd_targeted_context_name
 #ajpPort: _httpd_ajp_port,
 #apiEndpoint: _httpd_api_endpoint,
 #sslRewrites: _httpd_conf_https_rewrites,
@@ -39,7 +41,9 @@ _httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
 #proxyPassUnmount: _httpd_conf_proxypass_unmount,
 #sslCertificateFile: _ssl_certificate,
 #sslCertificateKeyFile: _ssl_key,
-#sslCaCertificateFile: _ssl_cacertificate
+#sslCaCertificateFile: _ssl_cacertificate,
+#robots_txt: _httpd_conf_robots_txt,
+#error_override: _httpd_conf_error_override
 
 # this path is used to override API-type endpoints settings
 # (like ProxyErrorOverride Off)
@@ -53,6 +57,7 @@ _httpd_conf_https_locations: "{{ httpd_conf_https_locations | default('') }}"
 _httpd_conf_http_locations: "{{ httpd_conf_http_locations | default('') }}"
 # Use a custom robots.txt
 _httpd_conf_robots_txt: "{{ httpd_conf_robots_txt | default('') }}"
+_httpd_conf_error_override: "{{ httpd_conf_error_override | default(true) }}"
 
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"

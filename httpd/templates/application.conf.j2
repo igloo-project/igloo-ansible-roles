@@ -11,6 +11,7 @@ ServerName {{ _server_name }}
                  "serverName": _server_name,
                  "serverAliases": _server_aliases,
                  "contextName": _httpd_context_name,
+                 "targetedContextName" : _httpd_targeted_context_name,
                  "ajpPort": _httpd_ajp_port,
                  "apiEndpoint": _httpd_api_endpoint,
                  "sslRewrites": _httpd_conf_https_rewrites,
@@ -21,6 +22,7 @@ ServerName {{ _server_name }}
                  "sslCertificateFile": _ssl_certificate,
                  "sslCertificateKeyFile": _ssl_key,
                  "sslCaCertificateFile": _ssl_cacertificate,
-                 "robots_txt": _httpd_conf_robots_txt
+                 "robots_txt": _httpd_conf_robots_txt,
+                 "error_override" : _httpd_conf_error_override
               })
 }}
