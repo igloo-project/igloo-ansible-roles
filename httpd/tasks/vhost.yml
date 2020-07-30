@@ -26,6 +26,7 @@
     _server_https_domain_redirect: "{{ httpd_https_domain_redirect }}"
     _ssl_certificate: "{{ _httpd_ssl_certificate }}"
     _ssl_key: "{{ _httpd_ssl_key }}"
+    _ssl_chain: "{{ _httpd_ssl_chain }}"
     _ssl_cacertificate: "{{ _httpd_ssl_cacertificate }}"
   notify:
     - httpd.restart

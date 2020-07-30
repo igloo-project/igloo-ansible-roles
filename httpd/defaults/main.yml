@@ -41,6 +41,7 @@ _httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
 #proxyPassUnmount: _httpd_conf_proxypass_unmount,
 #sslCertificateFile: _ssl_certificate,
 #sslCertificateKeyFile: _ssl_key,
+#sslCertificateChainFile: _ssl_chain,
 #sslCaCertificateFile: _ssl_cacertificate,
 #robots_txt: _httpd_conf_robots_txt,
 #error_override: _httpd_conf_error_override
@@ -61,6 +62,7 @@ _httpd_conf_error_override: "{{ httpd_conf_error_override | default(true) }}"
 
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
+_httpd_ssl_chain: "{{ httpd_ssl_chain }}"
 _httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"
 
 _httpd_configuration_folder: "{{ _httpd_configuration_folder_distro | distro(vars) }}"
