@@ -19,8 +19,8 @@
 {% endif %}
 {% for proxyPass in vhost_item['proxyPassUnmount'] | default([]) %}    ProxyPass {{ proxyPass }} !
 {% endfor %}
-    ProxyPass         /{{ vhost_item['contextName'] }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['targetedContextName'] | default(vhost_item['contextName']) }} keepalive=on timeout=3000 ttl=300
-    ProxyPassReverse  /{{ vhost_item['contextName'] }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['targetedContextName'] | default(vhost_item['contextName']) }}
+    ProxyPass         /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout=3000 ttl=300
+    ProxyPassReverse  /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }}
 {{ vhost_item['sslRewrites'] | default('') | indent(width=4, indentfirst=True) }}
 {% if vhost_item['error_override'] | default(true) %}
     ErrorDocument 403 /errors/403.html

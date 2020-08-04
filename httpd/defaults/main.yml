@@ -13,7 +13,7 @@ _httpd_listens: "{{ httpd_listens | default([]) }}"
 
 _httpd_application_name: "{{ httpd_application_name }}"
 _httpd_context_name: "{{ httpd_context_name | default('') }}"
-_httpd_targeted_context_name : "{{ httpd_targeted_context_name | default(httpd_context_name) }}"
+_httpd_source_context_name : "{{ httpd_source_context_name | default(httpd_context_name) }}"
 _httpd_documentroot: "{{ httpd_documentroot }}"
 _httpd_ajp_port: "{{ httpd_ajp_port | default(8009) }}"
 
@@ -31,7 +31,7 @@ _httpd_custom_vhosts: "{{ httpd_custom_vhosts | default([]) }}"
 #serverName: _server_name,
 #serverAliases: _server_aliases,
 #contextName: _httpd_context_name,
-#targetedContextName: _httpd_targeted_context_name
+#sourceContextName: _httpd_source_context_name
 #ajpPort: _httpd_ajp_port,
 #apiEndpoint: _httpd_api_endpoint,
 #sslRewrites: _httpd_conf_https_rewrites,
