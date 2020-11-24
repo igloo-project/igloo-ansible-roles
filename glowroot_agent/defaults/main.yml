@@ -23,8 +23,8 @@ _glowroot_config_agent_id: "{{ glowroot_config_agent_id }}"
 _glowroot_config_collector_address: "{{ glowroot_config_collector_address }}"
 _glowroot_config_base_dir: "{{ glowroot_config_base_dir }}"
 _glowroot_config_log_dir: "{{ glowroot_config_log_dir | default(_glowroot_config_base_dir + '/log') }}"
-_glowroot_config_tmp_dir: "{{ glowroot_config_log_dir | default(_glowroot_config_base_dir + '/tmp') }}"
-_glowroot_config_conf_dir: "{{ glowroot_config_log_dir | default(_glowroot_config_base_dir + '/conf') }}"
+_glowroot_config_tmp_dir: "{{ glowroot_config_tmp_dir | default(_glowroot_config_base_dir + '/tmp') }}"
+_glowroot_config_conf_dir: "{{ glowroot_config_conf_dir | default(_glowroot_config_base_dir + '/conf') }}"
 
 _glowroot_versions:
   "0.13.5":
