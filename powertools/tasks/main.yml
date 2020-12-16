@@ -2,6 +2,7 @@
 
 # Enable PowerTools default repository
 # (used by certbot, postgis)
+# 12/2020: PowerTools renamed to powertools
 - name: powertools
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8'
   become: true
@@ -9,13 +10,13 @@
   block:
     - name: check powertools
       check_mode: false
-      shell: yum repolist | grep PowerTools || true
+      shell: yum repolist | grep powertools || true
       args:
         warn: false
       register: powertools_repolist
       changed_when: false
     - name: enable powertools
-      shell: yum config-manager --set-enabled PowerTools
-      when: "'PowerTools' not in powertools_repolist.stdout"
+      shell: yum config-manager --set-enabled powertools
+      when: "'powertools' not in powertools_repolist.stdout"
       args:
         warn: false
