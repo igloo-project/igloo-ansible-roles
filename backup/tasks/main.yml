@@ -9,5 +9,3 @@
     {{ '--no-lucene' if backup_no_lucene else '' }}
     {{ '--no-database' if backup_no_database else '' }}
     -f {{ backup_config | quote }}
-  become: true
-  become_user: root
