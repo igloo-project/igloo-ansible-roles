@@ -8,4 +8,10 @@
     {{ '--no-war' if backup_no_war else '' }}
     {{ '--no-lucene' if backup_no_lucene else '' }}
     {{ '--no-database' if backup_no_database else '' }}
-    -f {{ backup_config | quote }}
+    -f {{ backup_config | quote }} 2>&1
+  register: backup_result
+
+- name: backup output
+  debug:
+    var: backup_result.stdout
+  when: backup_result.stdout is defined
