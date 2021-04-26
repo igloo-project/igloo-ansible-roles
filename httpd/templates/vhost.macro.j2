@@ -38,6 +38,9 @@
     #    SetHandler server-status
     #    Require ip 127.0.0.1
     #</Location>
+{% if vhost_item['sslLocations'] | default(False, True) -%}
+{{ vhost_item['sslLocations'] | indent(4, True) }}
+{%- endif %}
     <Directory {{ vhost_item['documentRoot'] }}>
         Require all granted
     </Directory>
@@ -69,6 +72,9 @@
 
 {{ vhost_item['rewrites'] | default('') | indent(width=4, indentfirst=True) }}
 
+{% if vhost_item['locations'] | default(False, True) -%}
+{{ vhost_item['locations'] | indent(4, True) }}
+{%- endif %}
 </VirtualHost>
 {% endif %}
 {% endmacro %}
