@@ -67,10 +67,10 @@
     ServerAlias {{ alias }}
 {% endfor %}
 
-{{ vhost_item['rewrites'] | default('') | indent(width=4, indent=True) }}
+{{ vhost_item['rewrites'] | default('') | indent(width=4, first=True) }}
 
 {% if vhost_item['locations'] | default(False, True) %}
-{{ vhost_item['locations'] | indent(4, True) }}
+{{ vhost_item['locations'] | indent(width=4, first=True) }}
 {% endif %}
 </VirtualHost>
 {% endif %}
