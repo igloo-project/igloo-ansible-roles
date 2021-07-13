@@ -21,7 +21,7 @@
 {% endfor %}
     ProxyPass         /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout=3000 ttl=300
     ProxyPassReverse  /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }}
-{{ vhost_item['sslRewrites'] | default('') | indent(width=4, indentfirst=True) }}
+{{ vhost_item['sslRewrites'] | default('') | indent(width=4, indent=True) }}
 {% if vhost_item['error_override'] | default(true) %}
     ErrorDocument 403 /errors/403.html
     ErrorDocument 404 /errors/404.html
@@ -50,7 +50,7 @@
 {% endif %}
 
 {% if vhost_item['sslLocations'] | default('') %}
-{{ vhost_item['sslLocations'] | indent(width=4, indentfirst=True) }}
+{{ vhost_item['sslLocations'] | indent(width=4, indent=True) }}
 {% endif %}
 
 {{ macro_ssl(vhost_item=vhost_item, macro_files=macro_files) }}
@@ -67,7 +67,7 @@
     ServerAlias {{ alias }}
 {% endfor %}
 
-{{ vhost_item['rewrites'] | default('') | indent(width=4, indentfirst=True) }}
+{{ vhost_item['rewrites'] | default('') | indent(width=4, indent=True) }}
 
 {% if vhost_item['locations'] | default(False, True) %}
 {{ vhost_item['locations'] | indent(4, True) }}
