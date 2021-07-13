@@ -21,7 +21,7 @@
 {% endfor %}
     ProxyPass         /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout=3000 ttl=300
     ProxyPassReverse  /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }}
-{{ vhost_item['sslRewrites'] | default('') | indent(width=4, indent=True) }}
+{{ vhost_item['sslRewrites'] | default('') | indent(width=4, first=True) }}
 {% if vhost_item['error_override'] | default(true) %}
     ErrorDocument 403 /errors/403.html
     ErrorDocument 404 /errors/404.html
@@ -50,7 +50,7 @@
 {% endif %}
 
 {% if vhost_item['sslLocations'] | default('') %}
-{{ vhost_item['sslLocations'] | indent(width=4, indent=True) }}
+{{ vhost_item['sslLocations'] | indent(width=4, first=True) }}
 {% endif %}
 
 {{ macro_ssl(vhost_item=vhost_item, macro_files=macro_files) }}
