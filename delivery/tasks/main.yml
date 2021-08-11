@@ -45,9 +45,9 @@
 
   when: war.changed
 
-# C.f commentaire 'stop aplication'
+# see 'stop aplication' comment; is-active does not need privilege
 - name: delivery · start application
   shell: "systemctl is-active {{ _delivery_tomcat_service }} || sudo systemctl start {{ _delivery_tomcat_service }}"
   register: result
   # if unit is active, then it is not started -> changed false; else changed true
-  changed_when: not 'active' in result.stdout
+  changed_when: not 'active' in result.stdout.strip()
