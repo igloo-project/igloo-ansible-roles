@@ -43,8 +43,11 @@
       group: "{{ _delivery_application_user }}"
       mode: u=rw,g=r,o=r
 
-  # C.f commentaire 'stop aplication'
-  - name: delivery · start application
-    shell: "sudo systemctl start {{ _delivery_tomcat_service }}"
-
   when: war.changed
+
+# C.f commentaire 'stop aplication'
+- name: delivery · start application
+  shell: "systemctl is-active {{ _delivery_tomcat_service }} || sudo systemctl start {{ _delivery_tomcat_service }}"
+  register: result
+  # if unit is active, then it is not started -> changed false; else changed true
+  changed_when: not 'active' in result.stdout
