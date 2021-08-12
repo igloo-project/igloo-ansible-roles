@@ -1,7 +1,7 @@
 ---
 
 backup_script: /usr/local/bin/delivery-backup.py
-backup_config: /data/services/backup/delivery-backup.cfg
+backup_config: /data/services/delivery-backup/delivery-backup.cfg
 backup_dry_run: false
 backup_no_stop: false
 backup_no_war: false
