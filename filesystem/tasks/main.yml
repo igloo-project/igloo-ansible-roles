@@ -12,6 +12,8 @@
       mode: u=rwx,g=rx,o=rx
     - path: /data/services/web
       mode: u=rwx,g=rx,o=rx
+    - path: /data/services/backup
+      mode: u=rwx,g=rx,o=rx
     - path: /data/log
       mode: u=rwx,g=rx,o=rx
     - path: /data/log/tomcat
