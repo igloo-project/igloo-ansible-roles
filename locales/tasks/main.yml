@@ -1,5 +1,30 @@
 ---
 
+# generate locale if needed
+- name: check available locales
+  shell: "locale -a | grep {{ _locales_locale }} > /dev/null"
+  register: available_locale
+  ignore_errors: true
+  check_mode: false
+
+- name: locale-gen config (debian)
+  lineinfile:
+    path: /etc/locale.gen
+    regexp: "#? ?{{ _locales_locale_short }} {{ _locales_encoding }}"
+    line: "{{ _locales_locale_short }} {{ _locales_encoding }}"
+  when:
+    - ansible_os_family == 'Debian'
+    - available_locale.failed
+  become: true
+  become_user: root
+
+- name: generate locale
+  # example: localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
+  shell: "localedef -i {{ _locales_locale_short }} -c -f {{ _locales_encoding }} -A /usr/share/locale/locale.alias {{ _locales_locale }}"
+  when: available_locale.failed
+  become: true
+  become_user: root
+
 - name: check locale {{ _locales_locale }}
   shell: "localectl | grep -i 'LANG={{ _locales_locale }}'"
   register: check_locale
