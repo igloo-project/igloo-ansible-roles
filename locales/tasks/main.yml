@@ -10,8 +10,8 @@
 - name: locale-gen config (debian)
   lineinfile:
     path: /etc/locale.gen
-    regexp: "#? ?{{ _locales_locale_short }} {{ _locales_encoding }}"
-    line: "{{ _locales_locale_short }} {{ _locales_encoding }}"
+    regexp: "#? ?{{ _locales_locale_gen }}"
+    line: "{{ _locales_locale_gen }}"
   when:
     - ansible_os_family == 'Debian'
     - available_locale.failed
