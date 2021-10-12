@@ -6,6 +6,7 @@
   register: available_locale
   ignore_errors: true
   check_mode: false
+  changed_when: false
 
 - name: locale-gen config (debian)
   lineinfile:
