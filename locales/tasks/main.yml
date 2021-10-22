@@ -20,8 +20,8 @@
   become_user: root
 
 - name: generate locale
-  # example: localedef -i fr_FR -c -f UTF-8 -A /usr/share/locale/locale.alias fr_FR.UTF-8
-  shell: "localedef -i {{ _locales_locale_short }} -c -f {{ _locales_encoding }} -A /usr/share/locale/locale.alias {{ _locales_locale }}"
+  # example: localedef -i fr_FR -f UTF-8 fr_FR.UTF-8
+  shell: "localedef -i {{ _locales_locale_short }} -f {{ _locales_encoding }} {{ _locales_locale }}"
   when: available_locale.failed
   become: true
   become_user: root
