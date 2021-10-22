@@ -2,6 +2,6 @@
 
 _locales_locale: "{{ system_locale | default('fr_FR.utf8') }}"
 _locales_locale_gen: "{{ system_locale_gen | default('fr_FR.UTF-8 UTF-8') }}"
-_locales_locale_short: "{{ _locales_locale | regex_replace('(@euro|\\.utf8)', '') }}"
+_locales_locale_short: "{{ _locales_locale | regex_replace('(@euro|\\.utf8|\\.UTF-8)', '') }}"
 _locales_encoding: "{{ system_encoding | default('UTF-8') }}"
 _locales_timezone: "{{ system_timezone | default('Europe/Paris') }}"
