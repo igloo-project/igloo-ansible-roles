@@ -26,14 +26,15 @@
   become: true
   become_user: root
 
+# localectl does not use same locale format than locale -a !
 - name: check locale {{ _locales_locale }}
-  shell: "localectl | grep -i 'LANG={{ _locales_locale }}'"
+  shell: "localectl | grep -i 'LANG={{ _locales_locale.replace('.utf8', '.UTF-8') }}'"
   register: check_locale
   ignore_errors: yes
   changed_when: check_locale.stdout == ""
 
 - name : set default locale {{ _locales_locale }}
-  shell : "localectl set-locale LANG={{ _locales_locale }}"
+  shell : "localectl set-locale LANG={{ _locales_locale.replace('.utf8', '.UTF-8') }}"
   become: true
   become_user: root
   when: check_locale.changed
