@@ -60,6 +60,9 @@ _httpd_conf_http_locations: "{{ httpd_conf_http_locations | default('') }}"
 _httpd_conf_robots_txt: "{{ httpd_conf_robots_txt | default('') }}"
 _httpd_conf_error_override: "{{ httpd_conf_error_override | default(true) }}"
 
+_httpd_conf_proxypass_timeout: "{{ httpd_conf_proxypass_timeout | default('3000') }}"
+_httpd_conf_proxypass_ttl: "{{ httpd_conf_proxypass_ttl | default('300') }}"
+
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
 _httpd_ssl_chain: "{{ httpd_ssl_chain }}"
