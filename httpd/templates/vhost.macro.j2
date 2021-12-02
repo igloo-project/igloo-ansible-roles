@@ -19,7 +19,7 @@
 {% endif %}
 {% for proxyPass in vhost_item['proxyPassUnmount'] | default([]) %}    ProxyPass {{ proxyPass }} !
 {% endfor %}
-    ProxyPass         /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout={{ vhost_item['proxyPassTimeout'] | default('3000') }} ttl={{ vhost_item['proxyPassTtl'] | default('300') }}
+    ProxyPass         /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }} keepalive=on timeout={{ vhost_item['proxyPassTimeout'] | default('3000') }} ttl={{ vhost_item['proxyPassTtl'] | default('300') }}{{ ' ' + vhost_item['proxyPassExtra'] if vhost_item['proxyPassExtra'] | default(False, true) else '' }}
     ProxyPassReverse  /{{ vhost_item['sourceContextName'] | default(vhost_item['contextName']) }} ajp://localhost:{{ vhost_item['ajpPort'] }}/{{ vhost_item['contextName'] }}
 {{ vhost_item['sslRewrites'] | default('') | indent(width=4, first=True) }}
 {% if vhost_item['error_override'] | default(true) %}

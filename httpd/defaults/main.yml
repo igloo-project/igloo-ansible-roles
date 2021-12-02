@@ -4,6 +4,8 @@ httpd_step_install: yes
 # override so that role do not created a vhost file
 # httpd_manage_vhost_configuration: true
 
+# Add default conf in 00-common.conf
+_httpd_common_conf: "{{ httpd_common_conf | default("") }}"
 # Allow to override listen ports for HTTP and HTTPS
 _httpd_https_port: "{{ httpd_https_port | default(443) }}"
 _httpd_http_port: "{{ httpd_http_port | default(80) }}"
@@ -62,6 +64,7 @@ _httpd_conf_error_override: "{{ httpd_conf_error_override | default(true) }}"
 
 _httpd_conf_proxypass_timeout: "{{ httpd_conf_proxypass_timeout | default('3000') }}"
 _httpd_conf_proxypass_ttl: "{{ httpd_conf_proxypass_ttl | default('300') }}"
+_httpd_conf_proxypass_extra: "{{ httpd_conf_proxypass_extra | default('') }}"
 
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
