@@ -5,7 +5,7 @@ httpd_step_install: yes
 # httpd_manage_vhost_configuration: true
 
 # Add default conf in 00-common.conf
-_httpd_common_conf: "{{ httpd_common_conf | default("") }}"
+_httpd_common_conf: "{{ httpd_common_conf | default('') }}"
 # Allow to override listen ports for HTTP and HTTPS
 _httpd_https_port: "{{ httpd_https_port | default(443) }}"
 _httpd_http_port: "{{ httpd_http_port | default(80) }}"
