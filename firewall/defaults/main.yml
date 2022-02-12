@@ -4,5 +4,6 @@ _firewall_skip_ssh: "{{ firewall_skip_ssh | default(False) }}"
 _firewall_skip_http: "{{ firewall_skip_http | default(False) }}"
 _firewall_skip_https: "{{ firewall_skip_https | default(False) }}"
 _firewall_services: "{{ firewall_services | default([]) }}"
+_firewall_interface: "{{ firewall_interface | default('eth0')}}"
 
 _firewall_handlers_inhibited: "{{ handlers_inhibited | default(False) or firewall_handlers_inhibited | default(False) }}"

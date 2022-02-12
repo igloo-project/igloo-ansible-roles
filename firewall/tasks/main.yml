@@ -12,7 +12,7 @@
 - name: zone
   firewalld:
     permanent: true
-    interface: eth0
+    interface: "{{ _firewall_interface }}"
     zone: public
     state: enabled
 
