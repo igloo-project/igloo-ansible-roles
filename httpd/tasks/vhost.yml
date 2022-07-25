@@ -28,6 +28,8 @@
     _ssl_key: "{{ _httpd_ssl_key }}"
     _ssl_chain: "{{ _httpd_ssl_chain }}"
     _ssl_cacertificate: "{{ _httpd_ssl_cacertificate }}"
+    _ssl_protocol: "{{ _httpd_ssl_protocol }}"
+    _ssl_ciphersuite: "{{ _httpd_ssl_ciphersuite }}"
   notify:
     - httpd.restart
     - httpd.restart.skipped
