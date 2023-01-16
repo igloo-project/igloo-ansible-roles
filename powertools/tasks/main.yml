@@ -11,12 +11,8 @@
     - name: check powertools
       check_mode: false
       shell: yum repolist | grep powertools || true
-      args:
-        warn: false
       register: powertools_repolist
       changed_when: false
     - name: enable powertools
       shell: yum config-manager --set-enabled powertools
       when: "'powertools' not in powertools_repolist.stdout"
-      args:
-        warn: false
