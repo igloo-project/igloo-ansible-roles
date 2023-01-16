@@ -26,8 +26,6 @@
         "{{ _war_tomcat_catalina_base }}/temp/"*
         "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}.war"
         "{{ _war_tomcat_catalina_base }}/webapps/{{ _war_context_name_or_root }}"
-    args:
-      warn: off
 
   - name: war · copy war
     copy:

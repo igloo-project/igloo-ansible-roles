@@ -31,8 +31,6 @@
         "{{ _delivery_tomcat_catalina_base }}/temp/"*
         "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}.war"
         "{{ _delivery_tomcat_catalina_base }}/webapps/{{ _delivery_context_name_or_root }}"
-    args:
-      warn: off
 
   - name: delivery · copy war
     copy:
