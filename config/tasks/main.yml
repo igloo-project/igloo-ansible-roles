@@ -1,2 +1,2 @@
 ---
-- include: config.yml
+- import_tasks: config.yml

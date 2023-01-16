@@ -198,7 +198,7 @@
     and _elasticsearch_version is version('5.0.0', '>=')
 
 - name: plugins
-  include: plugin.yml
+  include_tasks: plugin.yml
   with_items: "{{ _elasticsearch_plugins }}"
   loop_control:
     loop_var: plugin

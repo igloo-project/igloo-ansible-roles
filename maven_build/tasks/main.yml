@@ -1,1 +1,1 @@
-- include: maven_build.yml
+- import_tasks: maven_build.yml

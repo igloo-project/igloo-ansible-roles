@@ -20,13 +20,13 @@
       group: "{{ _java_group }}"
     when: _java_runtime_path != ''
 
-  - include: yum_repository.yml
+  - include_tasks: yum_repository.yml
     when: >-
       _java_yum_repository is defined
       and _java_yum_repository
 
   - name: install {{ item.type }} {{ item.version }}
-    include: java_runtime_item.yml
+    include_tasks: java_runtime_item.yml
     with_items: "{{ java_runtimes }}"
 
   when: java_runtimes | length > 0
