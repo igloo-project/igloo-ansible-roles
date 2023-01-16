@@ -19,6 +19,7 @@ _tomcat_timeout_stop: "{{ tomcat_timeout_stop | default(None) }}"
 _tomcat_download_url: "http://archive.apache.org/dist/tomcat/tomcat-{{ _tomcat_major }}/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
 _tomcat_download_target: "{{ tomcat_download_target_path }}/apache-tomcat-{{ tomcat_version }}.tar.gz"
 
+_tomcat_java17: "{{ tomcat_java17 | default(False) }}"
 
 _tomcat_log4j_checksum: md5:04a41f0a068986f0f73485cf507c0f40
 _tomcat_log4j_version: 1.2.17
