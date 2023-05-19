@@ -8,9 +8,9 @@ JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port={{ 
 MEMORY_OPTS="{{ _catalina_base_xms }} {{ _catalina_base_xmx }}"
 LDAP_OPTS="-Dcom.sun.jndi.ldap.connect.pool.debug=fine -Dcom.sun.jndi.ldap.connect.pool.timeout=0"
 {% if _tomcat_java17 %}
-PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/services/tomcat/ -XX:-OmitStackTraceInFastThrow"
+PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ _catalina_base_heapdump_path }} -XX:-OmitStackTraceInFastThrow"
 {% else %}
-PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/services/tomcat/ -XX:-OmitStackTraceInFastThrow -XX:-TraceClassUnloading"
+PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ _catalina_base_heapdump_path }} -XX:-OmitStackTraceInFastThrow -XX:-TraceClassUnloading"
 {% endif %}
 EXTRA_OPTS="{{ _catalina_base_extra_opts }}"
 

@@ -42,6 +42,7 @@ _catalina_base_xms: "{{ (('-Xms' + catalina_base.xms) if 'xms' in catalina_base 
 _catalina_base_xmx: "{{ (('-Xmx' + catalina_base.xmx) if 'xmx' in catalina_base and not catalina_base.xmx.startswith('-Xmx') else catalina_base.xmx) | default(_tomcat_default_xmx) }}"
 _catalina_base_extra_opts: "{{ catalina_base.extra_opts | default(_tomcat_default_extra_opts) }}"
 _catalina_base_extra_env: "{{ catalina_base.extra_env | default({}, True) }}"
+_catalina_base_heapdump_path: "{{ catalina_base.heapdump_path | default([_catalina_base_path, 'logs'] | path_join, True) }}"
 
 _default_server_xml: "{{ default_server_xml | default('tomcat-server.xml.j2') }}"
 _default_jmx_port: "{{ default_jmx_port | default(9010) }}"
