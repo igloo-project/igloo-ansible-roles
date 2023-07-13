@@ -27,6 +27,8 @@ _glowroot_config_tmp_dir: "{{ glowroot_config_tmp_dir | default(_glowroot_config
 _glowroot_config_conf_dir: "{{ glowroot_config_conf_dir | default(_glowroot_config_base_dir + '/conf') }}"
 
 _glowroot_versions:
+  "0.14.0":
+    checksum: sha256:e404f18083a963a195cdd7328f561992ef7ae938e625dc8349737ae1fd6700d6
   "0.13.5":
     checksum: sha256:f8865646dc36639d8084e16b15fd1e5122fb684de1e21f9ec7f2941528d63c9d
   "0.13.4":
