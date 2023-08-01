@@ -117,3 +117,18 @@ _httpd_user: "{{ _distro_httpd_user | distro(vars) }}"
 _distro_httpd_user:
   RedHat: apache
   Debian: www-data
+
+_httpd_module_links: "{{ _httpd_module_links_default + _httpd_module_links_extra }}"
+_httpd_module_links_default :
+  - /etc/apache2/mods-available/rewrite.load
+  - /etc/apache2/mods-available/proxy.conf
+  - /etc/apache2/mods-available/proxy.load
+  - /etc/apache2/mods-available/proxy_ajp.load
+  # needed by ssl
+  - /etc/apache2/mods-available/socache_shmcb.load
+  - /etc/apache2/mods-available/ssl.conf
+  - /etc/apache2/mods-available/ssl.load
+  # not used in default config, but useful
+  - /etc/apache2/mods-available/headers.load 
+
+_httpd_module_links_extra : "{{ httpd_module_links_extra | default([]) }}"

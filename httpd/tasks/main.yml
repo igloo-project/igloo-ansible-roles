@@ -12,17 +12,7 @@
     path: "/etc/apache2/mods-enabled/{{ item | basename }}"
     state: link
     src: "{{ item }}"
-  with_items:
-    - /etc/apache2/mods-available/rewrite.load
-    - /etc/apache2/mods-available/proxy.conf
-    - /etc/apache2/mods-available/proxy.load
-    - /etc/apache2/mods-available/proxy_ajp.load
-    # needed by ssl
-    - /etc/apache2/mods-available/socache_shmcb.load
-    - /etc/apache2/mods-available/ssl.conf
-    - /etc/apache2/mods-available/ssl.load
-    # not used in default config, but useful
-    - /etc/apache2/mods-available/headers.load
+  with_items: "{{ _httpd_module_links }}"
   when: ansible_os_family == 'Debian'
 
 - block:
