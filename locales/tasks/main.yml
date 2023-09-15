@@ -1,30 +1,16 @@
 ---
 
-# generate locale if needed
-- name: check available locales
-  shell: "locale -a | grep {{ _locales_locale }} > /dev/null"
-  register: available_locale
-  ignore_errors: true
-  check_mode: false
-  changed_when: false
+# 09.2023: system_locale_gen is replaced by system_locales_gen
+- fail:
+    msg: "Unset system_locale_gen and use system_locales_gen variable."
+  when: system_locale_gen | default('deprecated') != 'deprecated'
 
-- name: locale-gen config (debian)
-  lineinfile:
-    path: /etc/locale.gen
-    regexp: "#? ?{{ _locales_locale_gen }}"
-    line: "{{ _locales_locale_gen }}"
-  when:
-    - ansible_os_family == 'Debian'
-    - available_locale.failed
-  become: true
-  become_user: root
-
-- name: generate locale
-  # example: localedef -i fr_FR -f UTF-8 fr_FR.UTF-8
-  shell: "localedef -i {{ _locales_locale_short }} -f {{ _locales_encoding }} {{ _locales_locale }}"
-  when: available_locale.failed
-  become: true
-  become_user: root
+- include_tasks: locales-gen.yml
+  loop: "{{ _locales_locales_gen }}"
+  vars:
+    _short: "{{ item.short }}"
+    _encoding: "{{ item.encoding }}"
+    _locale: "{{ item.locale }}"
 
 # localectl does not use same locale format than locale -a !
 - name: check locale {{ _locales_locale }}
