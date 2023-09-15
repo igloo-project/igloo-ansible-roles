@@ -8,7 +8,6 @@
 - include_tasks: locales-gen.yml
   loop: "{{ _locales_locales_gen }}"
   vars:
-    _short: "{{ item.short }}"
     _encoding: "{{ item.encoding }}"
     _locale: "{{ item.locale }}"
 

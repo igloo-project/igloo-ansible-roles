@@ -3,10 +3,8 @@
 _locales_locale: "{{ system_locale | default('fr_FR.utf8') }}"
 _locales_locales_gen: "{{ system_locales_gen | default(_locales_default_locales_gen) }}"
 _locales_default_locales_gen:
-  - locale: en_US.UTF-8
-    encoding: UTF-8
-    short: en_US
-  - locale: fr_FR.UTF-8
-    encoding: UTF-8
-    short: fr_FR
+  - locale: en_US
+    encoding: utf8
+  - locale: fr_FR
+    encoding: utf8
 _locales_timezone: "{{ system_timezone | default('Europe/Paris') }}"
