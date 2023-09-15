@@ -11,8 +11,8 @@
 - name: locale-gen config (debian)
   lineinfile:
     path: /etc/locale.gen
-    regexp: "#? ?{{ _locale }} {{ _encoding.replace('utf8', 'UTF-8') }}"
-    line: "{{ _locale }} {{ _encoding.replace('utf8', 'UTF-8') }}"
+    regexp: "#? ?{{ _locale }}.{{ _encoding.replace('utf8', 'UTF-8') }} {{ _encoding.replace('utf8', 'UTF-8') }}"
+    line: "{{ _locale }}.{{ _encoding.replace('utf8', 'UTF-8') }} {{ _encoding.replace('utf8', 'UTF-8') }}"
   when:
     - ansible_os_family == 'Debian'
     - available_locale.failed
