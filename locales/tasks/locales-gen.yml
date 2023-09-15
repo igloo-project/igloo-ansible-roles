@@ -2,7 +2,7 @@
 
 # generate locale if needed
 - name: check available locales
-  shell: "locale -a | grep {{ _locale }} > /dev/null"
+  shell: "locale -a | grep {{ _short }} {{ _encoding.replace('.utf8', '.UTF-8') }} > /dev/null"
   register: available_locale
   ignore_errors: true
   check_mode: false
