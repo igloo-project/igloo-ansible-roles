@@ -112,6 +112,7 @@
         mode: u=rw,g=rw,o=r
         content: "{{ _tomcat_systemd_env }}"
       notify:
+        - systemd.daemon-reload
         - tomcat.restart
         - tomcat.restart.skipped
       vars:
