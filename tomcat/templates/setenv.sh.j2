@@ -12,7 +12,7 @@ PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ _catalina_base_h
 {% else %}
 PANIC_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ _catalina_base_heapdump_path }} -XX:-OmitStackTraceInFastThrow -XX:-TraceClassUnloading"
 {% endif %}
-EXTRA_OPTS="{{ _catalina_base_extra_opts }}"
+EXTRA_OPTS="{{ _catalina_base_extra_opts }} ${PROMETHEUS_EXPORTER_OPTS}"
 
 # start and wait for debug console on port 8000
 DEBUG_WAIT_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"

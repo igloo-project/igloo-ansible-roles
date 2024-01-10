@@ -83,6 +83,8 @@
         remote_src: yes
         force: no
 
+    # PROMETHEUS_EXPORTER_OPTS may be set by a custom service environment override
+    # glowroot must start before prometheus_exporter agent
     - name: tomcat · catalina_base · service configuration file
       template:
         src: setenv.sh.j2
