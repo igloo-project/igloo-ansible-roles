@@ -7,12 +7,19 @@
   become_user: root
   when: httpd_step_install
 
-- name: enable modules
-  file:
-    path: "/etc/apache2/mods-enabled/{{ item | basename }}"
-    state: link
-    src: "{{ item }}"
-  with_items: "{{ _httpd_module_links }}"
+- block:
+  - name: enable modules
+    file:
+      path: "/etc/apache2/mods-enabled/{{ item | basename }}"
+      state: link
+      src: "{{ item }}"
+    with_items: "{{ _httpd_module_links }}"
+  
+  - name: install module proxy_wstunnel
+    community.general.apache2_module:
+      state: present
+      name: proxy_wstunnel
+
   when: ansible_os_family == 'Debian'
 
 - block:
