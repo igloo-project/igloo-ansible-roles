@@ -52,6 +52,9 @@
 {% if vhost_item['sslLocations'] | default('') %}
 {{ vhost_item['sslLocations'] | indent(width=4, first=True) }}
 {% endif %}
+{% if vhost_item['hstsEnable'] | default('') %}
+    Header always set Strict-Transport-Security "max-age={{ vhost_item['hstsMaxAge'] }}; includeSubDomains; preload"
+{% endif %}
 
 {{ macro_ssl(vhost_item=vhost_item, macro_files=macro_files) }}
     CustomLog /data/log/web/{{ vhost_item['appName'] }}-ssl-access_log combined

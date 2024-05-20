@@ -66,6 +66,9 @@ _httpd_conf_proxypass_timeout: "{{ httpd_conf_proxypass_timeout | default('3000'
 _httpd_conf_proxypass_ttl: "{{ httpd_conf_proxypass_ttl | default('300') }}"
 _httpd_conf_proxypass_extra: "{{ httpd_conf_proxypass_extra | default('') }}"
 
+_httpd_conf_hsts_enable: "{{ httpd_conf_hsts_enable | default(false) }}"
+_httpd_conf_hsts_max_age: "{{ httpd_conf_hsts_max_age | default('31536000') }}"
+
 _httpd_ssl_certificate: "{{ httpd_ssl_certificate }}"
 _httpd_ssl_key: "{{ httpd_ssl_key }}"
 _httpd_ssl_chain: "{{ httpd_ssl_chain }}"

@@ -29,6 +29,8 @@ ServerName {{ _server_name }}
                  "error_override" : _httpd_conf_error_override,
                  "proxyPassTimeout": _httpd_conf_proxypass_timeout,
                  "proxyPassTtl": _httpd_conf_proxypass_ttl,
-                 "proxyPassExtra": _httpd_conf_proxypass_extra
+                 "proxyPassExtra": _httpd_conf_proxypass_extra,
+                 "hstsEnable": _httpd_conf_hsts_enable,
+                 "hstsMaxAge": _httpd_conf_hsts_max_age
               })
 }}
