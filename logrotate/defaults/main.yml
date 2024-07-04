@@ -31,8 +31,21 @@ _logrotate_entries:
         create 644 root adm
         dateext
         sharedscripts
+        {% if ansible_os_family == 'RedHat' -%}
         postrotate
           /bin/systemctl reload httpd > /dev/null 2>/dev/null || true
+        {% endif -%}
+        {% if ansible_os_family == 'Debian' -%}
+        prerotate
+          if [ -d /etc/logrotate.d/httpd-prerotate ]; then
+            run-parts /etc/logrotate.d/httpd-prerotate
+          fi
+        endscript
+        postrotate
+          if pgrep -f ^/usr/sbin/apache2 > /dev/null; then
+            invoke-rc.d apache2 reload 2>&1 | logger -t apache2.logrotate
+          fi
+        {% endif -%}
         endscript
       }
 
