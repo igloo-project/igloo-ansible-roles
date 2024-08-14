@@ -29,3 +29,18 @@
     name: "{{ _locales_timezone }}"
   become: true
   become_user: root
+
+# With debian 12, datetimectl no longer update /etc/timezone
+# but /etc/timezone is used by JVM
+# We now manually update /etc/timezone
+# CentOS : /etc/timezone does not exist
+# See:
+# https://stackoverflow.com/questions/6392/java-time-zone-is-messed-up
+# https://unix.stackexchange.com/questions/451709/timedatectl-set-timezone-doesnt-update-etc-timezone
+- name: set /etc/timezone {{ _locales_timezone }}
+  copy:
+    content: "{{ _locales_timezone }}\\n"
+    dest: /etc/timezone
+  when: ansible_os_family == 'Debian'
+  become: true
+  become_user: root
