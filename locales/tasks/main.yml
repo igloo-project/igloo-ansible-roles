@@ -39,7 +39,7 @@
 # https://unix.stackexchange.com/questions/451709/timedatectl-set-timezone-doesnt-update-etc-timezone
 - name: set /etc/timezone {{ _locales_timezone }}
   copy:
-    content: "{{ _locales_timezone }}\\n"
+    content: "{{ _locales_timezone }}\n"
     dest: /etc/timezone
   when: ansible_os_family == 'Debian'
   become: true
