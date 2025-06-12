@@ -10,7 +10,7 @@
     DocumentRoot {{ vhost_item['documentRoot'] }}
 
 {% if vhost_item['error_override'] | default(true) %}
-    ProxyErrorOverride On
+    ProxyErrorOverride On 403 404 500 503
 {% endif %}
     ProxyPass /static-content/ !
 {% if vhost_item['error_override'] | default(true) %}
