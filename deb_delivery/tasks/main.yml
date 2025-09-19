@@ -1,0 +1,14 @@
+---
+# Copy and install .deb package on remote server
+
+- name: consistency check
+  fail:
+    msg: "playbook_sudoers_deb must me True to allow delivery_deb_files installation"
+  when: delivery_deb_files | default([], True) and not playbook_sudoers_deb | default(False)
+
+- name: install package
+  include_tasks: package.yml
+  with_items: "{{ delivery_deb_files | default([], True) }}"
+  when: "playbook_sudoers_deb | default(False)"
+  loop_control:
+    label: "{{ item | basename }}"

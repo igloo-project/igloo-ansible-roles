@@ -1,0 +1,12 @@
+---
+- name: copy package
+  copy:
+    src: "{{ item }}"
+    dest: /data/opt/packages/
+
+- name: install package
+  shell:
+    sudo apt-get install -y --allow-downgrades /data/opt/packages/{{ item | basename }}
+  # sudo setup is highly restrictive on filename and location
+  when: item | basename == playbook_application_name + '-static.deb'
+  register: apt_install

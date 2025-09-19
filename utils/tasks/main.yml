@@ -3,3 +3,14 @@
     name: "{{ utils_packages + utils_default_packages }}"
     state: present
   become_user: root
+
+- name: sudoers apt
+  copy:
+    dest: /etc/sudoers.d/igloo-apt
+    content: |
+      {{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/apt-get install -y --allow-downgrades /data/opt/packages/{{ playbook_application_name }}-static.deb
+    owner: root
+    group: root
+    mode: u=rw,go=
+  become: true
+  when: playbook_sudoers_deb | default(False)

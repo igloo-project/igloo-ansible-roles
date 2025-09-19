@@ -25,6 +25,9 @@
       mode: u=rwx,o=rx
     - path: /data/opt
       mode: u=rwx,o=rx
+    - path: /data/opt/packages
+      mode: u=rwx,g=rx,o=rx
+      owner: "{{ filesystem_application_user }}"
     - path: /data/services/web/{{ filesystem_application_name }}
       mode: u=rwx,g=rx,o=rx
       owner: "{{ filesystem_application_user }}"
