@@ -1,0 +1,75 @@
+---
+argument_specs:
+  main:
+    short_description: Add automatic dump service
+    description:
+      - Create backup configuration
+      - Create S3 restic configuration
+      - Create kobackup.service to execute automatic dump(s) and push on restic
+    options:
+      dumps_infos:
+        type: "list"
+        elements: "dict"
+        required: true
+        description: "A list of dicts containing all the necessary information to perform a dump."
+        options:
+          target_basename:
+            type: "str"
+            required: true
+          target_path:
+            type: "str"
+            required: true
+          database:
+            type: "str"
+            required: true
+          port:
+            type: "str"
+            required: true
+          user:
+            type: "str"
+            required: true
+          password:
+            type: "str"
+            required: true
+          hostname:
+            type: "str"
+            required: true
+
+      backup_paths:
+        type: "list"
+        elements: "str"
+        required: true
+        description: "A list of backup paths."
+
+      aws_access_key_id:
+        type: "str"
+        required: true
+
+      aws_secret_access_key:
+        type: "str"
+        required: true
+
+      s3_conf_path:
+        type: "str"
+        required: true
+      
+      kobackup_conf_path:
+        type: "str"
+        required: true
+
+      restic_version:
+        type: "str"
+        required: true
+
+      restic_repository:
+        type: "str"
+        required: true
+
+      restic_password:
+        type: "str"
+        required: true
+
+      restic_forget_keep_args:
+        type: "list"
+        elements: "str"
+        required: false

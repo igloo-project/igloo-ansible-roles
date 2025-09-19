@@ -1,0 +1,97 @@
+---
+
+- name: kobackup - package
+  package:
+    name: kobackup
+  become: true
+  become_user: root
+
+- name: kobackup - directory
+  file:
+    path: "{{ kobackup_conf_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=,o=
+  become: true
+  become_user: root
+
+- name: kobackup - restic config directory
+  file:
+    path: "{{ s3_conf_path | dirname }}"
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: "go-rwx"
+  become: true
+  become_user: root
+
+- name: kobackup - restic config
+  copy:
+    dest: "{{ s3_conf_path }}"
+    mode: u=rwx,g=,o=
+    content: |
+      export AWS_ACCESS_KEY_ID={{ aws_access_key_id }}
+      export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key | quote }}
+      export RESTIC_REPOSITORY={{ restic_repository }}
+      export RESTIC_PASSWORD={{ restic_password | quote }}
+  become: true
+  become_user: root
+
+- name: kobackup - config
+  copy:
+    dest: "{{ kobackup_conf_path }}"
+    mode: u=rw,g=,o=
+    content: |
+      steps:
+      {% for dump_infos in dumps_infos %}
+      - name: pg_dump {{ dump_infos.database }}
+        type: pg_dump
+        user: {{ dump_infos.user }}
+        database: {{ dump_infos.database }}
+        hostname: {{ dump_infos.hostname }}
+        port: {{ dump_infos.port }}
+        password: {{ dump_infos.password }}
+        target_path: "{{ dump_infos.target_path }}"
+        target_basename: {{ dump_infos.target_basename }}
+        keep_files: 0
+      {% endfor %}
+      - name: restic
+        type: restic_backup
+        env_file: "{{ s3_conf_path }}"
+        paths:
+        {{ backup_paths | to_nice_yaml | indent(2) | trim }}
+      - name: restic-forget
+        type: restic_forget
+        env_file: "{{ s3_conf_path }}"
+        keep_args:
+        {{ _restic_forget_keep_args | to_nice_yaml | indent(2) | trim }}
+      metrics:
+        type: textfile
+        path: "/var/lib/textfile"
+        basename: "backup" 
+  become: true
+  become_user: root
+
+ 
+- name: kobackup - service
+  copy:
+    dest: /etc/systemd/system/kobackup.service
+    content: |
+      [Unit]
+      Description=kobackup
+
+      [Service]
+      ExecStart=kobackup --config {{ kobackup_conf_path }}
+
+      [Install]
+      WantedBy=multi-user.target
+  become: true
+  become_user: root
+
+- name: kobackup - service enable
+  service:
+    name: kobackup
+    enabled: true
+  become: true
+  become_user: root
