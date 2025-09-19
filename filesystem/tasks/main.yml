@@ -25,6 +25,9 @@
       mode: u=rwx,o=rx
     - path: /data/opt
       mode: u=rwx,o=rx
+    - path: /data/opt/packages
+      mode: u=rwx,g=rx,o=rx
+      owner: "{{ filesystem_application_user }}"
     - path: /data/services/web/{{ filesystem_application_name }}
       mode: u=rwx,g=rx,o=rx
       owner: "{{ filesystem_application_user }}"
@@ -74,3 +77,13 @@
   become: yes
   become_user: root
   when: filesystem_httpd
+
+- name: sudoers apt
+  copy:
+    dest: /etc/sudoers.d/igloo-apt
+    content: |
+      {{ playbook_remote_user }} ALL=NOPASSWD: /usr/bin/apt-get install -y --allow-downgrades /data/opt/packages/{{ playbook_application_name }}-static.deb
+    owner: root
+    group: root
+    mode: u=rw,go=
+  become: true

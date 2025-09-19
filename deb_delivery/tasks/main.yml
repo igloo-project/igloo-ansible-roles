@@ -1,0 +1,8 @@
+---
+# Copy debian packages detected in sources to remote server
+# in /data/opt/packages folder
+
+- name: find packages
+  include_tasks: package.yml
+  with_fileglob:
+  - "{{ deb_delivery_fileglob }}"
