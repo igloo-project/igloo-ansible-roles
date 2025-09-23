@@ -1,0 +1,9 @@
+---
+_restic_forget_keep_args_default:
+- "--keep-tag=preserve"
+- "--keep-daily=7"
+- "--keep-weekly=5"
+- "--keep-monthly=12"
+- "--keep-yearly=10"
+
+_restic_forget_keep_args:  "{{ restic_forget_keep_args | default(_restic_forget_keep_args_default) }}"

@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Corinne Fagno
+  description: Add automatic dump service
+  license: BSD
+  min_ansible_version: '8.7.0'
+  galaxy_tags:
+    - kobackup
+
+dependencies:
+  - role: restic
+    vars:
+        restic_script_enabled: false
+        restic_bin_dir: /usr/local/bin
+        restic_archive_dir: /data/work
+        restic_version: "{{ restic_version }}"
