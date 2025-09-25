@@ -1,6 +1,5 @@
 ---
 _restic_forget_keep_args_default:
-- "--keep-tag=preserve"
 - "--keep-daily=7"
 - "--keep-weekly=5"
 - "--keep-monthly=12"
