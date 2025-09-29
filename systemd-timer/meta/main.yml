@@ -1,0 +1,6 @@
+---
+galaxy_info:
+  author: Corinne Fagno
+  description: Add systemd-timer
+  license: BSD
+  min_ansible_version: '8.7.0'

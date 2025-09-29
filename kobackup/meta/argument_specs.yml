@@ -57,6 +57,14 @@ argument_specs:
         type: "str"
         required: true
 
+      kobackup_timer_oncalendar:
+        type: "str"
+        required: true
+
+      kobackup_timer_unit_description:
+        type: "str"
+        required: true
+
       restic_version:
         type: "str"
         required: true

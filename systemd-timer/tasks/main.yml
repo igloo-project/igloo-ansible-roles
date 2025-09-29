@@ -1,0 +1,24 @@
+---
+
+- name: systemd - timer
+  copy:
+    dest: "/etc/systemd/system/{{ _timer_service_name }}.timer"
+    content: "{{ _timer_content }}"
+  become: true
+  become_user: root
+
+- name: systemd - timer enable
+  service:
+    name: "{{ _timer_service_name }}.timer"
+    enabled: true
+  become: true
+  become_user: root
+  when: _timer_enable
+
+- name: systemd - timer start
+  service:
+    name: "{{ _timer_service_name }}.timer"
+    state: started
+  become: true
+  become_user: root
+  when: _timer_start

@@ -14,3 +14,8 @@ dependencies:
         restic_bin_dir: /usr/local/bin
         restic_archive_dir: /data/work
         restic_version: "{{ restic_version }}"
+  - role: systemd-timer
+    vars:
+      timer_service_name: kobackup
+      timer_unit_description: "{{ kobackup_timer_unit_description }}"
+      timer_oncalendar: "{{ kobackup_timer_oncalendar }}"

@@ -1,0 +1,16 @@
+---
+
+_timer_enable: "{{ timer_enable | default('True') }}"
+_timer_start: "{{ timer_start | default('True') }}"
+
+_timer_content_default: |
+  [Unit]
+  Description={{ timer_unit_description }}
+
+  [Timer]
+  OnCalendar={{ timer_oncalendar }}
+
+  [Install]
+  WantedBy=timers.target
+
+_timer_content: "{{ timer_content | default(_timer_content_default) }}"
