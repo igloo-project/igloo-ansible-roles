@@ -14,7 +14,7 @@
 # custom log, conf and tmp dirs.
 - name: check old configuration
   stat:
-    path: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
+    path: "{{ _glowroot_agent_install_path }}/glowroot-{{ glowroot_agent_version }}/glowroot.properties"
   register: old_config
   become: true
   become_user: root
@@ -69,7 +69,7 @@
 
 - name: glowroot agent · config
   copy:
-    dest: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
+    dest: "{{ _glowroot_agent_install_path }}/glowroot-{{ glowroot_agent_version }}/glowroot.properties"
     owner: "{{ _glowroot_agent_user }}"
     group: "{{ _glowroot_agent_group }}"
     mode: u=rw,g=r,o=
@@ -85,7 +85,7 @@
 
 - name: glowroot agent · config readonly
   copy:
-    dest: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
+    dest: "{{ _glowroot_agent_install_path }}/glowroot-{{ glowroot_agent_version }}/glowroot.properties"
     owner: "root"
     group: "root"
     mode: u=rw,g=r,o=r
@@ -101,7 +101,7 @@
 
 - name: glowroot clean
   file:
-    path: "{{ _glowroot_agent_install_path }}/glowroot/{{ item }}"
+    path: "{{ _glowroot_agent_install_path }}/glowroot-{{ glowroot_agent_version }}/{{ item }}"
     state: absent
   become: true
   become_user: root
