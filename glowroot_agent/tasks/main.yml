@@ -43,6 +43,9 @@
   when: not _glowroot_old_config
   become: true
   become_user: root
+  # unarchive + zip workaround: https://github.com/ansible/ansible/issues/85779
+  environment:
+    TZ: "UTC"
 
 - name: glowroot agent · unarchive
   unarchive:
@@ -55,6 +58,9 @@
   when: _glowroot_old_config
   become: true
   become_user: root
+  # unarchive + zip workaround: https://github.com/ansible/ansible/issues/85779
+  environment:
+    TZ: "UTC"
 
 - name: glowroot agent · log dir
   file:
