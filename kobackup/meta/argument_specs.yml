@@ -5,7 +5,8 @@ argument_specs:
     description:
       - Create backup configuration
       - Create S3 restic configuration
-      - Create kobackup.service to execute automatic dump(s) and push on restic
+      - Create kobackup.service and systemd-timer to execute automatic dump(s) and push on restic
+      - Install restic
     options:
       dumps_infos:
         type: "list"

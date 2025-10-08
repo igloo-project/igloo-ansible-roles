@@ -6,6 +6,17 @@
   become: true
   become_user: root
 
+- name: kobackup - backup paths directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwx,g=,o=
+  become: true
+  become_user: root
+  loop: "{{ backup_paths }}"
+
 - name: kobackup - directory
   file:
     path: "{{ kobackup_conf_path | dirname }}"
@@ -72,7 +83,6 @@
         basename: "backup" 
   become: true
   become_user: root
-
  
 - name: kobackup - service
   copy:
@@ -95,3 +105,20 @@
     enabled: true
   become: true
   become_user: root
+
+- name: kobackup - systemd-timer
+  import_role:
+    name: systemd-timer
+  vars:
+    timer_service_name: "kobackup"
+    timer_unit_description: "{{ kobackup_timer_unit_description }}"
+    timer_oncalendar: "{{ kobackup_timer_oncalendar }}"
+
+- name: kobackup - install restic
+  import_role:
+    name: restic
+  vars:
+    restic_script_enabled: false
+    restic_bin_dir: /usr/local/bin
+    restic_archive_dir: /data/work
+    restic_version: "{{ restic_version }}"
