@@ -3,6 +3,10 @@
   copy:
     src: "{{ item }}"
     dest: /data/opt/packages/
+  # Initial delivery: user is unprivileged, but he can sudo, ansible_user not set
+  # Continuous delivery: use has write permission on folder and can't sudo
+  become: "{{ ansible_user | default('') != playbook_remote_user }}"
+
 
 - name: install package
   shell:
