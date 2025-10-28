@@ -135,3 +135,5 @@ _httpd_module_links_default :
   - /etc/apache2/mods-available/headers.load 
 
 _httpd_module_links_extra : "{{ httpd_module_links_extra | default([]) }}"
+
+_httpd_logs_json_enable: "{{ httpd_logs_json_enable | default(false) }}"
