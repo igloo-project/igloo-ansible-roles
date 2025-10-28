@@ -59,6 +59,25 @@
 {% endif %}
 
 {{ macro_ssl(vhost_item=vhost_item, macro_files=macro_files) }}
+    # Define the JSON Log Format
+    LogFormat "{ \
+      \"time\": \"%{%Y-%m-%dT%H:%M:%S%z}t\", \
+      \"remote_ip\": \"%a\", \
+      \"host\": \"%v\", \
+      \"method\": \"%m\", \
+      \"url\": \"%U\", \
+      \"query\": \"%q\", \
+      \"protocol\": \"%H\", \
+      \"status\": \"%>s\", \
+      \"bytes_sent\": \"%B\", \
+      \"referer\": \"%{Referer}i\", \
+      \"user_agent\": \"%{User-Agent}i\", \
+      \"response_time_microseconds\": \"%D\", \
+      \"forwarded_for\": \"%{X-Forwarded-For}i\", \
+      \"request\": \"%r\" \
+    }" json
+
+    CustomLog /data/log/web/{{ vhost_item['appName'] }}-ssl-access-json.log json
     CustomLog /data/log/web/{{ vhost_item['appName'] }}-ssl-access_log combined
     ErrorLog /data/log/web/{{ vhost_item['appName'] }}-ssl-error_log
 </VirtualHost>
