@@ -27,7 +27,7 @@
   get_url:
     url: "{{ _glowroot_agent_archive_url }}"
     checksum: "{{ _glowroot_agent_archive_checksum }}"
-    dest: "{{ _glowroot_agent_download_target_path }}"
+    dest: "{{ _glowroot_agent_download_target_path }}/{{ _glowroot_agent_archive_name }}"
     owner: "root"
     group: "root"
   become: true

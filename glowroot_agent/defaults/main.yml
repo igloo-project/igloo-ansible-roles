@@ -1,6 +1,6 @@
 ---
 
-default_glowroot_version: "0.13.0"
+default_glowroot_version: "0.14.4"
 
 # override from command-line to remove configuration in install
 # folder once 
@@ -10,7 +10,7 @@ _glowroot_agent_version: "{{ glowroot_agent_version | default(default_glowroot_v
 _glowroot_agent_archive_checksum: "{{ _glowroot_versions[_glowroot_agent_version].checksum | default(glowroot_agent_archive_checksum) }}"
 
 _glowroot_agent_archive_name: "glowroot-{{ _glowroot_agent_version }}-dist.zip"
-_glowroot_agent_archive_url: "https://github.com/glowroot/glowroot/releases/download/v{{ _glowroot_agent_version }}/{{ _glowroot_agent_archive_name }}"
+_glowroot_agent_archive_url: "{{ _glowroot_versions[_glowroot_agent_version].url | default('https://github.com/glowroot/glowroot/releases/download/v' + _glowroot_agent_version + '/' + _glowroot_agent_archive_name) }}"
 
 _glowroot_agent_download_target_path: "{{ glowroot_agent_download_target_path }}"
 
@@ -27,6 +27,9 @@ _glowroot_config_tmp_dir: "{{ glowroot_config_tmp_dir | default(_glowroot_config
 _glowroot_config_conf_dir: "{{ glowroot_config_conf_dir | default(_glowroot_config_base_dir + '/conf') }}"
 
 _glowroot_versions:
+  "0.14.5-beta.2-SNAPSHOT":
+    checksum: sha256:6d8152c490a84903da5403e9db581e1e452dd622361ba3b754eab3dcc894b1bf
+    url: https://nexus.tools.kobalt.fr/repository/glowroot-beta/glowroot-0.14.5-beta.2-SNAPSHOT-dist.zip
   "0.14.4":
     checksum: sha256:3b9db6b0fc0903233c5e17b6cfa7b022ef8ba6d71ae7d39a9fff6f637608f20c
   "0.14.0":
