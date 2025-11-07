@@ -6,23 +6,7 @@
   become: true
   become_user: root
 
-# if a glowroot.properties not owned by root is found
-# in install folder we keep old behavior to make a writable
-# install.
-#
-# else, install folder is not world-writable and configure
-# custom log, conf and tmp dirs.
-- name: check old configuration
-  stat:
-    path: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
-  register: old_config
-  become: true
-  become_user: root
-
-- name: register old configuration status
-  set_fact:
-    _glowroot_old_config: "{{ not _glowroot_old_config_clean and old_config.stat.exists and old_config.stat.pw_name != 'root' }}"
-
+# glowroot install & base config, read-only
 - name: glowroot agent · download
   get_url:
     url: "{{ _glowroot_agent_archive_url }}"
@@ -40,54 +24,11 @@
     remote_src: true
     owner: root
     group: root
-  when: not _glowroot_old_config
   become: true
   become_user: root
   # unarchive + zip workaround: https://github.com/ansible/ansible/issues/85779
   environment:
     TZ: "UTC"
-
-- name: glowroot agent · unarchive
-  unarchive:
-    src: "{{ _glowroot_agent_download_target_path }}/{{ _glowroot_agent_archive_name }}"
-    dest: "{{ _glowroot_agent_install_path }}"
-    copy: no
-    owner: "{{ _glowroot_agent_user }}"
-    group: "{{ _glowroot_agent_group }}"
-    mode: u=rwx,g=rX,o=rX
-  when: _glowroot_old_config
-  become: true
-  become_user: root
-  # unarchive + zip workaround: https://github.com/ansible/ansible/issues/85779
-  environment:
-    TZ: "UTC"
-
-- name: glowroot agent · log dir
-  file:
-    name: "{{ _glowroot_config_log_dir }}"
-    owner: "{{ _glowroot_agent_user }}"
-    group: "{{ _glowroot_agent_group }}"
-    mode: u=rwx,g=rx,o=rx
-    state: directory
-  when: _glowroot_old_config
-  become: true
-  become_user: root
-
-- name: glowroot agent · config
-  copy:
-    dest: "{{ _glowroot_agent_install_path }}/glowroot/glowroot.properties"
-    owner: "{{ _glowroot_agent_user }}"
-    group: "{{ _glowroot_agent_group }}"
-    mode: u=rw,g=r,o=
-    content: |
-      agent.id={{ _glowroot_config_agent_id }}
-      collector.address={{ _glowroot_config_collector_address }}
-      log.dir={{ _glowroot_config_log_dir }}
-      tmp.dir={{ _glowroot_config_tmp_dir }}
-      conf.dir={{ _glowroot_config_conf_dir }}
-  when: _glowroot_old_config
-  become: true
-  become_user: root
 
 - name: glowroot agent · config readonly
   copy:
@@ -101,21 +42,36 @@
       log.dir={{ _glowroot_config_log_dir }}
       tmp.dir={{ _glowroot_config_tmp_dir }}
       conf.dir={{ _glowroot_config_conf_dir }}
-  when: not _glowroot_old_config
   become: true
   become_user: root
 
-- name: glowroot clean
+# writable dirs (log, tmp, modifiable config)
+- name: glowroot agent · log dir
   file:
-    path: "{{ _glowroot_agent_install_path }}/glowroot/{{ item }}"
-    state: absent
+    path: "{{ _glowroot_config_log_dir }}"
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
   become: true
   become_user: root
-  with_items:
-    - tmp
-    - config.json
-    - config.synced
-  when: not _glowroot_old_config or _glowroot_old_config_clean
 
-- name: initialize glowroot bases
-  import_tasks: glowroot_base.yml
+- name: glowroot agent · tmp dir
+  file:
+    path: "{{ _glowroot_config_tmp_dir }}"
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root
+
+- name: glowroot agent · conf dir
+  file:
+    path: "{{ _glowroot_config_conf_dir }}"
+    owner: "{{ _glowroot_agent_user }}"
+    group: "{{ _glowroot_agent_group }}"
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  become: true
+  become_user: root

@@ -2,10 +2,6 @@
 
 default_glowroot_version: "0.14.4"
 
-# override from command-line to remove configuration in install
-# folder once 
-_glowroot_old_config_clean: "{{ glowroot_old_config_clean | default(False) }}"
-
 _glowroot_agent_version: "{{ glowroot_agent_version | default(default_glowroot_version) }}"
 _glowroot_agent_archive_checksum: "{{ _glowroot_versions[_glowroot_agent_version].checksum | default(glowroot_agent_archive_checksum) }}"
 
