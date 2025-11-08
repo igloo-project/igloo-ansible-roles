@@ -1,0 +1,57 @@
+---
+argument_specs:
+  main:
+    short_description: Install Java Runtime environments
+    description: |
+      ```yaml
+      java_runtimes:
+      # retrieve package and java_home from role default/main.yml:default_java_runtimes
+      - key: temurin-17-jre
+      # custom configuration
+      - key: temurin-18-jre
+        package: temurin-18-jre
+        java_home: /usr/lib/jvm/temurin-18-jre-amd64
+      ```
+    options:
+      java_runtimes:
+        type: "list"
+        elements: "dict"
+        required: true
+        description: "A list of expected Java environments"
+        options:
+          key:
+            type: "str"
+            required: true
+            description: |
+              O(key) is used to expose installation information in facts
+          package:
+            type: "str"
+            required: false
+            description: |
+              Package name to install.
+
+              Keep empty to use role-provided value, look-up by key.
+          java_home:
+            type: "str"
+            required: false
+            description: |
+              JAVA_HOME value to target this environment. Provided value must match
+              the package tree.
+
+              Keep empty to use role-provided value, look-up by key.
+          packaging:
+            type: "str"
+            required: false
+            description: "Deprecated and ignored"
+      java_results_var:
+        type: "str"
+        required: false
+        description: "Deprecated and ignored"
+      java_download_path:
+        type: "str"
+        required: false
+        description: "Deprecated and ignored"
+      java_runtime_path:
+        type: "str"
+        required: false
+        description: "Deprecated and ignored"

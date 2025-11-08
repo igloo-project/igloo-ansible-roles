@@ -1,29 +1,17 @@
-java_archive_url_template: "http://download.oracle.com/otn-pub/java/jdk/{{ item.version }}-b{{ item.version_build }}/{{ item.id }}/{{ item.type }}-{{ item.version }}-linux-{{ item.arch }}.tar.gz"
 
-_java_download_path: "{{ java_download_path | default('') }}"
-_java_runtime_path: "{{ java_runtime_path | default('') }}"
-
-_java_user: "{{ java_user | default('root') }}"
-_java_group: "{{ java_group | default(_java_user) }}"
-
-_java_yum_repository: "{{ java_yum_repository | default('') }}"
-# else dict(path=..., content=...)
-
-# java_runtimes is a list
-
-# item example for download and extract:
-# - version: 8u131
-#   version_build: 11
-#   arch: x64
-#   type: jdk
-#   checksum: md5:75b2cb2249710d822a60f83e28860053
-#   key: jdk-8u131-x64
-#   # download jvm to determine id (used for url building)
-#   id: d54c1d3a095b4ff2b6607d096fa80163
-
-# item example for package installation
-# - version: 1.8.0
-#   packaging: yum
-#   package: java-1.8.0-openjdk
-#   java_home: /usr/lib/jvm/jre-1.8.0
-#   key: java-1.8.0-openjdk
+default_java_runtimes:
+  openjdk-17-jre:
+    java_home: /usr/lib/jvm/java-17-openjdk-amd64
+    package: openjdk-17-jre
+  temurin-21-jre:
+    java_home: /usr/lib/jvm/temurin-21-jre-amd64
+    package: temurin-21-jre
+  temurin-21-jdk:
+    java_home: /usr/lib/jvm/temurin-21-jdk-amd64
+    package: temurin-21-jdk
+  temurin-25-jre:
+    java_home: /usr/lib/jvm/temurin-25-jre-amd64
+    package: temurin-25-jre
+  temurin-25-jdk:
+    java_home: /usr/lib/jvm/temurin-25-jdk-amd64
+    package: temurin-25-jdk
