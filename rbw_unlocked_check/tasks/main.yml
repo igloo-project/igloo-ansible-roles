@@ -1,0 +1,16 @@
+
+- name: Check rbw unlocked
+  local_action:
+    module: shell
+    cmd: "rbw unlocked;echo $?"
+  register: result
+  ignore_errors: true
+
+#- name: Debug result
+#  debug:
+#    var: result
+
+- name: Fail if return code not zero
+  fail:
+    msg: "rbw is not unlocked (stdout: {{ result.stdout }})"
+  when: result.stdout != '0'
