@@ -23,9 +23,6 @@ _glowroot_config_tmp_dir: "{{ glowroot_config_tmp_dir | default(_glowroot_config
 _glowroot_config_conf_dir: "{{ glowroot_config_conf_dir | default(_glowroot_config_base_dir + '/conf') }}"
 
 _glowroot_versions:
-  "0.14.5-beta.2-SNAPSHOT":
-    checksum: sha256:6d8152c490a84903da5403e9db581e1e452dd622361ba3b754eab3dcc894b1bf
-    url: https://nexus.tools.kobalt.fr/repository/glowroot-beta/glowroot-0.14.5-beta.2-SNAPSHOT-dist.zip
   "0.14.5-beta.2":
     checksum: sha256:9a9d402b2029ed19a05ca9a8ba4e2a80e3cd0c3750306be4a7d6fc0278d9945c
     url: https://github.com/glowroot/glowroot/releases/download/v0.14.5-beta.2/glowroot-0.14.5-beta.2-dist.zip
