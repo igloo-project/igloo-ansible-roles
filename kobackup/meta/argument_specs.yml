@@ -6,7 +6,7 @@ argument_specs:
       - Create backup configuration
       - Create S3 restic configuration
       - Create kobackup.service and systemd-timer to execute automatic dump(s) and push on restic
-      - Install restic
+      - Install restic / rclone
     options:
       dumps_infos:
         type: "list"

@@ -125,6 +125,11 @@
     timer_unit_description: "{{ kobackup_timer_unit_description }}"
     timer_oncalendar: "{{ kobackup_timer_oncalendar }}"
 
+- name: kobackup - install rclone
+  package:
+    name: rclone
+  become: true
+
 - name: kobackup - install restic
   import_role:
     name: restic
