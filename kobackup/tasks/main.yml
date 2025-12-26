@@ -72,6 +72,17 @@
         env_file: "{{ s3_conf_path }}"
         paths:
         {{ backup_paths | to_nice_yaml | indent(2) | trim }}
+      {% if kobackup_clone | default(False, True) %}
+      - name: clone
+        type: clone
+        env_file: "{{ s3_conf_path }}"
+        source:
+          region: "{{ kobackup_clone.source.region }}"
+          bucket: "{{ kobackup_clone.source.bucket }}"
+        target:
+          region: "{{ kobackup_clone.target.region }}"
+          bucket: "{{ kobackup_clone.target.bucket }}"
+      {% endif %}
       - name: restic-forget
         type: restic_forget
         env_file: "{{ s3_conf_path }}"

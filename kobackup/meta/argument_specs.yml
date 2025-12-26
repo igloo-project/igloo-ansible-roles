@@ -65,6 +65,33 @@ argument_specs:
       kobackup_timer_unit_description:
         type: "str"
         required: true
+      
+      kobackup_clone:
+        type: "dict"
+        required: false
+        options:
+          # source and target cannot be required
+          # needed to disable clone when kobackup_clone: {}
+          source:
+            type: "dict"
+            required: false
+            options:
+              bucket:
+                type: "str"
+                required: true
+              region:
+                type: "str"
+                required: true
+          target:
+            type: "dict"
+            required: false
+            options:
+              bucket:
+                type: "str"
+                required: true
+              region:
+                type: "str"
+                required: true
 
       restic_version:
         type: "str"
