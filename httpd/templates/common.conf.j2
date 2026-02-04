@@ -1,6 +1,9 @@
 {% if _httpd_common_conf != '' %}
 {{ _httpd_common_conf }}
-{% endif -%}
+{% endif %}
 {% for listen in _httpd_listens %}
 Listen {{ listen }}
 {% endfor %}
+{% if _httpd_listens | length == 0 %}
+
+{% endif %}
