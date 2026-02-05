@@ -7,7 +7,7 @@
   become_user: root
 
 - name: tomcat.reload
-  become: yes
+  become: true
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
@@ -23,7 +23,7 @@
   when: _tomcat_handlers_inhibited
 
 - name: tomcat.restart
-  become: yes
+  become: true
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
@@ -39,7 +39,7 @@
   when: _tomcat_handlers_inhibited
 
 - name: tomcat.start
-  become: yes
+  become: true
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}
@@ -55,7 +55,7 @@
   when: _tomcat_handlers_inhibited
 
 - name: tomcat.stop
-  become: yes
+  become: true
   become_user: root
   systemd:
     name: tomcat@{{ item.name }}

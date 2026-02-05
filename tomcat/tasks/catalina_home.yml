@@ -8,7 +8,7 @@
   user:
     name: "{{ tomcat_user }}"
     groups: "{{ tomcat_group }}"
-    append: yes
+    append: true
 
 - name: tomcat · download binary
   get_url:
@@ -40,7 +40,7 @@
       extra_opts:
         - --strip-components=1
 
-  when: ansible_distribution_major_version != "5"
+  when: ansible_facts['distribution_major_version'] != "5"
 
 # strip-components is not available in CentOS 5, we need a workaround
 # untar in alternate folder
@@ -64,10 +64,10 @@
   - name: tomcat · find target for {{ tomcat_dest }}
     command: "find {{ tomcat_wa_dest }} -maxdepth 2 -name bin -type d -exec dirname {} \\;"
     register: find_result
-    changed_when: no
-    check_mode: no
+    changed_when: false
+    check_mode: false
 
-  - name: tomcat · check {{ find_result.stdout_lines[0] }}
+  - name: tomcat · check find result
     file:
       state: directory
       path: "{{ find_result.stdout_lines[0] }}"
@@ -81,14 +81,14 @@
   vars:
     tomcat_wa_dest: "{{ tomcat_dest.rstrip('/') | dirname }}/wa-{{ tomcat_dest.rstrip('/') | basename }}"
 
-  when: ansible_distribution_major_version == "5"
+  when: ansible_facts['distribution_major_version'] == "5"
 
 - name: tomcat · folder permissions
   file:
     dest: "{{ tomcat_dest }}"
     owner: root
     group: root
-    recurse: yes
+    recurse: true
 
 - name: tomcat · install tomcat@.service
   template:

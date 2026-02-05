@@ -2,8 +2,8 @@
 
 # static_archive:
 # static_target:
-static_owner: "{{ _distro_httpd_user | distro(vars) }}"
-static_group: "{{ _distro_httpd_user | distro(vars) }}"
+static_owner: "{{ lookup('distro', _distro_httpd_user) }}"
+static_group: "{{ lookup('distro', _distro_httpd_user) }}"
 static_mode: u=rX,g=rX,o=rX
 
 _distro_httpd_user:

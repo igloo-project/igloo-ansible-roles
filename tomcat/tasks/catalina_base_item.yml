@@ -44,7 +44,7 @@
     # conf/ file inventory
     - name: tomcat · catalina_base · {{ tomcat_dest }}/conf/ inventory"
       find:
-        recurse: no
+        recurse: false
         paths:
           - "{{ tomcat_dest }}/conf"
         file_type: file
@@ -64,7 +64,7 @@
       copy:
         dest: "{{ _catalina_base_path }}/{{ item.item.path | relpath(tomcat_dest) }}"
         src: "{{ tomcat_dest }}/{{ item.item.path | relpath(tomcat_dest) }}"
-        remote_src: yes
+        remote_src: true
         owner: "{{ _catalina_base_user }}"
         group: "{{ _catalina_base_group }}"
         mode: u=rw,g=rw,o=r
@@ -80,8 +80,8 @@
         dest: "{{ _catalina_base_path }}/conf/web.xml"
         owner: "{{ _catalina_base_user }}"
         group: "{{ _catalina_base_group }}"
-        remote_src: yes
-        force: no
+        remote_src: true
+        force: false
 
     # PROMETHEUS_EXPORTER_OPTS may be set by a custom service environment override
     # glowroot must start before prometheus_exporter agent

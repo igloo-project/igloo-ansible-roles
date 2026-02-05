@@ -16,12 +16,12 @@
       -extensions v3_ca
   args:
     creates: "{{ ssl_selfsigned_certificate }}"
-  become: yes
+  become: true
   become_user: root
 
 - name: ssl_selfsigned · check permissions
   file:
     path: "{{ ssl_selfsigned_key }}"
     mode: o-rw
-  become: yes
+  become: true
   become_user: root

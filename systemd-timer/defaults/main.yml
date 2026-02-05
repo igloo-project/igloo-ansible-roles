@@ -1,7 +1,7 @@
 ---
 
-_timer_enable: "{{ timer_enable | default('True') }}"
-_timer_start: "{{ timer_start | default('True') }}"
+_timer_enable: "{{ timer_enable | default(True) }}"
+_timer_start: "{{ timer_start | default(True) }}"
 
 _timer_content_default: |
   [Unit]

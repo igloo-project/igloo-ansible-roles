@@ -2,8 +2,8 @@
   package:
     name: "{{ item }}"
     state: present
-  with_items: "{{ _httpd_packages | distro(vars) }}"
-  become: yes
+  with_items: "{{ lookup('distro', _httpd_packages) }}"
+  become: true
   become_user: root
   when: httpd_step_install
 
@@ -20,7 +20,7 @@
       state: present
       name: proxy_wstunnel
 
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
 
 - block:
   - name: httpd · selinux ports
@@ -47,7 +47,7 @@
     notify:
       - httpd.restart
       - httpd.restart.skipped
-    become: yes
+    become: true
     become_user: root
 
   - name: httpd · remove default conf
@@ -60,15 +60,15 @@
       - userdir.conf
       - welcome.conf
       - 000-default.conf
-    become: yes
+    become: true
     become_user: root
 
   - name: httpd · service
     service:
       name: "{{ _httpd_service }}"
-      enabled: yes
+      enabled: true
       state: started
-    become: yes
+    become: true
     become_user: root
 
   when: httpd_step_configuration

@@ -4,7 +4,7 @@
 # (used by certbot, postgis)
 # 12/2020: PowerTools renamed to powertools
 - name: powertools
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8'
+  when: ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] == '8'
   become: true
   become_user: root
   block:

@@ -8,7 +8,7 @@
   service:
     name: "{{ _httpd_service }}"
     state: restarted
-  become: yes
+  become: true
   become_user: root
   when: not _httpd_handlers_inhibited
 

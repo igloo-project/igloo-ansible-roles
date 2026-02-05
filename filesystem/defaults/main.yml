@@ -1,7 +1,7 @@
 filesystem_postgresql_user: postgres
-filesystem_httpd_user: "{{ _distro_httpd_user | distro(vars) }}"
-filesystem_postgresql: yes
-filesystem_httpd: yes
+filesystem_httpd_user: "{{ lookup('distro', _distro_httpd_user) }}"
+filesystem_postgresql: true
+filesystem_httpd: true
 # list of hashmap path:,mode:,owner:
 filesystem_application_folders: []
 

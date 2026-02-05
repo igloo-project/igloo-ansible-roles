@@ -15,7 +15,7 @@
 - name: check locale {{ _locales_locale }}
   shell: "localectl | grep -i 'LANG={{ _locales_locale.replace('.utf8', '.UTF-8') }}'"
   register: check_locale
-  ignore_errors: yes
+  ignore_errors: true
   changed_when: check_locale.stdout == ""
 
 - name : set default locale {{ _locales_locale }}
@@ -41,6 +41,6 @@
   copy:
     content: "{{ _locales_timezone }}\n"
     dest: /etc/timezone
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
   become: true
   become_user: root

@@ -1,6 +1,6 @@
 httpd_https_domain_redirect: "{{ httpd_server_name }}"
-httpd_step_configuration: yes
-httpd_step_install: yes
+httpd_step_configuration: true
+httpd_step_install: true
 # override so that role do not created a vhost file
 # httpd_manage_vhost_configuration: true
 
@@ -76,12 +76,12 @@ _httpd_ssl_cacertificate: "{{ httpd_ssl_cacertificate | default(None) }}"
 _httpd_ssl_protocol: "{{ httpd_ssl_protocol }}"
 _httpd_ssl_ciphersuite: "{{ httpd_ssl_ciphersuite }}"
 
-_httpd_configuration_folder: "{{ _httpd_configuration_folder_distro | distro(vars) }}"
+_httpd_configuration_folder: "{{ lookup('distro', _httpd_configuration_folder_distro) }}"
 _httpd_configuration_folder_distro:
   RedHat: /etc/httpd/conf.d
   Debian: /etc/apache2/sites-enabled
 
-_httpd_service: "{{ _httpd_service_distro | distro(vars) }}"
+_httpd_service: "{{ lookup('distro', _httpd_service_distro) }}"
 _httpd_service_distro:
   RedHat: httpd
   Debian: apache2
@@ -115,7 +115,7 @@ _default_httpd_macro_files:
   vhost: "{{ _httpd_macro_file_vhost }}"
 _httpd_macro_files: "{{ httpd_macro_files | default(_default_httpd_macro_files) }}"
 
-_httpd_user: "{{ _distro_httpd_user | distro(vars) }}"
+_httpd_user: "{{ lookup('distro', _distro_httpd_user) }}"
 
 _distro_httpd_user:
   RedHat: apache

@@ -73,7 +73,7 @@ _tomcat_common_env:
 
 _tomcat_handlers_inhibited: "{{ handlers_inhibited | default(False) or tomcat_handlers_inhibited | default(False) }}"
 
-_systemctl_command: "{{ _systemctl_command_distro | distro(vars) }}"
+_systemctl_command: "{{ lookup('distro', _systemctl_command_distro) }}"
 _systemctl_command_distro:
   RedHat: /usr/bin/systemctl
   Debian: /bin/systemctl

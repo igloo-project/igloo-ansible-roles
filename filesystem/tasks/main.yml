@@ -43,7 +43,7 @@
     - "{{ filesystem_application_folders }}"
   loop_control:
     label: "{{ item.path }}"
-  become: yes
+  become: true
   become_user: root
 
 - name: check directories (postgresql)
@@ -59,7 +59,7 @@
       owner: "{{ filesystem_postgresql_user }}"
   loop_control:
     label: "{{ item.path }}"
-  become: yes
+  become: true
   become_user: root
   when: filesystem_postgresql
 
@@ -74,6 +74,6 @@
     setype: httpd_log_t
     seuser: system_u
     state: directory
-  become: yes
+  become: true
   become_user: root
   when: filesystem_httpd

@@ -6,10 +6,10 @@
 - name: git checkout
   git:
     repo: "{{ _mb_git_repository }}"
-    update: yes
+    update: true
     dest: "{{ _mb_project_path }}"
     version: "{{ _mb_git_branch }}"
-    force: yes
+    force: true
   when: _mb_git_repository is not none
   register: git_checkout
 

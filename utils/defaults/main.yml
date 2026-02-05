@@ -1,5 +1,5 @@
 utils_packages: []
-utils_default_packages: "{{ _utils_default_packages | distro(vars) }}"
+utils_default_packages: "{{ lookup('distro', _utils_default_packages) }}"
 
 _selinux_package:
   RedHat: libselinux-python
@@ -16,7 +16,7 @@ _redhat_commons:
   - ImageMagick
   - net-tools
   - sysstat
-  - "{{ _selinux_package | distro(vars) }}"
+  - "{{ lookup('distro', _selinux_package) }}"
 
 _utils_default_packages:
   # surcharge par famille (ne prend pas en compte la version)

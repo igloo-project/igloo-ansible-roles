@@ -2,12 +2,12 @@
 - name: /etc/hosts
   blockinfile:
     marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ _dh_block_name }} {{ inventory_hostname }}"
-    backup: yes
-    create: no
+    backup: true
+    create: false
     dest: /etc/hosts
     block: |
       #jinja2: trim_blocks: "true", lstrip_blocks: "false"
       {% for hostname in hostvars[inventory_hostname][_dh_hostvars_name] %}
-      {{ hostvars[inventory_hostname].ansible_all_ipv4_addresses | select('match', '^172\..*$') | first }} {{ hostname | replace('@self', inventory_hostname) }}
+      {{ hostvars[inventory_hostname].ansible_facts['all_ipv4_addresses'] | select('match', '^172\..*$') | first }} {{ hostname | replace('@self', inventory_hostname) }}
       {% endfor %}
   when: _dh_hostvars_name in hostvars[inventory_hostname]

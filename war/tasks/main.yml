@@ -7,7 +7,7 @@
     group: "{{ _war_application_user }}"
     mode: u=rw,g=r,o=r
   register: war
-  check_mode: yes
+  check_mode: true
 
 - block:
   - name: war · stop application

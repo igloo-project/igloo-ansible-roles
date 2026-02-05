@@ -33,7 +33,7 @@
   notify:
     - httpd.restart
     - httpd.restart.skipped
-  become: yes
+  become: true
   become_user: root
   when: httpd_manage_vhost_configuration | default(true)
 
@@ -44,11 +44,11 @@
     owner: "{{ _httpd_user }}"
     group: "{{ _httpd_user }}"
     mode: u=rw,g=r,o=r
-  become: yes
+  become: true
   become_user: root
   when: _httpd_conf_robots_txt | default('') != ''
 
-- name: httpd · configuration {{ vhost_item.filename }}
+- name: httpd · configuration
   template:
     src: "{{ vhost_item.template | default('custom.conf.j2') }}"
     dest: "{{ _httpd_configuration_folder }}/{{ vhost_item.filename }}"
@@ -58,21 +58,21 @@
   notify:
     - httpd.restart
     - httpd.restart.skipped
-  become: yes
+  become: true
   become_user: root
   with_items: "{{ _httpd_custom_vhosts }}"
   loop_control:
     loop_var: vhost_item
     label: "{{ vhost_item.filename }}"
 
-- name: httpd · configuration {{ vhost_item.filename }} robots.txt
+- name: httpd · configuration robots.txt
   copy:
     content: "{{ vhost_item.robots_txt }}"
     dest: "{{ vhost_item.documentRoot }}/robots.txt"
     owner: "{{ _httpd_user }}"
     group: "{{ _httpd_user }}"
     mode: u=rw,g=r,o=r
-  become: yes
+  become: true
   become_user: root
   with_items: "{{ _httpd_custom_vhosts }}"
   when: vhost_item['robots_txt'] | default('') != ''
