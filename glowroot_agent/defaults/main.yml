@@ -23,6 +23,9 @@ _glowroot_config_tmp_dir: "{{ glowroot_config_tmp_dir | default(_glowroot_config
 _glowroot_config_conf_dir: "{{ glowroot_config_conf_dir | default(_glowroot_config_base_dir + '/conf') }}"
 
 _glowroot_versions:
+  "0.14.5":
+    checksum: sha256:f0edef6d2e29428063333db947114b45299c391bc3ea4f972850389086262ec2
+    url: https://github.com/glowroot/glowroot/releases/download/v0.14.5/glowroot-0.14.5-dist.zip
   "0.14.5-beta.4":
     checksum: sha256:5f08f6f5cb870edd0f69958dcad0be41d22e843b3754992bb8f6d55c718d6cec
     url: https://github.com/glowroot/glowroot/releases/download/v0.14.5-beta.4/glowroot-0.14.5-beta.4-dist.zip
