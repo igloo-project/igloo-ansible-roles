@@ -4,7 +4,7 @@
 - name: consistency check
   fail:
     msg: "playbook_sudoers_deb must me True to allow delivery_deb_files installation"
-  when: delivery_deb_files | default([], True) and not playbook_sudoers_deb | default(False)
+  when: (delivery_deb_files | default([], True) | length > 0) and not (playbook_sudoers_deb | default(False))
 
 - name: install package
   include_tasks: package.yml
