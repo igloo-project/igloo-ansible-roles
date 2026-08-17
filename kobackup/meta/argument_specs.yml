@@ -109,3 +109,8 @@ argument_specs:
         type: "list"
         elements: "str"
         required: false
+
+      # only use for small repositories
+      restic_forget_prune:
+        type: "bool"
+        required: false

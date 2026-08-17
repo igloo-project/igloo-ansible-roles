@@ -86,6 +86,7 @@
       - name: restic-forget
         type: restic_forget
         env_file: "{{ s3_conf_path }}"
+        prune: {{ "true" if _restic_forget_prune else "false" }}
         keep_args:
         {{ _restic_forget_keep_args | to_nice_yaml | indent(2) | trim }}
       metrics:
