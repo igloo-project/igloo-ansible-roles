@@ -122,6 +122,8 @@
       WantedBy=multi-user.target
   become: true
   become_user: root
+  notify:
+  - systemd.daemon-reload
 
 - name: kobackup - service enable
   service:
