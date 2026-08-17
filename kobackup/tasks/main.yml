@@ -108,8 +108,8 @@
           {% if "endpoint" in kobackup_clone.source -%}
           endpoint: "{{ kobackup_clone.source.endpoint }}"
           {% else -%}
-          {% endif -%}
           region: "{{ kobackup_clone.source.region }}"
+          {% endif -%}
           bucket: "{{ kobackup_clone.source.bucket }}"
         target:
           {% if "endpoint" in kobackup_clone.target -%}
