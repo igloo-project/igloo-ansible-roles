@@ -49,6 +49,34 @@
   become: true
   become_user: root
 
+- name: check kobackup_clone
+  fail:
+    msg: "endpoint and region cannot be both provided in kobackup_clone"
+  when: |
+    (
+      kobackup_clone | default(False, True)
+      and "source" in kobackup_clone
+      and "target" in kobackup_clone
+    )
+    and (
+      ("region" in kobackup_clone.target and "endpoint" in kobackup_clone.target)
+      or ("region" in kobackup_clone.source and "endpoint" in kobackup_clone.source)
+    )
+
+- name: check kobackup_clone
+  fail:
+    msg: "endpoint or region is needed in kobackup_clone"
+  when: |
+    (
+      kobackup_clone | default(False, True)
+      and "source" in kobackup_clone
+      and "target" in kobackup_clone
+    )
+    and (
+      (not "region" in kobackup_clone.target and not "endpoint" in kobackup_clone.target)
+      or (not "region" in kobackup_clone.source and not "endpoint" in kobackup_clone.source)
+    )
+
 - name: kobackup - config
   copy:
     dest: "{{ kobackup_conf_path }}"
@@ -79,14 +107,16 @@
         source:
           {% if "endpoint" in kobackup_clone.source -%}
           endpoint: "{{ kobackup_clone.source.endpoint }}"
+          {% else -%}
           {% endif -%}
           region: "{{ kobackup_clone.source.region }}"
           bucket: "{{ kobackup_clone.source.bucket }}"
         target:
           {% if "endpoint" in kobackup_clone.target -%}
           endpoint: "{{ kobackup_clone.target.endpoint }}"
-          {% endif -%}
+          {% else -%}
           region: "{{ kobackup_clone.target.region }}"
+          {% endif -%}
           bucket: "{{ kobackup_clone.target.bucket }}"
       {% endif %}
       - name: restic-forget

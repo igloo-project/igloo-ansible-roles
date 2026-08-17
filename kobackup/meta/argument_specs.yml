@@ -83,22 +83,25 @@ argument_specs:
               bucket:
                 type: "str"
                 required: true
+              # Required if endpoint is missing
               region:
                 type: "str"
-                required: true
+                required: false
           target:
             type: "dict"
             required: false
             options:
+              # Default value build a OVH S3 URL, override if needed
               endpoint:
                 type: "str"
                 required: false
               bucket:
                 type: "str"
                 required: true
+              # Required if endpoint is missing
               region:
                 type: "str"
-                required: true
+                required: false
 
       restic_version:
         type: "str"
