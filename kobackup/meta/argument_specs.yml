@@ -76,6 +76,10 @@ argument_specs:
             type: "dict"
             required: false
             options:
+              # Default value build a OVH S3 URL, override if needed
+              endpoint:
+                type: "str"
+                required: false
               bucket:
                 type: "str"
                 required: true
@@ -86,6 +90,9 @@ argument_specs:
             type: "dict"
             required: false
             options:
+              endpoint:
+                type: "str"
+                required: false
               bucket:
                 type: "str"
                 required: true

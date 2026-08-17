@@ -77,9 +77,15 @@
         type: clone
         env_file: "{{ s3_conf_path }}"
         source:
+          {% if "endpoint" in kobackup_clone.source -%}
+          endpoint: "{{ kobackup_clone.source.endpoint }}"
+          {% endif -%}
           region: "{{ kobackup_clone.source.region }}"
           bucket: "{{ kobackup_clone.source.bucket }}"
         target:
+          {% if "endpoint" in kobackup_clone.target -%}
+          endpoint: "{{ kobackup_clone.target.endpoint }}"
+          {% endif -%}
           region: "{{ kobackup_clone.target.region }}"
           bucket: "{{ kobackup_clone.target.bucket }}"
       {% endif %}
