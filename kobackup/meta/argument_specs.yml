@@ -76,32 +76,42 @@ argument_specs:
             type: "dict"
             required: false
             options:
-              # Default value build a OVH S3 URL, override if needed
+              # Allow to override default endpoint for repository_type
               endpoint:
                 type: "str"
                 required: false
+              repository_type:
+                type: "str"
+                required: false
+                choices:
+                - ovh_swift
+                - ovh_s3
               bucket:
                 type: "str"
                 required: true
-              # Required if endpoint is missing
               region:
                 type: "str"
-                required: false
+                required: true
           target:
             type: "dict"
             required: false
             options:
-              # Default value build a OVH S3 URL, override if needed
+              # Allow to override default endpoint for repository_type
               endpoint:
                 type: "str"
                 required: false
+              repository_type:
+                type: "str"
+                required: false
+                choices:
+                - ovh_swift
+                - ovh_s3
               bucket:
                 type: "str"
                 required: true
-              # Required if endpoint is missing
               region:
                 type: "str"
-                required: false
+                required: true
 
       restic_version:
         type: "str"
