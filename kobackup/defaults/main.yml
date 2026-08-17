@@ -7,4 +7,4 @@ _restic_forget_keep_args_default:
 
 _restic_forget_keep_args:  "{{ restic_forget_keep_args | default(_restic_forget_keep_args_default) }}"
 
-_restic_forget_prune: "{{ restic_forget_keep_prune | default(False) }}"
+_restic_forget_prune: "{{ restic_forget_prune | default(False) }}"
