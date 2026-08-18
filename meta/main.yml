@@ -1,4 +1,0 @@
----
-# hack to wrap multiple roles in one galaxy project
-# see https://github.com/ansible/ansible/issues/16804
-dependencies: []

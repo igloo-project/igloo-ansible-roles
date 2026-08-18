@@ -1,0 +1,32 @@
+
+- hosts: "{{ custom_hosts | default('all') }}"
+  roles:
+    - role: igloo.main.kobackup
+      dumps_infos:
+        - target_basename: database
+          target_path: "/data/services/backup/psql"
+          database: "{{ playbook_metabase_postgresql_name }}"
+          port: "{{ playbook_metabase_postgresql_port }}"
+          user: "{{ playbook_metabase_postgresql_user }}"
+          password: "{{ playbook_metabase_postgresql_password }}"
+          hostname: "{{ playbook_metabase_postgresql_host  }}"
+      backup_paths:
+      - "/data/services/backup/psql" 
+      restic_repository: "{{ playbook_metabase_backup_restic_repository }}"
+      restic_password: "{{ playbook_metabase_backup_restic_password }}"
+      restic_forget_prune: true
+      aws_access_key_id: "{{ playbook_metabase_backup_aws_access_key_id }}"
+      aws_secret_access_key: "{{ playbook_metabase_backup_aws_secret_access_key }}"
+      s3_conf_path: "/data/services/restic/s3.conf"
+      kobackup_conf_path: "/data/services/backup/kobackup-config.yml"
+      kobackup_timer_unit_description: "Runs consores metabase kobackup"
+      kobackup_timer_oncalendar: "{{ playbook_kobackup_timer_oncalendar }}"
+      kobackup_clone: "{{ playbook_kobackup_clone | default({}) }}"
+      restic_version: "0.17.3"
+      tags: metabase_backup
+    
+    - role: igloo.main.systemd_timer
+      timer_service_name: "{{ playbook_kobackup_service }}"
+      timer_unit_description: "Runs consores metabase kobackup"
+      timer_oncalendar: "{{ playbook_kobackup_timer_oncalendar }}"
+      tags: kobackup

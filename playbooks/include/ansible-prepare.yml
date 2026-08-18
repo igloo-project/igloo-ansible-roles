@@ -1,0 +1,19 @@
+---
+
+##
+## install packages needed for client-side ansible
+##
+
+- hosts: "{{ common_hosts }}"
+  roles:
+    - role: powo.utils
+    # TODO: handle become at role level
+    - role: igloo.main.utils
+      become: true
+      become_user: root
+    # TODO: drop selinux role and variables
+    # https://github.com/ansible/ansible/issues/16612
+    - role: selinux
+      selinux_handle: 'auto'
+      become: true
+      become_user: root

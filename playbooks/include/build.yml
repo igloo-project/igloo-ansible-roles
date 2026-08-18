@@ -1,0 +1,41 @@
+---
+
+##
+## handle igloo and application build, locally
+##
+
+- hosts: "{{ common_hosts }}"
+
+  roles:
+    - role: igloo.main.maven_build
+      mb_git_repository: "{{ playbook_igloo_git_url }}"
+      mb_git_branch: "{{  playbook_igloo_branch }}"
+      # check a well-known artifact
+      mb_check_files:
+        - "{{ mb_project_path }}/igloo/igloo-components/igloo-component-spring/target/igloo-component-spring-{{ playbook_igloo_version }}.jar"
+      mb_mvn_command: mvn -U {{ '-P' + playbook_maven_profile if playbook_maven_profile is defined and playbook_maven_profile else '' }} -DskipTests -am clean install
+      mb_project_path: "{{ playbook_local_git_igloo }}"
+      mb_rebuild: "{{ playbook_rebuild_igloo }}"
+      mb_mvn_environment:
+        JAVA_HOME: "{{ playbook_local_java_home }}"
+        MAVEN_OPTS: -Xmx2048m -Denforcer.skip=true
+      delegate_to: localhost
+      run_once: true
+      when: playbook_build_igloo
+      tags: deploy-war
+
+    - role: igloo.main.maven_build
+      mb_git_repository: "{{ playbook_project_git_url }}"
+      mb_git_branch: "{{  playbook_project_branch }}"
+      mb_check_files:
+        - "{{ playbook_local_git_project }}/{{ playbook_maven_folder }}{{ playbook_local_git_war_path }}"
+      mb_mvn_command: mvn -U {{ '-P' + playbook_maven_profile if playbook_maven_profile is defined and playbook_maven_profile else '' }} -DskipTests -am clean install
+      mb_project_path: "{{ playbook_local_git_project }}"
+      mb_rebuild: "{{ playbook_rebuild_project }}"
+      mb_mvn_environment:
+        JAVA_HOME: "{{ playbook_local_java_home }}"
+        MAVEN_OPTS: -Xmx2048m -Denforcer.skip=true
+      delegate_to: localhost
+      run_once: true
+      when: playbook_build_project
+      tags: deploy-war

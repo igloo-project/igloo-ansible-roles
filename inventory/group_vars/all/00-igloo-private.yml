@@ -1,0 +1,213 @@
+---
+
+##
+## DO NOT MODIFY THIS FILE; this file is from igloo-ansible-playbooks project
+## Public vars are exposed in 00-igloo-{minimal,extra}.yml
+## Modify other vars at your own risk
+##
+
+## see 01-igloo-minimal.yml for definition of MINIMAL vars
+
+## used to name folders, name context, postgresql username, ...
+## special characters are replaced by _
+playbook_application_name: MINIMAL
+## application public vhost
+playbook_front_server_name: MINIMAL
+## override with group_vars
+playbook_igloo_profile: MINIMAL
+## '' -> ROOT context
+playbook_context_name: ''
+## user for tomcat process
+playbook_remote_user: tomcat
+playbook_remote_user_uid: 3000
+playbook_remote_group: "{{ playbook_remote_user }}"
+playbook_remote_group_gid: "{{ playbook_remote_user_uid }}"
+## use inventory and group_vars to override by environment
+playbook_project_branch: master
+## manage folders creation
+playbook_application_folders: []
+playbook_war: "{{ playbook_local_git_project }}/{{ playbook_maven_folder }}{{ playbook_local_git_war_path }}"
+playbook_war_remote_src: false
+# use true so that gitlab-cd triggers backup before delivery
+# a script performing backup must be available on host
+# see role backup
+playbook_delivery_backup: false
+
+## use command-line args to override
+playbook_build_igloo: false
+playbook_build_project: false
+## force rebuild, even if no change is detected
+playbook_rebuild_igloo: false
+playbook_rebuild_project: false
+
+## ssl configuration
+distro_ssl_folder:
+  RedHat: "/etc/httpd"
+  Debian: "/etc/apache2"
+playbook_selfsigned_ssl_certificate: "{{ lookup('distro', distro_ssl_folder) }}/certs/{{ playbook_application_name }}.crt"
+playbook_selfsigned_ssl_key: "{{ lookup('distro', distro_ssl_folder) }}/certs/{{ playbook_application_name }}.key"
+playbook_selfsigned_ssl_chain: ""
+playbook_selfsigned_ssl_cacertificate: "{{ playbook_ssl_certificate }}"
+playbook_letsencrypt_ssl_certificate: /etc/letsencrypt/live/{{ playbook_front_server_name }}/cert.pem
+playbook_letsencrypt_ssl_key: /etc/letsencrypt/live/{{ playbook_front_server_name }}/privkey.pem
+playbook_letsencrypt_ssl_chain: ""
+playbook_letsencrypt_ssl_cacertificate: /etc/letsencrypt/live/{{ playbook_front_server_name }}/fullchain.pem
+playbook_ssl_certificate: "{{ playbook_selfsigned_ssl_certificate if playbook_ssl_selfsigned_certs else playbook_letsencrypt_ssl_certificate }}"
+playbook_ssl_key: "{{ playbook_selfsigned_ssl_key if playbook_ssl_selfsigned_certs else playbook_letsencrypt_ssl_key }}"
+playbook_ssl_chain: "{{ playbook_selfsigned_ssl_chain if playbook_ssl_selfsigned_certs else playbook_letsencrypt_ssl_chain }}"
+playbook_ssl_cacertificate: "{{ playbook_selfsigned_ssl_cacertificate if playbook_ssl_selfsigned_certs else playbook_letsencrypt_ssl_cacertificate }}"
+playbook_httpd_ssl_certificate: "{{ playbook_ssl_certificate }}"
+playbook_httpd_ssl_key: "{{ playbook_ssl_key }}"
+playbook_httpd_ssl_chain: "{{ playbook_ssl_chain }}"
+playbook_httpd_ssl_cacertificate: "{{ playbook_ssl_cacertificate }}"
+playbook_httpd_manage_vhost_configuration: true
+playbook_httpd_servers_aliases: []
+playbook_httpd_source_context_name: "{{ playbook_context_name }}"
+# no robots.txt by default
+playbook_httpd_conf_robots_txt: ''
+# error override enabled by default
+playbook_httpd_conf_error_override: true
+
+playbook_httpd_conf_http_rewrites: |
+  RewriteEngine On
+  RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+playbook_httpd_conf_https_rewrites: ""
+playbook_httpd_api_endpoint: /api
+
+## application build, playbook_build_project=true only vars
+## detect if we are building basic-application
+playbook_maven_folder: "{{ 'basic-application/' if playbook_application_name == 'basic-application' else '' }}"
+playbook_git_repository_name: "{{ playbook_project_git_url | basename | replace('.git', '') }}"
+## used if build is done by ansible (see playbook_build_project)
+playbook_project_git_url: MINIMAL
+playbook_local_git_folder: "{{ '~/git' | expanduser }}"
+playbook_local_git_project: "{{ playbook_local_git_folder }}/{{ playbook_git_repository_name }}-livraison"
+playbook_local_git_war_path: "{{ playbook_application_name }}-webapp/target/{{ playbook_application_name }}.war"
+
+## igloo build, playbook_build_igloo=true only vars
+playbook_igloo_git_url: git@github.com:igloo-project/igloo-parent.git
+playbook_igloo_branch: dev
+# TODO: autodetect version at build time
+playbook_igloo_version: 1.2-SNAPSHOT
+playbook_local_git_igloo: "{{ playbook_local_git_folder }}/igloo-livraison"
+playbook_local_java_home: "{{ '~/Documents/apps/jdk-8' | expanduser }}"
+
+## application location, application configuration
+playbook_application_path: /data/services/web/{{ playbook_application_name }}
+
+## tomcat configuration
+playbook_tomcat_timeout_stop: 30s
+playbook_tomcat_xmx: 1024m
+playbook_tomcat_xms: 1024m
+playbook_tomcat_ajp_port: 8009
+playbook_tomcat_http_port: 8080
+playbook_tomcat_shutdown_port: 8005
+playbook_tomcat_jmx_port: 9010
+playbook_tomcat_ajp_max_threads: "{{ playbook_tomcat_max_threads }}"
+playbook_tomcat_http_max_threads: "{{ playbook_tomcat_max_threads }}"
+playbook_tomcat_max_threads: 15
+playbook_application_tomcat_path: "{{ playbook_application_path }}/tomcat"
+# TODO: use in configuration
+playbook_tomcat_enable_ajp: true
+playbook_tomcat_enable_http: true
+
+## postgresql configuration
+_playbook_application_name_database: "{{ playbook_application_name | replace('-','_') }}"
+playbook_postgresql_skip: false
+playbook_postgresql_service_suffix: application
+playbook_postgresql_port: 5432
+playbook_postgresql_host: localhost
+playbook_postgresql_database: "{{ _playbook_application_name_database }}"
+playbook_postgresql_schema: "{{ playbook_postgresql_user }}"
+playbook_postgresql_maxPoolSize: 30
+playbook_postgresql_user: "{{ _playbook_application_name_database }}"
+playbook_postgresql_password: "{{ _playbook_application_name_database }}"
+playbook_postgresql_postgis: false
+playbook_postgresql_postgis_package: "{{ 'postgis30_' + playbook_postgresql_version | replace('.', '') if ansible_facts['os_family'] == 'RedHat' else 'postgresql-' + playbook_postgresql_version + '-postgis-3' }}"
+playbook_postgresql_postgis_schema: postgis
+playbook_postgresql_search_path: null
+playbook_postgresql_listen_addresses: localhost
+# allow to add additional configs in conf.d
+playbook_postgresql_postgresql_conf_d: []
+# - name: replica.conf
+#   content : "..."
+# allow to use a custom pg_hba.conf content
+playbook_postgresql_pg_hba_override: ""
+
+## SMTP configuration
+playbook_smtp_host: localhost
+playbook_smtp_port: 25
+
+## misc
+playbook_download_target_path: /data/work
+
+## configuration properties
+# TODO: fix data.path (?)
+default_playbook_config_properties: {
+  'db.user': "{{ playbook_postgresql_user }}",
+  'db.password': "{{ playbook_postgresql_password }}",
+  'db.jdbcUrl': 'jdbc:postgresql://{{ playbook_postgresql_host }}:{{ playbook_postgresql_port }}/{{ playbook_postgresql_database }}',
+  'db.maxPoolSize': "{{ playbook_postgresql_maxPoolSize }}",
+  'hibernate.defaultSchema': "{{ playbook_postgresql_schema }}",
+  'data.path': '{{ playbook_application_path }}/data',
+  'data.shared-path': '${data.path}',
+  'notification.smtp.host': '{{ playbook_smtp_host }}',
+  'notification.smtp.port': "{{ playbook_smtp_port }}",
+  'wicket.backgroundThreadContextBuilder.url.scheme': "{{ playbook_background_url_server_scheme }}",
+  'wicket.backgroundThreadContextBuilder.url.serverName': "{{ playbook_background_url_server_name }}",
+  'wicket.backgroundThreadContextBuilder.url.serverPort': "{{ playbook_background_url_server_port }}",
+  'task.startMode': 'auto'
+}
+playbook_config_properties: "{{ default_playbook_config_properties }}"
+
+playbook_java_version: 1.8.0
+playbook_java_package: java-{{ playbook_java_version }}-openjdk-headless
+playbook_java_key: "{{ playbook_java_package }}"
+
+_playbook_java_runtime_openjdk:
+  packaging: package
+  package: "{{ playbook_java_package }}"
+  java_home: /usr/lib/jvm/jre-{{ playbook_java_version }}-openjdk
+  key: "{{ playbook_java_key }}"
+
+_playbook_java_runtime_oracle:
+  id: "{{ playbook_java_id }}"
+  version: "{{ playbook_java_version }}"
+  version_build: "{{ playbook_java_version_build }}"
+  arch: "{{ playbook_java_arch }}"
+  type: "{{ playbook_java_type }}"
+  checksum: "{{ playbook_java_checksum }}"
+  key: "{{ playbook_java_key }}"
+
+playbook_java_runtime: |
+  {% set runtime = null %}
+  {%- if playbook_java_package is defined -%}
+    {% set runtime = lookup('vars', '_playbook_java_runtime_openjdk') %}
+  {%- else -%}
+    {% set runtime = lookup('vars', '_playbook_java_runtime_oracle') %}
+  {%- endif -%}
+  {{ runtime }}
+
+playbook_java_runtimes:
+  - "{{ playbook_java_runtime }}"
+
+playbook_glowroot_enabled: false
+playbook_glowroot_agent_version: "0.13.5"
+playbook_glowroot_agent_download_target_path: "{{ playbook_download_target_path }}"
+playbook_glowroot_agent_install_target_path: /data/opt/
+playbook_glowroot_config_log_dir: /data/log/glowroot/
+playbook_glowroot_jar: "{{ playbook_glowroot_agent_install_target_path }}glowroot/glowroot.jar"
+# for back-compatibility; switched to true for new projects
+playbook_glowroot_base: "/data/services/glowroot"
+playbook_glowroot_conf_dir: "{{ playbook_glowroot_base }}/conf"
+# playbook_glowroot_config_agent_id: TO OVERRIDE
+# playbook_glowroot_config_collector_address: TO OVERRIDE
+
+# do not override external settings
+playbook_firewall_skip_ssh: true
+# by default, allow playbook to enable public http(s) access
+playbook_firewall_skip_http: false
+playbook_firewall_skip_https: false
+playbook_firewall_services: []
+
+x_selinux_handle: "{{ ansible_facts['selinux'] is defined and ansible_facts['selinux'] == 'enabled' }}"

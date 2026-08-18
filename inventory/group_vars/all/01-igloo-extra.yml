@@ -1,0 +1,115 @@
+---
+
+##
+## DO NOT MODIFY THIS FILE; this file is from igloo-ansible-playbooks project
+## Create a new file extra.yml and override only needed values
+##
+
+## Default values are all defined in 00-igloo-private.yml
+## This file is a documented version of the main vars not exposed in
+## 01-igloo-minimal.yml
+
+## set to context path if you want NOT to use / as context path
+## DO NOT INCLUDE leading and trailing / chars
+# playbook_context_name: ''
+
+## override if tomcat is launched by another user
+# playbook_remote_user: tomcat
+
+## downloads location
+# playbook_download_target_path: /data/work
+
+## application installation path (root of tomcat/, ...)
+# playbook_application_path: /data/services/web/{{ playbook_application_name }}
+
+## parent folder for git clones (if build activated)
+# playbook_local_git_folder: "{{ '~/git' | expanduser }}"
+## war path (target/) from project root
+# playbook_local_git_war_path: "{{ playbook_application_name }}-webapp/target/{{ playbook_application_name }}.war"
+## install sudoers to install deb file, needed for static resources deb delivery (delivery_deb_files)
+# playbook_sudoers_deb: false
+
+## JAVA_HOME used for **building**
+# playbook_local_java_home: "{{ '~/Documents/apps/jdk-8' | expanduser }}"
+
+## java installation
+## Use openjdk OR oracle
+#### openjdk: override version only, or all values
+#playbook_java_version: 1.8.0
+#playbook_java_package: java-{{ playbook_java_version }}-openjdk-headless
+#playbook_java_key: "{{ playbook_java_package }}"
+#### oracle: define all values; check that id and checksum are up to date
+#playbook_java_package: null
+#playbook_java_type: jdk
+#playbook_java_version: 8u191
+#playbook_java_version_build: 12
+#playbook_java_arch: x64
+#playbook_java_checksum: sha256:53c29507e2405a7ffdbba627e6d64856089b094867479edc5ede4105c1da0d65
+#playbook_java_id: 2787e4a523244c269598db4e85c51e0c
+#playbook_java_key: "{{ playbook_java_type }}-{{ playbook_java_version }}-{{ playbook_java_arch }}"
+#### override all playbook_java_runtimes: use only if needed
+#### runtime definition built from playbook_java_* values is available in playbook_java_runtime
+#playbook_java_runtimes:
+#  - {{ playbook_java_runtime }}
+
+## tomcat configuration
+# playbook_tomcat_ajp_port: 8009
+# playbook_tomcat_http_port: 8080
+# playbook_tomcat_shutdown_port: 8005
+# playbook_tomcat_jmx_port: 9010
+# playbook_tomcat_extra_opts: "{{ '-Digloo.profile=' + playbook_igloo_profile if playbook_igloo_profile is defined and playbook_igloo_profile else none }}"
+
+## postgresql configuration
+## skip postgresql (external database): set to true
+# playbook_postgresql_skip: false
+## (default database name based on application's name)
+# playbook_postgresql_schema: "{{ playbook_postgresql_user }}"
+## override suffix for systemd service name
+# playbook_postgresql_service_suffix: application
+# playbook_postgresql_user: "{{ _playbook_application_name_database }}"
+# playbook_postgresql_password: "{{ _playbook_application_name_database }}"
+
+## configuration.properties
+# playbook_config_properties: {}
+
+## allow to skip static deployment, and configure archive directory
+# playbook_static_skip: false
+# playbook_static_archive: "{{ inventory_dir }}/../{{ application_name }}-ressources-statiques.tar.gz"
+## allow to skip logrotate configuration
+# playbook_logrotate_managed: false
+## allow to skip firewall configuration
+# playbook_firewall_managed: false
+## re-enable firewall service configuration by switching to false
+# playbook_firewall_skip_ssh: true
+## prevent firewall service configuration by switching to true
+# playbook_firewall_skip_http: false
+# playbook_firewall_skip_https: false
+## add general configuration (cross vhost, in common.conf)
+# playbook_httpd_common_conf:
+## allow to skip httpd vhost configuration
+# playbook_httpd_manage_vhost_configuration: false
+## allow to use custom rewrite rules; whole block must be rewritten
+# playbook_httpd_conf_https_rewrites: ""
+# playbook_httpd_conf_http_rewrites: |
+#   RewriteEngine On
+#   RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [R,L]
+## allow to modify api root endpoint; this installs specific httpd
+## configuration for API (like ProxyOverrideError Off)
+# playbook_httpd_api_endpoint: /api
+## add httpd aliases
+# playbook_httpd_servers_aliases: []
+## customize proxypass connection
+# playbook_httpd_conf_proxypass_timeout: 3000
+# playbook_httpd_conf_proxypass_ttl: 300
+# playbook_httpd_conf_proxypass_extra:
+## allow to add extra firewall services
+# playbook_firewall_services:
+#   - port: tcp/4343
+#     state: enabled
+#   - service: smtp
+#     state: enabled
+#     zone: restricted
+## allow to setup tomcat work/temp clean upon start
+# playbook_tomcat_clean_on_start: false
+## skip system settings (timezone, locale)
+# playbook_locales_skip: false

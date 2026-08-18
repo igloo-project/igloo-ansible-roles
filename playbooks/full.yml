@@ -1,0 +1,17 @@
+---
+
+- import_playbook: include/common.yml
+
+- import_playbook: include/debug.yml
+
+- import_playbook: include/build.yml
+
+- import_playbook: include/ansible-prepare.yml
+
+- import_playbook: include/network.yml
+
+- import_playbook: include/stack.yml
+
+- import_playbook: include/application.yml
+
+- import_playbook: include/kobackup.yml

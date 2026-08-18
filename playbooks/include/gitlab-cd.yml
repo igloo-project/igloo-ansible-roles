@@ -1,0 +1,27 @@
+---
+
+- hosts: "{{ common_hosts }}"
+
+  roles:
+
+    # default('true', True) -> if empty string, use default value 'true'
+    # backup if configured in project playbook_delivery_backup
+    # and not skipped with env var ANSIBLE_SKIP_DELIVERY_BACKUP
+    - role: igloo.main.backup
+      when: >
+        playbook_delivery_backup | default(False)
+        and not (lookup('env', 'ANSIBLE_SKIP_DELIVERY_BACKUP') | default('false', True) | lower in ('1', 'true'))
+
+    - role: igloo.main.delivery
+      delivery_application_war_src: "{{ playbook_gitlab_cd_war_location }}"
+      delivery_application_war_remote_src: no
+      delivery_application_user: "{{ playbook_remote_user }}"
+      delivery_tomcat_service: "tomcat@{{ playbook_application_name }}"
+      delivery_tomcat_catalina_base: "{{ playbook_application_tomcat_path }}"
+      delivery_context_name: "{{ playbook_context_name }}"
+    
+    - role: igloo.main.deb_delivery
+      # file list of .deb files to copy and install
+      # a sudo rule must exists to allow .deb installation
+      # playbook_sudoers_deb must be true and sudoers provisioned
+      #delivery_deb_files: []

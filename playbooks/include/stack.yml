@@ -1,0 +1,240 @@
+---
+
+##
+## install java / postgresql / tomcat stack
+##
+
+- hosts: "{{ common_hosts }}"
+  pre_tasks:
+
+    - block:
+
+      # TODO: organize this step after httpd install ?
+      - name: /etc/httpd/certs
+        file:
+          path: /etc/httpd/certs
+          state: directory
+          owner: root
+          group: root
+          mode: u=rwx,g=,o=
+        when: playbook_ssl_selfsigned_certs
+
+      - name: group
+        group:
+          name: "{{ playbook_remote_user }}"
+          gid: "{{ playbook_remote_group_gid }}"
+
+      - name: user create
+        user:
+          name: "{{ playbook_remote_user }}"
+          uid: "{{ playbook_remote_user_uid }}"
+          createhome: yes
+
+      - name: user groups
+        user:
+          name: "{{ playbook_remote_user }}"
+          groups: "users,{{ playbook_remote_group }}"
+          append: yes
+
+      become: true
+      become_user: root
+
+  roles:
+    - role: igloo.main.locales
+      system_locale: "{{ playbook_system_locale | default('fr_FR.utf8') }}"
+      system_timezone: "{{ playbook_system_timezone | default('Europe/Paris') }}"
+      when: not playbook_locales_skip | default(False)
+
+    - role: igloo.main.firewall
+      firewall_skip_ssh: "{{ playbook_firewall_skip_ssh }}"
+      firewall_skip_http: "{{ playbook_firewall_skip_http }}"
+      firewall_skip_https: "{{ playbook_firewall_skip_https }}"
+      firewall_services: "{{ playbook_firewall_services }}"
+      become: true
+      become_user: root
+      tags: firewall
+      when: playbook_firewall_managed | default(True)
+
+    - role: igloo.main.httpd
+      httpd_step_install: yes
+      httpd_step_configuration: no
+      become: true
+      become_user: root
+      tags: httpd
+
+    - role: postgresql
+      become: true
+      become_user: root
+      postgresql_versions:
+        - "{{ playbook_postgresql_version }}"
+      tags: postgresql
+      when: not playbook_postgresql_skip
+
+    - role: igloo.main.filesystem
+      filesystem_application_name: "{{ playbook_application_name }}"
+      filesystem_application_user: "{{ playbook_remote_user }}"
+      filesystem_application_folders: "{{ playbook_application_folders }}"
+      filesystem_postgresql: "{{ not playbook_postgresql_skip }}"
+      tags: filesystem
+
+    - role: igloo.main.java
+      become: true
+      become_user: root
+      java_download_path: /data/work
+      java_runtime_path: /data/opt
+      java_results_var: jdks
+      java_runtimes: "{{ playbook_java_runtimes }}"
+      tags:
+        - java
+        - tomcat
+
+    - role: igloo.main.ssl_selfsigned
+      become: true
+      become_user: root
+      ssl_selfsigned_cn: "{{ playbook_front_server_name }}"
+      ssl_selfsigned_aliases: "{{ playbook_httpd_servers_aliases }}"
+      ssl_selfsigned_certificate: "{{ playbook_ssl_certificate }}"
+      ssl_selfsigned_key: "{{ playbook_ssl_key }}"
+      when: playbook_ssl_selfsigned_certs
+      tags: httpd
+
+    - role: igloo.main.httpd
+      become: true
+      become_user: root
+      httpd_server_name: "{{ playbook_front_server_name }}"
+      httpd_server_aliases: "{{ playbook_httpd_servers_aliases }}"
+      httpd_application_name: "{{ playbook_application_name }}"
+      httpd_documentroot: "{{ playbook_application_path }}/site"
+      httpd_ssl_certificate: "{{ playbook_httpd_ssl_certificate }}"
+      httpd_ssl_key: "{{ playbook_httpd_ssl_key }}"
+      httpd_ssl_chain: "{{ playbook_httpd_ssl_chain }}"
+      httpd_ssl_cacertificate: "{{ playbook_httpd_ssl_cacertificate }}"
+      httpd_ssl_protocol: "{{ playbook_httpd_ssl_protocol }}"
+      httpd_ssl_ciphersuite: "{{ playbook_httpd_ssl_ciphersuite }}"
+      httpd_context_name: "{{ playbook_context_name }}"
+      httpd_source_context_name: "{{ playbook_httpd_source_context_name }}"
+      httpd_ajp_port: "{{ playbook_tomcat_ajp_port }}"
+      httpd_manage_vhost_configuration: "{{ playbook_httpd_manage_vhost_configuration }}"
+      httpd_common_conf: "{{ playbook_httpd_common_conf | default('') }}"
+      httpd_conf_http_rewrites: "{{ playbook_httpd_conf_http_rewrites }}"
+      httpd_conf_https_rewrites: "{{ playbook_httpd_conf_https_rewrites }}"
+      httpd_conf_http_locations: "{{ playbook_httpd_conf_http_locations | default([]) }}"
+      httpd_conf_https_locations: "{{ playbook_httpd_conf_https_locations | default([]) }}"
+      httpd_conf_proxypass_unmount: "{{ playbook_httpd_conf_proxypass_unmount | default([]) }}"
+      httpd_conf_proxypass_timeout: "{{ playbook_httpd_conf_proxypass_timeout | default('3000') }}"
+      httpd_conf_proxypass_ttl: "{{ playbook_httpd_conf_proxypass_ttl | default('300') }}"
+      httpd_conf_proxypass_extra: "{{ playbook_httpd_conf_proxypass_extra | default('') }}"
+      httpd_conf_robots_txt: "{{ playbook_httpd_conf_robots_txt }}"
+      httpd_conf_error_override: "{{ playbook_httpd_conf_error_override }}"
+      httpd_conf_hsts_enable: "{{ playbook_httpd_conf_hsts_enable }}"
+      httpd_conf_hsts_max_age: "{{ playbook_httpd_conf_hsts_max_age }}"
+      httpd_api_endpoint: "{{ playbook_httpd_api_endpoint }}"
+      httpd_custom_vhosts: "{{ playbook_httpd_custom_vhosts | default([]) }}"
+      httpd_listens: "{{ playbook_httpd_listens | default([]) }}"
+      httpd_module_links_extra: "{{ playbook_httpd_module_links_extra | default([]) }}"
+      httpd_logs_json_enable: "{{ playbook_httpd_logs_json_enable | default(False) }}"
+      tags: httpd
+
+    - role: igloo.main.static_contents
+      static_archive: "{{ playbook_static_archive }}"
+      static_target: "{{ playbook_application_path }}/site"
+      when: static_deploy | bool | default(False)
+
+    - role: igloo.main.logrotate
+      become: yes
+      become_user: root
+      logrotate_user: "{{ playbook_remote_user }}"
+      logrotate_group: "{{ playbook_remote_user }}"
+      logrotate_application_name: "{{ playbook_application_name }}"
+      tags: logrotate
+      when: playbook_logrotate_managed | default(True)
+
+
+    - role: postgresql_cluster
+      become: true
+      become_user: root
+      postgresql_cluster_clusters:
+        - name: "{{ playbook_postgresql_service_suffix }}"
+          path: /data/services/pgsql/{{ playbook_postgresql_version }}/data
+          postgresql_version: "{{ playbook_postgresql_version }}"
+          port: "{{ playbook_postgresql_port }}"
+          listen_addresses: "{{ playbook_postgresql_listen_addresses }}"
+          postgresql_conf_d: "{{ playbook_postgresql_postgresql_conf_d }}"
+          pg_hba_override: "{{ playbook_postgresql_pg_hba_override }}"
+          databases:
+            - name: "{{ playbook_postgresql_database }}"
+              owner: "{{ playbook_postgresql_user }}"
+              postgis: "{{ playbook_postgresql_postgis | default(False) }}"
+              postgis_package: "{{ playbook_postgresql_postgis_package | default(None) }}"
+              postgis_schema: "{{ playbook_postgresql_postgis_schema | default(None) }}"
+              schemas:
+                - "{{ playbook_postgresql_user }}"
+          users:
+            - username: "{{ playbook_postgresql_user }}"
+              password: "{{ playbook_postgresql_password }}"
+              search_path: "{{ playbook_postgresql_search_path | default(None) }}"
+              databases:
+                - name: "{{ playbook_postgresql_database }}"
+                  privileges: CONNECT,CREATE
+      tags: postgresql
+      when: not playbook_postgresql_skip
+
+    - role: igloo.main.db_restore
+      restore_dump_file: "{{ playbook_restore_dump_file | default('') }}"
+      restore_dump_file_remote_src: "{{ playbook_restore_dump_file_remote_src | default(False) }}"
+      when: not playbook_postgresql_skip
+      # skipped by default
+      # set restore_dump=true to activate
+      # set restore_dump_skip_confirm=true to skip confirmation prompt
+      # set restore_dump_ignore_missing=false if you do not want to interrupt
+      #                                       on a missing dump
+
+    - role: igloo.main.glowroot_agent
+      glowroot_agent_version: "{{ playbook_glowroot_agent_version }}"
+      glowroot_agent_download_target_path: "{{ playbook_glowroot_agent_download_target_path }}"
+      glowroot_agent_install_target_path: "{{ playbook_glowroot_agent_install_target_path }}"
+      glowroot_config_agent_id: "{{ playbook_glowroot_config_agent_id }}"
+      # process running glowroot perform following actions in glowroot dir :
+      # - writes config.json
+      # - writes in tmp dir
+      # - read glowroot.properties file
+      glowroot_agent_user: "{{ playbook_remote_user }}"
+      glowroot_agent_group: "{{ playbook_remote_user }}"
+      glowroot_config_collector_address: "{{ playbook_glowroot_config_collector_address }}"
+      glowroot_config_log_dir: "{{ playbook_glowroot_config_log_dir }}"
+      glowroot_config_base_dir: /data/services/glowroot
+
+      tags: glowroot
+      when: playbook_glowroot_enabled
+
+    - role: igloo.main.tomcat
+      become: true
+      become_user: root
+      tomcat_version: "{{ playbook_tomcat_version }}"
+      tomcat_checksum: "{{ playbook_tomcat_checksum }}"
+      tomcat_dest: /data/opt/tomcat-{{ playbook_tomcat_version }}
+      tomcat_default_user: "{{ playbook_remote_user }}"
+      tomcat_default_java_home: "{{ jdks[playbook_java_key].path }}"
+      tomcat_timeout_stop: "{{ playbook_tomcat_timeout_stop }}"
+      tomcat_download_target_path: "{{ playbook_download_target_path }}"
+      tomcat_default_extra_opts: >-
+        {{ ('-javaagent:' + playbook_glowroot_jar) if playbook_glowroot_enabled else '' }}
+        {{ ('-Dglowroot.conf.dir=' + playbook_glowroot_conf_dir) if playbook_glowroot_enabled else '' }}
+        -Digloo.applicationName={{ playbook_application_name }}
+        {{ ('-Digloo.profile=' + playbook_igloo_profile) if playbook_igloo_profile is defined and playbook_igloo_profile else none }}
+        {{ playbook_tomcat_extra_opts if playbook_tomcat_extra_opts is defined else '' }}
+      tomcat_catalina_bases:
+        - name: "{{ playbook_application_name }}"
+          path: "{{ playbook_application_tomcat_path }}"
+          apj_port: "{{ playbook_tomcat_ajp_port }}"
+          http_port: "{{ playbook_tomcat_http_port }}"
+          ajp_max_threads: "{{ playbook_tomcat_ajp_max_threads }}"
+          http_max_threads: "{{ playbook_tomcat_http_max_threads }}"
+          shutdown_port: "{{ playbook_tomcat_shutdown_port }}"
+          xmx: "{{ playbook_tomcat_xmx }}"
+          xms: "{{ playbook_tomcat_xms }}"
+          jmx_port: "{{ playbook_tomcat_jmx_port }}"
+          clean_on_start: "{{ playbook_tomcat_clean_on_start | default(False) }}"
+          extra_env: "{{ playbook_tomcat_extra_env | default({}, True) }}"
+      tomcat_java17: "{{ playbook_tomcat_java17 | default(False) }}"
+      tags: tomcat

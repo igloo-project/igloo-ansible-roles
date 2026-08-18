@@ -1,0 +1,107 @@
+---
+
+##
+## DO NOT MODIFY THIS FILE; this file is from igloo-ansible-playbooks project
+## Create a new file minimal.yml; check and set all values !
+##
+
+## used to name folders, name context, postgresql username, ...
+## special characters are replaced by _
+playbook_application_name: basic-application
+## used if build is done by ansible (see playbook_build_project)
+playbook_project_git_url: git@github.com:igloo-project/igloo-parent.git
+## needed only for build; override if your maven root is in a subfolder
+# playbook_maven_folder:
+## application public vhost
+playbook_front_server_name: myapp.domain.org
+
+## install a backup script then enable this feature !
+# playbook_delivery_backup: true
+
+## override if needed
+playbook_system_timezone: Europe/Paris
+playbook_system_locale: fr_FR.utf8
+
+## generate selfsigned certificates
+## if you use letsencrypt or provided certs, switch to false and configure
+## playbook_httpd_ssl_* paths
+playbook_ssl_selfsigned_certs: false
+playbook_httpd_ssl_certificate: "{{ playbook_ssl_certificate }}"
+playbook_httpd_ssl_key: "{{ playbook_ssl_key }}"
+playbook_httpd_ssl_cacertificate: "{{ playbook_ssl_cacertificate }}"
+playbook_httpd_ssl_protocol: all -SSLv3 -TLSv1 -TLSv1.1
+playbook_httpd_ssl_ciphersuite: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+
+# HSTS is disable by default
+playbook_httpd_conf_hsts_enable: false
+#playbook_httpd_conf_hsts_max_age: 31536000
+
+# Uncomment to use a robots.txt
+# playbook_httpd_conf_robots_txt: |
+#   User-Agent: *
+#   Disallow: /
+
+## override by command line (-e playbook_war=...) or in inventory to target
+## an arbitrary file
+# playbook_war: "{{ playbook_local_git_project }}/{{ playbook_maven_folder }}{{ playbook_local_git_war_path }}"
+## switch to true if you want to deploy a remote war
+# playbook_war_remote_src: false
+
+## override with recent versions
+playbook_java_version: "11"
+playbook_postgresql_version: "14"
+playbook_tomcat_version: "9.0.64"
+playbook_tomcat_checksum: sha512:38392b651fabe706fb0524c52849601299494178010bb8077af383232c20bbbda1aec4ab8898adb2cc37c07583ff0e9d3c7038ce55a22bc68c3641641b47fd1a
+## customize postgresql init
+## install postgis and create extension
+# playbook_postgresql_postgis: true
+# playbook_postgresql_postgis_package: postgis30_{{ playbook_postgresql_version | replace('.', '') }}
+# playbook_postgresql_postgis_schema: postgis
+## set database owner search_path, example '"$user", postgis, public' (null ignore search_path configuration)
+## value must be equals to the one displayed by "show search_path;" query
+## use null to ignore search_path configuration
+# playbook_postgresql_search_path: null
+## enable and set specific values if you want to use glowroot agent
+# playbook_glowroot_enabled: true
+# playbook_glowroot_config_agent_id: Application::{{ inventory_hostname }}
+# playbook_glowroot_config_collector_address: <Glowroot collector address>
+
+## keep commented to use defaults (preferred)
+# playbook_glowroot_agent_version: "0.13.5"
+
+## environment related configuration - please override
+# playbook_tomcat_xmx: 1024m
+# playbook_tomcat_xms: 1024m
+
+## performance related configuration - keep default (commented) if possible
+# playbook_tomcat_max_threads: 15
+# playbook_postgresql_maxPoolSize: 30
+
+## smtp configuration
+playbook_smtp_host: localhost
+
+## only for old projects; maven profile no longer needed
+# playbook_maven_profile: production
+
+## override with group_vars
+playbook_igloo_profile: qualification
+
+## authorized keys to add
+playbook_ssh_authorized_keys: []
+playbook_ssh_all_authorized_keys: {}
+
+## users format
+## (playbook_ssh_authorized_keys contains a list of key from this dict)
+#playbook_ssh_all_authorized_keys:
+#   username_key:
+#     - name: firstname lastname
+#       username: login
+#       ssh_key: ssh-rsa AAAAB3N...nMkvsRf9iXNX email@domain.com
+
+## check public interface name; override if not eth0
+#firewall_interface: eth0
+
+## application background URL building config
+playbook_background_url_server_scheme: http
+playbook_background_url_server_name: localhost
+playbook_background_url_server_port: "{{ playbook_tomcat_http_port }}"

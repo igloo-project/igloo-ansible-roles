@@ -134,7 +134,7 @@
 
 - name: kobackup - systemd-timer
   import_role:
-    name: systemd-timer
+    name: igloo.main.systemd_timer
   vars:
     timer_service_name: "kobackup"
     timer_unit_description: "{{ kobackup_timer_unit_description }}"

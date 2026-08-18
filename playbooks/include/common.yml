@@ -1,0 +1,6 @@
+---
+
+- hosts: "{{ common_hosts }}"
+  roles:
+    - role: powo.utils
+    - role: igloo.main.powertools

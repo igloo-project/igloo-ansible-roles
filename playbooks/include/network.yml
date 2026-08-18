@@ -1,0 +1,19 @@
+---
+
+##
+## network related tasks
+##
+- hosts: "{{ common_hosts }}"
+  roles:
+    - role: powo.utils
+
+    - role: igloo.main.dev_hosts
+      delegate_to: localhost
+      run_once: no
+      become: true
+      become_user: root
+ 
+    - role: igloo.main.authorized_keys
+      ak_users: "{{ playbook_ssh_all_authorized_keys }}"
+      ak_keys: "{{ playbook_ssh_authorized_keys }}"
+

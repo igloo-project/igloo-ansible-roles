@@ -1,0 +1,6 @@
+---
+
+# find a way to easily insert debug messages between full.yml playbook plays
+- hosts: "{{ common_hosts }}"
+  tasks:
+    - debug: msg={{ playbook_java_runtimes }}

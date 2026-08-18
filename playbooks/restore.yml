@@ -1,0 +1,7 @@
+---
+
+- hosts: "{{ common_hosts }}"
+  roles:
+    - role: igloo.main.db_restore
+      restore_dump: true
+      restore_dump_ignore_missing: false
