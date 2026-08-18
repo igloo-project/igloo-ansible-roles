@@ -210,4 +210,36 @@ playbook_firewall_skip_http: false
 playbook_firewall_skip_https: false
 playbook_firewall_services: []
 
+# reuse common igloo variables to setup backup
+playbook_kobackup_enabled: false
+playbook_kobackup_dump_target_basename: "{{ playbook_postgresql_database }}"
+playbook_kobackup_dump_target_path: "/data/services/backup/psql"
+playbook_kobackup_dump_database: "{{ playbook_postgresql_database }}"
+playbook_kobackup_dump_port: "{{ playbook_postgresql_port }}"
+# si base locale on peut passer par un socket avec utilisateur postgres
+playbook_kobackup_dump_hostname: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_host }}"
+playbook_kobackup_dump_username: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_user }}"
+playbook_kobackup_dump_password: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_password }}"
+playbook_kobackup_dump_sudo: "{{ 'postgres' if playbook_postgresql_host == 'localhost' else playbook_postgresql_host }}"
+playbook_kobackup_filestore_paths: "{{ fail_if_not_defined }}"
+playbook_kobackup_backup_paths: "{{ ['/data/services/backup'] + playbook_kobackup_filestore_paths }}"
+playbook_kobackup_restic_repository: "{{ fail_if_not_defined }}"
+playbook_kobackup_restic_password: "{{ fail_if_not_defined }}"
+playbook_kobackup_restic_forget_prune: "{{ fail_if_not_defined }}"
+playbook_kobackup_restic_aws_access_key_id: "{{ fail_if_not_defined }}"
+playbook_kobackup_restic_aws_secret_access_key: "{{ fail_if_not_defined }}"
+playbook_kobackup_s3_conf_path: "/data/services/kobackup/s3.conf"
+playbook_kobackup_conf_path: "/data/services/kobackup/kobackup-config.yml"
+playbook_kobackup_service_name: kobackup
+playbook_kobackup_timer_description: "Runs igloo metabase kobackup"
+playbook_kobackup_timer_oncalendar: "{{ fail_if_not_defined }}"
+playbook_kobackup_clone:
+  source:
+    region: "{{ fail_if_not_defined }}"
+    bucket: "{{ fail_if_not_defined }}"
+  target:
+    region: "{{ fail_if_not_defined }}"
+    bucket: "{{ fail_if_not_defined }}"
+playbook_kobackup_restic_version: "0.19.1"
+
 x_selinux_handle: "{{ ansible_facts['selinux'] is defined and ansible_facts['selinux'] == 'enabled' }}"

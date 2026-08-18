@@ -35,6 +35,9 @@ argument_specs:
           hostname:
             type: "str"
             required: true
+          sudo:
+            type: "str"
+            required: false
 
       backup_paths:
         type: "list"
@@ -65,6 +68,11 @@ argument_specs:
       kobackup_timer_unit_description:
         type: "str"
         required: true
+
+      # default: kobackup
+      kobackup_service_name:
+        type: "str"
+        required: false
       
       kobackup_clone:
         type: "dict"
