@@ -60,11 +60,18 @@
         type: pg_dump
         user: {{ dump_infos.user }}
         database: {{ dump_infos.database }}
+        {% if "hostname" in dump_infos and dump_infos.hostname -%}
         hostname: {{ dump_infos.hostname }}
+        {% endif -%}
         port: {{ dump_infos.port }}
+        {% if "password" in dump_infos and dump_infos.password -%}
         password: {{ dump_infos.password }}
+        {% endif -%}
         target_path: "{{ dump_infos.target_path }}"
         target_basename: {{ dump_infos.target_basename }}
+        {% if "sudo" in dump_infos and dump_infos.sudo -%}
+        sudo: {{ dump_infos.sudo }}
+        {% endif -%}
         keep_files: 0
       {% endfor %}
       - name: restic
@@ -110,7 +117,7 @@
  
 - name: kobackup - service
   copy:
-    dest: /etc/systemd/system/kobackup.service
+    dest: /etc/systemd/system/{{ kobackup_service_name }}.service
     content: |
       [Unit]
       Description=kobackup
@@ -127,7 +134,7 @@
 
 - name: kobackup - service enable
   service:
-    name: kobackup
+    name: "{{ kobackup_service_name }}"
     enabled: true
   become: true
   become_user: root
@@ -136,7 +143,7 @@
   import_role:
     name: igloo.main.systemd_timer
   vars:
-    timer_service_name: "kobackup"
+    timer_service_name: "{{ kobackup_service_name }}"
     timer_unit_description: "{{ kobackup_timer_unit_description }}"
     timer_oncalendar: "{{ kobackup_timer_oncalendar }}"
 
