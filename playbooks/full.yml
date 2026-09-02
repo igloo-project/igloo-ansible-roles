@@ -6,7 +6,7 @@
 
 - import_playbook: include/build.yml
 
-- import_playbook: include/ansible-prepare.yml
+- import_playbook: include/ansible_prepare.yml
 
 - import_playbook: include/network.yml
 
