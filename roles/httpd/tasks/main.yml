@@ -23,18 +23,6 @@
   when: ansible_facts['os_family'] == 'Debian'
 
 - block:
-  - name: httpd · selinux ports
-    seport:
-      ports: "{{ _port }}"
-      proto: tcp
-      setype: http_port_t
-      state: present
-    with_items:
-      - "{{ _httpd_ajp_port }}"
-    loop_control:
-      loop_var: _port
-    when: x_selinux_handle
-
   - import_tasks: vhost.yml
 
   - name: httpd · status page

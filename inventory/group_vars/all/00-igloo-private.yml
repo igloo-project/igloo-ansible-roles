@@ -242,4 +242,3 @@ playbook_kobackup_clone:
     bucket: "{{ fail_if_not_defined }}"
 playbook_kobackup_restic_version: "0.19.1"
 
-x_selinux_handle: "{{ ansible_facts['selinux'] is defined and ansible_facts['selinux'] == 'enabled' }}"
