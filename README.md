@@ -10,13 +10,19 @@ powo.utils (https://github.com/powo-roles/powo.utils) is required.
 ## 2026-11-18
 
 ```yaml
-# value changed from
+# default value changed from
 playbook_kobackup_dump_target_path: "/data/services/backup/psql"
 # to
 playbook_kobackup_dump_target_path: "/data/services/backup/pgsql"
+
+# default value is not a constant
+playbook_kobackup_dump_sudo: false
 ```
 
 Override `playbook_kobackup_dump_target_path` if needed.
+
+Override `playbook_kobackup_dump_sudo` if needed.
+
 
 ## Older
 
