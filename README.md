@@ -17,11 +17,18 @@ playbook_kobackup_dump_target_path: "/data/services/backup/pgsql"
 
 # default value is not a constant
 playbook_kobackup_dump_sudo: false
+
+# default value now includes a .dmp suffix
+playbook_kobackup_dump_target_basename: "{{ playbook_postgresql_database }}.dmp"
 ```
 
 Override `playbook_kobackup_dump_target_path` if needed.
 
 Override `playbook_kobackup_dump_sudo` if needed.
+
+If you use default setup for target basename, your backup now uses a .dmp suffix.
+If your target folder already contains backups, you need to clean old backup manually
+as kobackup cleaning no longer matches your extension-less old backups.
 
 
 ## Older
