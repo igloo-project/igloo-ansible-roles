@@ -7,6 +7,19 @@ powo.utils (https://github.com/powo-roles/powo.utils) is required.
 
 # History
 
+## 2026-11-18
+
+```yaml
+# value changed from
+playbook_kobackup_dump_target_path: "/data/services/backup/psql"
+# to
+playbook_kobackup_dump_target_path: "/data/services/backup/pgsql"
+```
+
+Override `playbook_kobackup_dump_target_path` if needed.
+
+## Older
+
 * 2018-11-16: package state=installed deprecated, use present (ansible related)
 * 2018-07-28: tomcat8 renamed tomcat (work for tomcat 9.x)
 * 2018-07-28: postgresql moved to https://github.com/igloo-project/roles-postgresql
