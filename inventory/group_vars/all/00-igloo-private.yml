@@ -231,7 +231,7 @@ playbook_kobackup_restic_aws_secret_access_key: "{{ fail_if_not_defined }}"
 playbook_kobackup_s3_conf_path: "/data/services/kobackup/s3.conf"
 playbook_kobackup_conf_path: "/data/services/kobackup/kobackup-config.yml"
 playbook_kobackup_service_name: kobackup
-playbook_kobackup_timer_description: "Runs igloo metabase kobackup"
+playbook_kobackup_timer_description: "Runs igloo kobackup"
 playbook_kobackup_timer_oncalendar: "{{ fail_if_not_defined }}"
 playbook_kobackup_clone:
   source:

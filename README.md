@@ -20,6 +20,12 @@ playbook_kobackup_dump_sudo: false
 
 # default value now includes a .dmp suffix
 playbook_kobackup_dump_target_basename: "{{ playbook_postgresql_database }}.dmp"
+
+# fix default description for kobackup timer from
+playbook_kobackup_timer_description: "Runs igloo metabase kobackup"
+# to
+playbook_kobackup_timer_description: "Runs igloo kobackup"
+
 ```
 
 Override `playbook_kobackup_dump_target_path` if needed.
@@ -35,6 +41,7 @@ kobackup service adds HOME environment setting to prevent restic failure.
 ```
 Environment=HOME=%h
 ```
+
 
 ## Older
 
