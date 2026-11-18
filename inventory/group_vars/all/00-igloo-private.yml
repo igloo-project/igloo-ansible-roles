@@ -213,7 +213,7 @@ playbook_firewall_services: []
 # reuse common igloo variables to setup backup
 playbook_kobackup_enabled: false
 playbook_kobackup_dump_target_basename: "{{ playbook_postgresql_database }}"
-playbook_kobackup_dump_target_path: "/data/services/backup/psql"
+playbook_kobackup_dump_target_path: "/data/services/backup/pgsql"
 playbook_kobackup_dump_database: "{{ playbook_postgresql_database }}"
 playbook_kobackup_dump_port: "{{ playbook_postgresql_port }}"
 # si base locale on peut passer par un socket avec utilisateur postgres
