@@ -30,6 +30,11 @@ If you use default setup for target basename, your backup now uses a .dmp suffix
 If your target folder already contains backups, you need to clean old backup manually
 as kobackup cleaning no longer matches your extension-less old backups.
 
+kobackup service adds HOME environment setting to prevent restic failure.
+
+```
+Environment=HOME=%h
+```
 
 ## Older
 

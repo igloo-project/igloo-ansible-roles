@@ -121,6 +121,8 @@
     content: |
       [Unit]
       Description=kobackup
+      # restic 0.19.1 fails if no HOME/XDG_CACHE_DIR
+      Environment=HOME=%s
 
       [Service]
       ExecStart=kobackup --config {{ kobackup_conf_path }}
