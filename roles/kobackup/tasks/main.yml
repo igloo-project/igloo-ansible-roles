@@ -125,7 +125,7 @@
       [Service]
       ExecStart=kobackup --config {{ kobackup_conf_path }}
       # restic 0.19.1 fails if no HOME/XDG_CACHE_DIR
-      Environment=HOME=%s
+      Environment=HOME=%h
 
       [Install]
       WantedBy=multi-user.target
