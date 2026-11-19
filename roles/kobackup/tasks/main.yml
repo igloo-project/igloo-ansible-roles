@@ -6,16 +6,13 @@
   become: true
   become_user: root
 
-- name: kobackup - backup paths directories
+- name: kobackup - dump paths directories
   file:
     path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
-    mode: u=rwx,g=,o=
   become: true
   become_user: root
-  loop: "{{ backup_paths }}"
+  loop: "{{ dumps_infos | map(attribute='target_path') | list }}"
 
 - name: kobackup - directory
   file:

@@ -42,6 +42,8 @@ kobackup service adds HOME environment setting to prevent restic failure.
 Environment=HOME=%h
 ```
 
+Do not create and set permissions for all kobackup `backup_paths`. Only ensure that `dumps_infos[*].target_path` exists.
+
 
 ## Older
 
