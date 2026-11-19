@@ -217,9 +217,9 @@ playbook_kobackup_dump_target_path: "/data/services/backup/pgsql"
 playbook_kobackup_dump_database: "{{ playbook_postgresql_database }}"
 playbook_kobackup_dump_port: "{{ playbook_postgresql_port }}"
 # si base locale on peut passer par un socket avec utilisateur postgres
-playbook_kobackup_dump_hostname: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_host }}"
-playbook_kobackup_dump_username: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_user }}"
-playbook_kobackup_dump_password: "{{ '' if playbook_postgresql_host == 'localhost' else playbook_postgresql_password }}"
+playbook_kobackup_dump_hostname: "{{ playbook_postgresql_host }}"
+playbook_kobackup_dump_username: "{{ playbook_postgresql_user }}"
+playbook_kobackup_dump_password: "{{ playbook_postgresql_password }}"
 playbook_kobackup_dump_sudo: false
 playbook_kobackup_filestore_paths: "{{ fail_if_not_defined }}"
 playbook_kobackup_backup_paths: "{{ ['/data/services/backup'] + playbook_kobackup_filestore_paths }}"

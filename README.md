@@ -44,6 +44,8 @@ Environment=HOME=%h
 
 Do not create and set permissions for all kobackup `backup_paths`. Only ensure that `dumps_infos[*].target_path` exists.
 
+`playbook_kobackup_dump_hostname`, `playbook_kobackup_dump_username`, `playbook_kobackup_dump_password` maps to `playbook_postgresql_host`, `playbook_postgresql_user` and `playbook_postgresql_password`. No special behavior if host is *localhost*. Use empty variables and `playbook_kobackup_dump_username: postgres` to use a local socket if needed.
+
 
 ## Older
 
